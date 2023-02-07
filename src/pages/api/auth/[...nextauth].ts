@@ -1,9 +1,18 @@
-import NextAuth from "next-auth"
+import jwt from "jsonwebtoken"
+import NextAuth, { DefaultSession, Session, User } from "next-auth"
+import { AdapterUser } from "next-auth/adapters"
+import { SupabaseAdapter } from "@next-auth/supabase-adapter"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
-// import EmailProvider from "next-auth/providers/email"
-import { SupabaseAdapter } from "@next-auth/supabase-adapter"
-import jwt from "jsonwebtoken"
+
+declare module "next-auth" {
+  interface Session {
+    supabaseAccessToken?: string
+    user: {
+      address: string
+    } & DefaultSession["user"]
+  }
+}
 
 export default NextAuth({
   adapter: SupabaseAdapter({
@@ -11,7 +20,7 @@ export default NextAuth({
     secret: process.env.SUPABASE_SERVICE_KEY,
   }),
   callbacks: {
-    async session({ session, user }: any) {
+    async session({ session, user }: { session: Session; user: User | AdapterUser }) {
       const signingSecret = process.env.SUPABASE_JWT_SECRET
 
       const payload = {
@@ -22,30 +31,17 @@ export default NextAuth({
         role: "authenticated",
       }
       session.supabaseAccessToken = jwt.sign(payload, signingSecret)
-
       return session
     },
   },
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
-    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
-    // EmailProvider({
-    //   maxAge: 1 * 60 * 60, // 1 Hour
-    //   from: process.env.EMAIL_FROM,
-    //   server: {
-    //     host: process.env.EMAIL_SERVER_HOST,
-    //     port: process.env.EMAIL_SERVER_PORT,
-    //     auth: {
-    //       user: process.env.EMAIL_SERVER_USER,
-    //       pass: process.env.EMAIL_SERVER_PASSWORD,
-    //     },
-    //   },
-    // }),
+    GithubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+    }),
   ],
 })

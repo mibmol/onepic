@@ -1,6 +1,8 @@
-import { createContext, useContext } from "react"
+import { Context, createContext, useContext } from "react"
 
-const PagePropsContext = createContext<any>({})
+const PagePropsContext = createContext({})
 
 export const PagePropsProvider = PagePropsContext.Provider
-export const usePageProps = () => useContext(PagePropsContext)
+export function usePageProps<T>(): T {
+  return useContext<T>(PagePropsContext as Context<T>)
+}

@@ -1,7 +1,11 @@
 import { Prediction } from "@/lib/data/entities/prediction"
-import { generatePrediction } from "@/lib/data/replicateClient"
+import { generatePrediction } from "@/lib/data/replicateService"
+import { insertPrediction } from "@/lib/data/supabaseService"
 import { validate } from "class-validator"
 import type { NextApiRequest, NextApiResponse } from "next"
+import pino from "pino"
+
+const logger = pino({ name: "process-image.handler" })
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -16,9 +20,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const result = await generatePrediction(predictionOptions)
+    const { error } = await insertPrediction(predictionOptions, result)
+
+    if (error) {
+      throw error
+    }
     return res.status(200).json(result)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return res.status(500).json({ error: error.toString() })
   }
 }

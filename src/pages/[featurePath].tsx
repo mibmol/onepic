@@ -8,7 +8,6 @@ import { aiFeatures } from "@/lib/data/models"
 import { ImageDisplaySection } from "@/components/content/ImageDisplaySection"
 import { ImageActionsSection } from "@/components/content/ImageActionsSection"
 import { PagePropsProvider } from "@/lib/hooks/usePageProps"
-import { useRouter } from "next/router"
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {

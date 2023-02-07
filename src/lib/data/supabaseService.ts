@@ -43,6 +43,6 @@ export const updatePrediction = ({ id, status, metrics, output }: ReplicatePredi
     .update({
       status,
       run_time: metrics?.predict_time,
-      output: output?.[0],
+      output: Array.isArray(output) ? output[0] : output,
     })
     .eq("prediction_id", id)

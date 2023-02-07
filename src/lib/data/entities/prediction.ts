@@ -14,7 +14,7 @@ export class Prediction {
   modelName: string
 
   @IsUrl()
-  inputImageUrl: string
+  input: string
 
   @IsOptional()
   @Length(3, 5)

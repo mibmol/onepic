@@ -14,7 +14,7 @@ const supabase = createClient(
 )
 
 export const uploadUserImage = async (file: File) => {
-  const imagePath = uuidv4()
+  const imagePath = `${uuidv4()}.${file.name}`
   const { data, error } = await supabase.storage
     .from("user-images")
     .upload(imagePath, file, { contentType: "File" })

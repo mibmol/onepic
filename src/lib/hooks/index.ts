@@ -1,1 +1,1 @@
-export * from "./useSetInteral"
+export * from "./usePageProps"

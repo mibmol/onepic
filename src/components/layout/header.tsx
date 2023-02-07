@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useTranslation } from "next-i18next"
 import { aiFeatures } from "@/lib/data/models"
 import { cn } from "@/lib/utils/clsx"
+import AuthSection from "../content/AuthSection"
 
 export const Header: FC = () => {
   const route = useRouter()
@@ -40,7 +41,9 @@ export const Header: FC = () => {
           </ul>
         </nav>
       </div>
-      <div>&middot;</div>
+      <div>
+        <AuthSection />
+      </div>
     </section>
   )
 }

@@ -4,34 +4,41 @@ import { usePageProps } from "@/lib/hooks/usePageProps"
 import { useAppDispatch, useAppSelector } from "@/lib/state/hooks"
 import { imageGenerationSlice, processImage } from "@/lib/state/imageProcessingSlice"
 import { AppDispatch, AppState } from "@/lib/state/store"
-import { cn } from "@/lib/utils/clsx"
-import { notification } from "@/lib/utils/notification"
+import { cn, notification } from "@/lib/utils"
 import { TFunction, useTranslation } from "next-i18next"
 import { FC, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 
 const { setResultImage, stopProcessing } = imageGenerationSlice.actions
-const checkProcessingState = async (predictionId: string, dispatch: AppDispatch) => {
+const checkProcessingState = async (
+  predictionId: string,
+  dispatch: AppDispatch,
+  t: TFunction,
+) => {
   let intervalId = null
   intervalId = setInterval(async () => {
     try {
-      const { output } = await getProcessImageState(predictionId)
-      if (output) {
+      const { output, status } = await getProcessImageState(predictionId)
+      if (status === "succeeded") {
         clearInterval(intervalId)
         dispatch(setResultImage(output))
+      }
+      if (status === "failed") {
+        throw new Error(status)
       }
     } catch (error) {
       clearInterval(intervalId)
       dispatch(stopProcessing())
+      notification.error(t("And error occurred while processing"))
     }
-  }, 1200)
+  }, 1500)
 }
 
 const checkValidationErrors = (error, t: TFunction) => {
   const validations = error.body?.error?.validation
   if (validations) {
     for (let { property } of validations) {
-      if (property === "inputImageUrl") {
+      if (property === "input") {
         notification.info(t("Please, select an image from your device"))
       }
     }
@@ -44,7 +51,7 @@ export const ModelForm = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { register, handleSubmit, watch, reset } = useForm()
-  const { featureId } = usePageProps()
+  const { featureId } = usePageProps<any>()
   const models = useMemo(() => getModelsByFeatureId(featureId), [featureId])
 
   const defaultModel = models[0]
@@ -62,7 +69,7 @@ export const ModelForm = () => {
     dispatch(
       processImage({
         values,
-        onSuccess: ({ id }) => checkProcessingState(id, dispatch),
+        onSuccess: ({ id }) => checkProcessingState(id, dispatch, t),
         onError: (error) => checkValidationErrors(error, t),
       }),
     )

@@ -42,7 +42,7 @@ export const processImage = createAsyncThunk(
       imageProcessing: { inputImageUrl },
     } = getState() as AppState
     try {
-      const result = await postProcessImage({ ...values, inputImageUrl })
+      const result = await postProcessImage({ ...values, input: inputImageUrl })
       onSuccess?.(result)
       return result
     } catch (error) {
