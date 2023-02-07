@@ -26,7 +26,7 @@ export const Header: FC = () => {
                   <Link
                     href={pathname}
                     className={cn(
-                      "rounded-md py-3 px-5 text-slate-600 hover:text-slate-800 hover:bg-slate-50",
+                      "rounded py-3 px-5 text-slate-600 hover:text-slate-800 hover:bg-slate-50",
                       {
                         "bg-slate-100 hover:bg-slate-100 text-slate-800":
                           route.asPath === pathname,
