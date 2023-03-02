@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import NextAuth, { DefaultSession, Session, User } from "next-auth"
+import NextAuth, { DefaultSession, NextAuthOptions, Session, User } from "next-auth"
 import { AdapterUser } from "next-auth/adapters"
 import { SupabaseAdapter } from "@next-auth/supabase-adapter"
 import GithubProvider from "next-auth/providers/github"
@@ -14,7 +14,7 @@ declare module "next-auth" {
   }
 }
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   adapter: SupabaseAdapter({
     url: process.env.NEXT_PUBLIC_SUPABASE_URL,
     secret: process.env.SUPABASE_SERVICE_KEY,
@@ -44,4 +44,6 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_SECRET,
     }),
   ],
-})
+}
+
+export default NextAuth(authOptions)

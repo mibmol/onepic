@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { getImageUrl, uploadUserImage } from "@/lib/client/upload"
 import { AppState } from "./store"
 import { postProcessImage } from "@/lib/client/processing"
-import { notification } from "@/lib/utils/notification"
 
 type ImageProcessingState = {
   inputImageUrl: string
@@ -20,13 +19,19 @@ const initialState: ImageProcessingState = {
   processing: false,
 }
 
+type ThunkArgs<T> = {
+  value: T
+  onError?: (e: Error) => void
+  onSuccess?: (e: any) => void
+}
 export const uploadImage = createAsyncThunk(
   "imageProcessing/upload",
-  async (file: File, { rejectWithValue }) => {
+  async ({ value: file, onError }: ThunkArgs<File>, { rejectWithValue }) => {
     try {
       const { imagePath } = await uploadUserImage(file)
       return await getImageUrl(imagePath)
-    } catch (error: any) {
+    } catch (error) {
+      onError?.(error)
       return rejectWithValue("something went bad")
     }
   },
@@ -35,19 +40,19 @@ export const uploadImage = createAsyncThunk(
 export const processImage = createAsyncThunk(
   "imageProcessing/process",
   async (
-    { values, onError, onSuccess }: any,
-    { getState, rejectWithValue, dispatch },
+    { value, onError, onSuccess }: ThunkArgs<any>,
+    { getState, rejectWithValue },
   ) => {
     const {
       imageProcessing: { inputImageUrl },
     } = getState() as AppState
     try {
-      const result = await postProcessImage({ ...values, input: inputImageUrl })
+      const result = await postProcessImage({ ...value, input: inputImageUrl })
       onSuccess?.(result)
       return result
     } catch (error) {
       onError?.(error)
-      return rejectWithValue(error)
+      return rejectWithValue(error?.toString())
     }
   },
 )
@@ -57,16 +62,14 @@ export const imageGenerationSlice = createSlice({
   initialState,
   reducers: {
     clearImages: (state) => {
-      state.displayImageUrl = null
-      state.resultImageUrl = null
+      state.inputImageUrl = state.displayImageUrl = state.resultImageUrl = null
     },
     setDisplayImageFromFile: (state, { payload }) => {
-      state.displayImageUrl = payload
-      state.inputImageUrl = payload
+      state.displayImageUrl = state.inputImageUrl = payload
     },
     setResultImage: (state, { payload }) => {
-      state.displayImageUrl = payload
-      state.resultImageUrl = payload
+      state.displayImageUrl = state.resultImageUrl = payload
+
       state.processing = false
     },
     stopProcessing: (state) => {
@@ -76,17 +79,16 @@ export const imageGenerationSlice = createSlice({
   extraReducers: (builder) => {
     // uploadImage
     builder.addCase(uploadImage.pending, (state, { meta: { arg } }) => {
-      state.displayImageUrl = URL.createObjectURL(arg)
+      state.displayImageUrl = URL.createObjectURL(arg.value)
       state.uploading = true
     })
     builder.addCase(uploadImage.fulfilled, (state, { payload }) => {
-      state.inputImageUrl = payload
-      state.displayImageUrl = payload
+      state.inputImageUrl = state.displayImageUrl = payload
       state.uploading = false
     })
     builder.addCase(uploadImage.rejected, (state, action) => {
       state.uploading = false
-      notification.error("nooooope")
+      state.displayImageUrl = null
     })
 
     // processImage

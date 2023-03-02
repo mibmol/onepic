@@ -1,13 +1,14 @@
 import { Prediction } from "@/lib/data/entities/prediction"
 import { generatePrediction } from "@/lib/data/replicateService"
 import { insertPrediction } from "@/lib/data/supabaseService"
+import { authenticated } from "@/lib/server/authenticated"
 import { validate } from "class-validator"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"
 
 const logger = pino({ name: "process-image.handler" })
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(404).json({ error: "method not allowed" })
   }
@@ -31,3 +32,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: error.toString() })
   }
 }
+
+export default authenticated(handler)

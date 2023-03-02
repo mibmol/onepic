@@ -5,12 +5,21 @@ import { DashSquare, AddImageIcon } from "@/components/common/icons"
 import { FileInput } from "@/components/common"
 import { useAppDispatch } from "@/lib/state/hooks"
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
+import { useTranslation } from "react-i18next"
+import { notification } from "@/lib/utils"
 
 export const ImageSelector: FC = () => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const onFileChange = useCallback(
-    (file: File) => dispatch(uploadImage(file)),
-    [dispatch],
+    (file: File) =>
+      dispatch(
+        uploadImage({
+          value: file,
+          onError: (e) => notification.error(t("Couldn't upload the image")),
+        }),
+      ),
+    [dispatch, t],
   )
   const [dropHandlers, { over }] = useDropArea({
     onFiles: (files = []) => onFileChange(files[0]),
@@ -24,7 +33,7 @@ export const ImageSelector: FC = () => {
           <AddImageIcon className="absolute top-8 left-1/2 -translate-x-1/2" />
         </div>
         <p className="absolute bottom-16 left-1/2 -translate-x-1/2 font-bold text-lg">
-          Drop an image or paste a link
+          {t("Drop an image")}
         </p>
       </div>
       <div className="flex flex-col items-center justify-center">

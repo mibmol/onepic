@@ -27,7 +27,7 @@ export const ImageInputDisplay = () => {
     useAppSelector(indicatorSelector)
 
   const onFileChange = useCallback(
-    (file: File) => dispatch(uploadImage(file)),
+    (file: File) => dispatch(uploadImage({ value: file })),
     [dispatch],
   )
   const [dropHandlers] = useDropArea({

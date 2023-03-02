@@ -61,45 +61,6 @@ export const aiFeatures: AIFeature[] = [
         ],
       },
       {
-        name: "CodeFormer",
-        replicateURL: "https://replicate.com/sczhou/codeformer",
-        version: "7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56",
-        modelInputType: {
-          name: "image",
-          type: "file",
-        },
-        fields: [
-          {
-            name: "codeformer_fidelity",
-            type: "float",
-            labelToken: "fieldLabel.codeformerFidelity",
-            defaultValue: 0.5,
-            min: 0.1,
-            max: 1,
-          },
-          {
-            name: "background_enhance",
-            type: "boolean",
-            labelToken: "fieldLabel.backgroundEnhance",
-            defaultValue: false,
-          },
-          {
-            name: "face_upsample",
-            type: "boolean",
-            labelToken: "fieldLabel.faceUpsample",
-            defaultValue: true,
-          },
-          {
-            name: "upscale",
-            type: "integer",
-            labelToken: "fieldLabel.upscale",
-            defaultValue: 2,
-            min: 1,
-            max: 10,
-          },
-        ],
-      },
-      {
         name: "CVPR 2020",
         replicateURL: "https://replicate.com/microsoft/bringing-old-photos-back-to-life",
         version: "c75db81db6cbd809d93cc3b7e7a088a351a3349c9fa02b6d393e35e0d51ba799",

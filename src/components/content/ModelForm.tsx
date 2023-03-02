@@ -9,7 +9,7 @@ import { TFunction, useTranslation } from "next-i18next"
 import { FC, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 
-const { setResultImage, stopProcessing } = imageGenerationSlice.actions
+const { setResultImage, stopProcessing, clearImages } = imageGenerationSlice.actions
 const checkProcessingState = async (
   predictionId: string,
   dispatch: AppDispatch,
@@ -56,7 +56,10 @@ export const ModelForm = () => {
 
   const defaultModel = models[0]
 
-  useEffect(() => reset(), [featureId, reset])
+  useEffect(() => {
+    reset()
+    dispatch(clearImages())
+  }, [featureId, reset, dispatch])
 
   const modelName = watch("modelName", defaultModel?.name)
   const selectedModel = useMemo(
@@ -68,7 +71,7 @@ export const ModelForm = () => {
   const onSubmit = handleSubmit((values) => {
     dispatch(
       processImage({
-        values,
+        value: values,
         onSuccess: ({ id }) => checkProcessingState(id, dispatch, t),
         onError: (error) => checkValidationErrors(error, t),
       }),

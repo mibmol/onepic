@@ -7,16 +7,19 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ['Inter', ...defaultTheme.fontFamily.sans],
+      sans: ["Inter", ...defaultTheme.fontFamily.sans],
       serif: [...defaultTheme.fontFamily.serif],
       mono: [...defaultTheme.fontFamily.mono]
     },
     extend: {
       spacing: {
-        '128': '32rem',
-        '152': '36rem',
-        '168': '40rem',
-        '184': '44rem'
+        "128": "32rem",
+        "152": "36rem",
+        "168": "40rem",
+        "184": "44rem"
+      },
+      boxShadow: {
+        "lg": "0 5px 15px 0px rgb(0 0 0 / 0.1)",
       }
     },
   },
