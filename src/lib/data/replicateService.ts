@@ -11,6 +11,7 @@ export const generatePrediction = async ({
   ...options
 }: Prediction) => {
   const { version, modelInputType } = getModelByName(modelName)
+  console.log(`https://${ENV_URL}/api/result_replicate_webhook`)
   const response = await fetchJson(`${REPLICATE_API_URL}/predictions`, {
     method: "POST",
     headers: {

@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== "POST") {
     return res.status(404).json({ error: "method not allowed" })
   }
-
+  console.log("hoooooohohohkkk")
   const { output, status, id, metrics, ...rest } =
     typeof req.body === "string" ? JSON.parse(req.body) : req.body
 
@@ -22,6 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       logger.error(error)
       return res.status(500).json({ error })
     }
+    console.log("hoooooohohohkkk", "updated")
     return res.status(200).json({ msg: "updated" })
   } catch (error) {
     logger.error(error)
