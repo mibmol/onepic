@@ -16,6 +16,7 @@ type ModelInputType = {
 
 export type Model = {
   name: string
+  labelToken?: string
   replicateURL: string
   version: string
   modelInputType: ModelInputType
@@ -39,6 +40,7 @@ export const aiFeatures: AIFeature[] = [
     models: [
       {
         name: "GFPGAN",
+        labelToken: "feature.optionOneFaster",
         replicateURL: "https://replicate.com/tencentarc/gfpgan",
         version: "9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3",
         modelInputType: {
@@ -62,6 +64,7 @@ export const aiFeatures: AIFeature[] = [
       },
       {
         name: "CVPR 2020",
+        labelToken: "feature.optionTwoSlower",
         replicateURL: "https://replicate.com/microsoft/bringing-old-photos-back-to-life",
         version: "c75db81db6cbd809d93cc3b7e7a088a351a3349c9fa02b6d393e35e0d51ba799",
         modelInputType: {

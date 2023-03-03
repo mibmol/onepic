@@ -1,6 +1,7 @@
 import { complement, isNil } from "ramda"
 
-export const isServer = () => isNil(window?.document)
+export const isServer = () =>
+  typeof window === "undefined" && typeof document === "undefined"
 export const isClient = complement(isServer)
 export const isDev = () => process.env.NODE_ENV === "development"
 export const isProd = () => process.env.NODE_ENV === "production"

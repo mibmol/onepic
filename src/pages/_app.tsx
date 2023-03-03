@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react"
 import { AppPropsWithLayout } from "@/lib/utils/next"
 import { ReduxProvider } from "@/lib/state/store"
 import { Toaster } from "react-hot-toast"
+import { ThemeSystemChangeListener } from "@/lib/hooks/useTheme"
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page)
@@ -12,6 +13,7 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLa
       <ReduxProvider>
         {getLayout(<Component {...pageProps} />)}
         <Toaster position="bottom-right" />
+        <ThemeSystemChangeListener />
       </ReduxProvider>
     </SessionProvider>
   )

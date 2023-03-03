@@ -85,9 +85,9 @@ export const ModelForm = () => {
           {t("Don't like the result? Try another method")}
         </label>
         <select {...register("modelName")} id="modelName">
-          {models.map(({ name }) => (
+          {models.map(({ name, labelToken }) => (
             <option key={name} value={name}>
-              {name}
+              {labelToken ? t(labelToken) : name}
             </option>
           ))}
         </select>

@@ -1,10 +1,25 @@
-import { Listbox, Transition } from "@headlessui/react"
-import { ChevronUpDownIcon } from "@heroicons/react/24/outline"
+import { useTheme } from "@/lib/hooks"
+import { themeSlice } from "@/lib/state/themeSlice"
+import { cn } from "@/lib/utils"
+import { Listbox } from "@headlessui/react"
+import {
+  CheckIcon,
+  ComputerDesktopIcon,
+  MoonIcon,
+  SunIcon,
+} from "@heroicons/react/20/solid"
+import {
+  ArrowRightOnRectangleIcon,
+  ChevronUpDownIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline"
 import { useSession, signIn, signOut } from "next-auth/react"
 import Link from "next/link"
-import { Fragment, useState } from "react"
+import { propEq } from "ramda"
+import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { PopoverMenu } from "../common/PopoverMenu"
+import { useDispatch } from "react-redux"
+import { Img, PopoverMenu } from "@/components/common"
 
 export function ProfileMenu() {
   const { data: session } = useSession()
@@ -13,104 +28,119 @@ export function ProfileMenu() {
   if (!session) {
     return (
       <div>
-        <button>{t("Login")}</button>
-        <button>{t("Signup")}</button>
+        <button onClick={() => signIn()}>{t("Login")}</button>
+        <button onClick={() => signIn()}>{t("Signup")}</button>
       </div>
     )
   }
 
-  const { name, email, image } = session.user
-
   return (
     <PopoverMenu
       triggerClassName="rounded-full"
-      trigger={() => (
-        <picture>
-          <img
-            className="rounded-full w-9 h-9"
-            src={image}
-            alt={t("{{name}} profile pic", { name })}
-          />
-        </picture>
-      )}
+      trigger={() => <ProfileMenuTrigger imageUrl={session.user.image} />}
       contentClassName="right-px"
-      content={
-        <div className="w-72 shadow-lg rounded py-4">
-          <div className="px-6">
-            <h3>{name}</h3>
-            <h2 className="text-gray-500">{email}</h2>
-          </div>
-          <ul>
-            <li>
-              <Link
-                href="/dashboard"
-                className="rounded py-3 px-5 text-slate-600 hover:text-slate-800 hover:bg-slate-100"
-              >
-                {t("Dashboard")}
-              </Link>
-            </li>
-            <li>
-              <div className="flex items-center justify-between py-3 px-5 text-slate-600 hover:text-slate-800">
-                <span>{t("Theme")}</span>
-                <ThemeSelector />
-              </div>
-            </li>
-          </ul>
-        </div>
-      }
+      content={<ProfileMenuContent user={session.user} />}
     />
   )
 }
 
-const themes = [
-  { name: "system", labelToken: "theme.system" },
-  { name: "dark", labelToken: "theme.dark" },
-  { name: "light", labelToken: "theme.light" },
+const ProfileMenuTrigger = ({ imageUrl }) => {
+  const { t } = useTranslation()
+  const [showUserImage, setShowUserImage] = useState(!!imageUrl)
+
+  return showUserImage ? (
+    <picture>
+      <Img
+        className="rounded-full w-9 h-9 text-xs"
+        src={imageUrl}
+        alt={t("Profile pic")}
+        onEndRetries={() => setShowUserImage(false)}
+      />
+    </picture>
+  ) : (
+    <UserCircleIcon className="w-9 h-9 text-slate-600" />
+  )
+}
+
+const ProfileMenuContent = ({ user }) => {
+  const { t } = useTranslation()
+  return (
+    <div className="w-72 shadow-lg rounded py-4 bg-white">
+      <div className="px-6">
+        <h3>{user.name}</h3>
+        <h2 className="text-gray-500">{user.email}</h2>
+      </div>
+      <ul className="mt-3">
+        <li>
+          <Link
+            href="/dashboard"
+            className="inline-block w-full rounded py-3 pl-6 text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+          >
+            {t("Dashboard")}
+          </Link>
+        </li>
+        <li>
+          <div className="flex items-center justify-between py-3 pl-6 pr-3 text-slate-500 hover:text-slate-800">
+            <span>{t("Theme")}</span>
+            <ThemeSelector />
+          </div>
+        </li>
+        <li>
+          <button
+            onClick={() => signOut()}
+            className="w-full flex justify-between pr-4 py-3 pl-6 text-left rounded text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+          >
+            {t("Log Out")}
+            <ArrowRightOnRectangleIcon className="w-5 h-5" />
+          </button>
+        </li>
+      </ul>
+    </div>
+  )
+}
+
+const themesOptions = [
+  {
+    name: "system",
+    labelToken: "theme.system",
+    icon: <ComputerDesktopIcon className="w-4 h-4" />,
+  },
+  { name: "dark", labelToken: "theme.dark", icon: <MoonIcon className="w-4 h-4" /> },
+  { name: "light", labelToken: "theme.light", icon: <SunIcon className="w-4 h-4" /> },
 ]
 
+const { setMode } = themeSlice.actions
+
 const ThemeSelector = () => {
-  const [selected, setSelected] = useState(themes[0])
+  const { t } = useTranslation()
+  const { mode } = useTheme()
+  const dispatch = useDispatch()
+  const selected = themesOptions.find(propEq("name", mode))
+  const changeThemeMode = useCallback(({ name }) => dispatch(setMode(name)), [dispatch])
 
   return (
-    <Listbox>
-      <Listbox.Button className="relative cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-        <span className="block truncate">{selected.name}</span>
-        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-          <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-        </span>
+    <Listbox as="div" className="relative" onChange={changeThemeMode}>
+      <Listbox.Button className="w-32 py-1.5 px-3 flex justify-between items-center rounded border-2 bg-slate-100 text-left hover:border-slate-400">
+        <div className="flex items-center text-sm">
+          {selected.icon}
+          <span className="ml-2">{t(selected.labelToken)}</span>
+        </div>
+        <ChevronUpDownIcon className="h-5 w-5 text-gray-500" />
       </Listbox.Button>
-      <Transition
-        as={Fragment}
-        leave="transition ease-in duration-100"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <Listbox.Options className="absolute mt-1 bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-          {themes.map(({ name, labelToken }) => (
-            <Listbox.Option
-              key={name}
-              className={({ active }) =>
-                `relative cursor-default select-none py-1 pl-10 pr-4 ${
-                  active ? "bg-amber-100 text-amber-900" : "text-gray-900"
-                }`
-              }
-              value={name}
-            >
-              {({ selected }) => (
-                <>
-                  <span
-                    className={`block truncate ${
-                      selected ? "font-medium" : "font-normal"
-                    }`}
-                  >
-                    {name}
-                  </span>
-                </>
-              )}
-            </Listbox.Option>
-          ))}
-        </Listbox.Options>
-      </Transition>
+      <Listbox.Options className="absolute w-32 py-2 rounded shadow-lg cursor-pointer bg-gray-100">
+        {themesOptions.map((theme) => (
+          <Listbox.Option
+            key={theme.name}
+            value={theme}
+            className={"flex items-center py-1 hover:bg-gray-300"}
+          >
+            <div className="w-3 ml-3">
+              {selected.name == theme.name && <CheckIcon className="w-3 stroke-2" />}
+            </div>
+            <span className="text-sm  ml-3">{t(theme.labelToken)}</span>
+          </Listbox.Option>
+        ))}
+      </Listbox.Options>
     </Listbox>
   )
 }

@@ -1,11 +1,10 @@
 import { FC } from "react"
-import { useRouter } from "next/router"
 import Image from "next/image"
 import Link from "next/link"
 import { useTranslation } from "next-i18next"
 import { aiFeatures } from "@/lib/data/models"
-import {ProfileMenu} from "@/components/content/ProfileMenu"
-import { PopoverMenu } from "@/components/common/PopoverMenu"
+import { ProfileMenu } from "@/components/content/ProfileMenu"
+import { PopoverMenu } from "@/components/common"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { cn } from "@/lib/utils"
 
@@ -23,7 +22,7 @@ const ToolsMenuTrigger = ({ open }) => {
       {t("AI tools")}
       <ChevronDownIcon
         className={cn(
-          "h-5 w-5 mt-0.5 ml-px transition ease-in-out duration-250",
+          "h-5 w-5 mt-0.5 ml-px transition ease-in-out duration-300",
           open ? "rotate-180" : "rotate-0",
         )}
       />

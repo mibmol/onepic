@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
 import { Provider } from "react-redux"
 import { imageGenerationSlice } from "./imageProcessingSlice"
+import { themeSlice } from "./themeSlice"
 
 export function makeStore() {
   return configureStore({
     reducer: {
       imageProcessing: imageGenerationSlice.reducer,
+      theme: themeSlice.reducer,
     },
   })
 }
