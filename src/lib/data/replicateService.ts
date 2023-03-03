@@ -2,7 +2,7 @@ import { fetchJson, isProd } from "@/lib/utils"
 import { Prediction } from "./entities"
 import { getModelByName } from "./models"
 
-const { REPLICATE_API_URL, REPLICATE_AUTH_TOKEN, WEBHOOK_RELAY_URL, VERCEL_URL } =
+const { REPLICATE_API_URL, REPLICATE_AUTH_TOKEN, WEBHOOK_RELAY_URL, ENV_URL } =
   process.env
 
 export const generatePrediction = async ({
@@ -20,7 +20,7 @@ export const generatePrediction = async ({
       version,
       input: { ...options, [modelInputType.name]: input },
       webhook_completed: isProd()
-        ? `https://${VERCEL_URL}/api/result_replicate_webhook`
+        ? `https://${ENV_URL}/api/result_replicate_webhook`
         : WEBHOOK_RELAY_URL,
     }),
   })
