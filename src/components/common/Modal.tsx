@@ -1,14 +1,20 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { FC, Fragment, PropsWithChildren, ReactNode } from "react"
+import { AriaRole, FC, Fragment, PropsWithChildren, ReactNode } from "react"
 
-type ModalProps = PropsWithChildren<{
+type ModalProps = {
   show: boolean
   onClose: () => void
   title: ReactNode
-  role: string
-}>
+  role: AriaRole
+}
 
-export const Modal: FC<ModalProps> = ({ show, onClose, title, children, role }) => {
+export const Modal: FC<PropsWithChildren<ModalProps>> = ({
+  show,
+  onClose,
+  title,
+  children,
+  role,
+}) => {
   return (
     <Transition appear show={show} as={Fragment}>
       <Dialog
@@ -48,7 +54,7 @@ export const Modal: FC<ModalProps> = ({ show, onClose, title, children, role }) 
   )
 }
 
-export const FullScreenView: FC<ModalProps> = ({
+export const FullScreenView: FC<PropsWithChildren<ModalProps>> = ({
   show,
   onClose,
   title,
@@ -60,8 +66,7 @@ export const FullScreenView: FC<ModalProps> = ({
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={onClose}
-        role={role}
+        {...{ onClose, role }}
       >
         <div className="flex items-center justify-center h-screen text-center">
           <Transition.Child
