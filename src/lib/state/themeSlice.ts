@@ -10,6 +10,8 @@ type Theme = {
 
 const themeLocalStorageKey = "themeMode"
 
+const isValidThemeMode = (mode: string) => ["system", "dark", "light"].includes(mode)
+
 const getSystemMode = () =>
   window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
 
@@ -21,8 +23,8 @@ const updateClassName = (mode: ThemeMode) => {
 }
 
 const getUserMode = (): ThemeMode => {
-  const mode =
-    (window.localStorage.getItem(themeLocalStorageKey) as ThemeMode) ?? "system"
+  const storedMode = window.localStorage.getItem(themeLocalStorageKey) as ThemeMode
+  const mode = isValidThemeMode(storedMode) ? storedMode : "system"
   updateClassName(mode)
   return mode
 }

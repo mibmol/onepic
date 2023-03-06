@@ -5,8 +5,9 @@ import { DashSquare, AddImageIcon } from "@/components/common/icons"
 import { FileInput } from "@/components/common"
 import { useAppDispatch } from "@/lib/state/hooks"
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 import { notification } from "@/lib/utils"
+import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline"
 
 export const ImageSelector: FC = () => {
   const { t } = useTranslation()
@@ -24,6 +25,7 @@ export const ImageSelector: FC = () => {
   const [dropHandlers, { over }] = useDropArea({
     onFiles: (files = []) => onFileChange(files[0]),
   })
+
   return (
     <div className="bg-gray-100 h-168 rounded-md pt-16">
       <div className="relative">
@@ -45,7 +47,8 @@ export const ImageSelector: FC = () => {
             name="image-input"
             labelToken="general.chooseAPhoto"
             accept="image/png, image/jpeg, image/webp"
-            className="bg-indigo-700 text-white px-6 py-4 mx-auto hover:bg-indigo-600 active:bg-indigo-900 mt-12"
+            className="mt-12"
+            Icon={ArrowUpOnSquareIcon}
           />
         </div>
       </div>

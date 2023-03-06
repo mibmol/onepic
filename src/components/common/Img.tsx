@@ -1,4 +1,5 @@
 import { randomInt } from "@/lib/utils/number"
+import { compose, toString } from "ramda"
 import {
   DetailedHTMLProps,
   FC,
@@ -13,6 +14,15 @@ type ImgProps = {
   maxRetries?: number
   onEndRetries?: () => void
 } & DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
+
+const getUrlWithRandParam = compose(
+  toString,
+  (url: URL) => {
+    url.searchParams.set("imgRand", randomInt().toString())
+    return url
+  },
+  (url: string) => new URL(url),
+)
 
 export const Img: FC<ImgProps> = ({
   fallbackSrc,
@@ -31,14 +41,11 @@ export const Img: FC<ImgProps> = ({
           onEndRetries?.()
         }
         return
-      } else if (maxRetryRef.current > 0) {
+      } else {
         setTimeout(() => {
-          const url = new URL(imgProps.src)
-          url.searchParams.set("imgRand", randomInt().toString())
-          currentTarget.src = url.toString()
-        }, 200)
-        maxRetryRef.current--
-      } else if (fallbackSrc) {
+          currentTarget.src = getUrlWithRandParam(imgProps.src)
+          maxRetryRef.current--
+        }, 400)
       }
     },
     [fallbackSrc, imgProps.src, onEndRetries],

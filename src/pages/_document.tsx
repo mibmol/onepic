@@ -8,8 +8,10 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <body className="dark:bg-slate-800">
+      <body className="dark:bg-gray-900">
         <Main />
         <NextScript />
       </body>

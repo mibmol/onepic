@@ -8,6 +8,7 @@ import { cn, notification } from "@/lib/utils"
 import { TFunction, useTranslation } from "next-i18next"
 import { FC, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
+import { SubmitButton, Text } from "@/components/common"
 
 const { setResultImage, stopProcessing, clearImages } = imageGenerationSlice.actions
 const checkProcessingState = async (
@@ -100,12 +101,13 @@ export const ModelForm = () => {
             "flex-row-reverse justify-end items-center": field.type === "boolean",
           })}
         >
-          <label
+          <Text
+            as="label"
             htmlFor={field.name}
             className={cn({ "mx-4": field.type === "boolean" })}
-          >
-            {t(field.labelToken)}
-          </label>
+            labelToken={field.labelToken}
+            medium
+          />
           {field.type === "boolean" && (
             <input
               {...register(field.name)}
@@ -138,7 +140,9 @@ export const ModelForm = () => {
           )}
         </div>
       ))}
-      <SubmitButton />
+      <div className="flex justify-left mt-4">
+        <Submit />
+      </div>
     </form>
   )
 }
@@ -146,19 +150,7 @@ export const ModelForm = () => {
 const submitDisabledSelector = ({ imageProcessing }: AppState) =>
   imageProcessing.uploading || imageProcessing.processing
 
-const SubmitButton: FC = () => {
-  const { t } = useTranslation()
+const Submit: FC = () => {
   const disabled = useAppSelector(submitDisabledSelector)
-
-  return (
-    <div className="flex justify-left mt-4">
-      <button
-        {...{ disabled }}
-        type="submit"
-        className="text-white px-6 py-4 rounded-md duration-200 bg-indigo-700 hover:bg-indigo-600 active:bg-indigo-900 disabled:bg-gray-300"
-      >
-        {t("general.submit")}
-      </button>
-    </div>
-  )
+  return <SubmitButton {...{ disabled }} labelToken="general.submit" />
 }

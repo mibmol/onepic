@@ -37,7 +37,7 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
         const onMouseLeave = () => handleLeave(open)
         return (
           <div {...{ onMouseEnter, onMouseLeave }}>
-            <Popover.Button className={triggerClassName} ref={triggerRef}>
+            <Popover.Button className={cn("outline-none",triggerClassName)} ref={triggerRef}>
               {trigger(open)}
             </Popover.Button>
             <Transition

@@ -17,7 +17,7 @@
     "colorizeImage": "Colorize image",
     "colorizeImageDescription": "Add colours to old images",
     "optionOneFaster": "Option 1 - Faster",
-    "optionTwoSlower": "Option 2 - Support removing scratches"
+    "optionTwoSlower": "Option 2 - Allow removing scratches"
   },
   "fieldLabel": {
     "image": "Image",
