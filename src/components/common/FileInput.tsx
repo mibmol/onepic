@@ -1,14 +1,4 @@
-import {
-  ComponentType,
-  FC,
-  ReactElement,
-  SVGProps,
-  useCallback,
-  useRef,
-  useState,
-} from "react"
-import { useTranslation } from "next-i18next"
-import { cn } from "@/lib/utils/clsx"
+import { ComponentType, FC, SVGProps, useCallback, useRef } from "react"
 import { Button } from "./Button"
 
 type FileInputProps = {
