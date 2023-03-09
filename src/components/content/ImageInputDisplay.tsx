@@ -4,7 +4,11 @@ import { AppState } from "@/lib/state/store"
 import { createSelector } from "@reduxjs/toolkit"
 import { useDropArea } from "react-use"
 import { FileInput } from "@/components/common"
-import { ArrowsPointingOutIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline"
+import {
+  ArrowsPointingOutIcon,
+  ArrowUpOnSquareIcon,
+  ArrowUpTrayIcon,
+} from "@heroicons/react/24/outline"
 import { useCallback } from "react"
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
 
@@ -53,9 +57,9 @@ export const ImageInputDisplay = () => {
             id="image-input-2"
             name="image-input-2"
             labelToken="general.newPhoto"
-            className="absolute top-6 left-4 z-30 flex items-center justify-center w-44 text-white text-sm py-3 bg-gray-900 hover:bg-gray-800 active:bg-black"
-            Icon={ArrowUpTrayIcon}
+            className="absolute top-6 left-4 z-30"
             accept="image/png, image/jpeg, image/webp"
+            Icon={ArrowUpOnSquareIcon}
           />
           {resultImageUrl && <ResultFullscreenButton />}
         </>

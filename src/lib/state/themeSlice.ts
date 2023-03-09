@@ -1,18 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { isClient } from "@/lib/utils"
 
-type ThemeMode = "system" | "dark" | "light"
+export type ThemeMode = "system" | "dark" | "light"
 
 type Theme = {
   mode: ThemeMode
-  color?: any
+  color: any
+  clientInitialized: boolean
 }
 
 const themeLocalStorageKey = "themeMode"
 
 const isValidThemeMode = (mode: string) => ["system", "dark", "light"].includes(mode)
 
-const getSystemMode = () =>
+export const getSystemMode = () =>
   window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
 
 const updateClassName = (mode: ThemeMode) => {
@@ -22,7 +23,7 @@ const updateClassName = (mode: ThemeMode) => {
     : document.documentElement.classList.remove("dark")
 }
 
-const getUserMode = (): ThemeMode => {
+export const getUserMode = (): ThemeMode => {
   const storedMode = window.localStorage.getItem(themeLocalStorageKey) as ThemeMode
   const mode = isValidThemeMode(storedMode) ? storedMode : "system"
   updateClassName(mode)
@@ -30,7 +31,9 @@ const getUserMode = (): ThemeMode => {
 }
 
 const getInitialState = (): Theme => ({
-  mode: isClient() ? getUserMode() : "system",
+  clientInitialized: false,
+  mode: "system",
+  color: {},
 })
 
 export const themeSlice = createSlice({
@@ -41,6 +44,7 @@ export const themeSlice = createSlice({
       window.localStorage.setItem(themeLocalStorageKey, payload)
       updateClassName(payload)
       state.mode = payload
+      state.clientInitialized = true
     },
   },
 })

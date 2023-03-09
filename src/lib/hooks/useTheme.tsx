@@ -1,23 +1,27 @@
-import { FC, useEffect } from "react"
-import { themeSlice } from "../state/themeSlice"
+import { getSystemMode, getUserMode, themeSlice } from "@/lib/state/themeSlice"
+import { useAppSelector } from "@/lib/state/hooks"
+import { isClient } from "@/lib/utils"
+import { useEffect, useRef } from "react"
 import { useDispatch } from "react-redux"
-import { useAppSelector } from "../state/hooks"
 
 const { setMode } = themeSlice.actions
-export const ThemeSystemChangeListener: FC = () => {
-  const mode = useAppSelector(({ theme }) => theme.mode)
+
+export const ThemeModeInitializer = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (mode === "system") {
-      const handleThemeChange = () => dispatch(setMode("system"))
-      const media = window.matchMedia("(prefers-color-scheme: dark)")
-      media.addEventListener("change", handleThemeChange)
-      return () => media.removeEventListener("change", handleThemeChange)
+    if (isClient()) {
+      dispatch(setMode(getUserMode()))
     }
-  }, [dispatch, mode])
+  }, [dispatch])
 
   return <></>
 }
 
 export const useTheme = () => useAppSelector(({ theme }) => theme)
+export const useThemeMode = () => {
+  const { mode, clientInitialized } = useTheme()
+  if (!clientInitialized) return "system"
+  if (mode === "system" && isClient()) return getSystemMode()
+  return mode
+}

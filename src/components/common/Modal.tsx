@@ -32,7 +32,7 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-slate-100 opacity-50" />
+            <Dialog.Overlay className="fixed inset-0 bg-gray-100 opacity-50" />
           </Transition.Child>
           <Transition.Child
             as={Fragment}
@@ -78,7 +78,7 @@ export const FullScreenView: FC<PropsWithChildren<ModalProps>> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-slate-100 opacity-50" />
+            <Dialog.Overlay className="fixed inset-0 bg-gray-100 opacity-50" />
           </Transition.Child>
           <Transition.Child
             as={Fragment}

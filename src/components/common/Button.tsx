@@ -16,7 +16,7 @@ type HTMLButtonProps = DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >
-type ButtonType = "primary" | "secondary" | "tertiary"
+type ButtonVariant = "primary" | "secondary" | "tertiary"
 
 type ButtonProps<NativeProps> = PropsWithChildren & {
   labelToken?: string
@@ -26,12 +26,12 @@ type ButtonProps<NativeProps> = PropsWithChildren & {
   Icon?: ComponentType<SVGProps<SVGSVGElement>>
   iconPlacement?: "left" | "right"
   disabled?: boolean
-  buttonType?: ButtonType
+  variant?: ButtonVariant
 } & NativeProps
 
-const getButtonColorClasses = cond<ButtonType[], string>([
+const getButtonColorClasses = cond<ButtonVariant[], string>([
   [
-    equals<ButtonType>("primary"),
+    equals<ButtonVariant>("primary"),
     always(
       `cursor-pointer bg-gray-900 text-white rounded-md border border-gray-900 
         dark:bg-white dark:text-gray-900
@@ -41,11 +41,22 @@ const getButtonColorClasses = cond<ButtonType[], string>([
           dark:active:bg-gray-800
         disabled:bg-gray-200 disabled:text-gray-900 disabled:cursor-not-allowed
           dark:disabled:bg-gray-900 dark:disabled:text-white dark:disabled:border-white
-          `,
+      `,
     ),
   ],
-  [equals<ButtonType>("secondary"), always("")],
-  [equals<ButtonType>("tertiary"), always("")],
+  [
+    equals<ButtonVariant>("secondary"),
+    always(
+      `cursor-pointer bg-white text-gray-600 rounded-md border border-gray-300 
+        dark:bg-gray-900 dark:border-gray-600 dark:text-gray-300
+        hover:text-gray-900 hover:border-gray-900
+          dark:hover:text-white dark:hover:border-white
+        active:bg-gray-200 
+          dark:active:bg-gray-700
+      `,
+    ),
+  ],
+  [equals<ButtonVariant>("tertiary"), always("")],
 ])
 
 export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({
@@ -56,14 +67,14 @@ export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({
   href,
   Icon,
   iconPlacement = "left",
-  buttonType = "primary",
+  variant = "primary",
   ...props
 }) => {
   const { t } = useTranslation()
   const iconPlacementRight = iconPlacement === "right"
   const classes = cn(
     "flex px-4 py-3 font-medium",
-    getButtonColorClasses(buttonType),
+    getButtonColorClasses(variant),
     { "flex-row-reverse": iconPlacement === "right" },
     className,
   )
@@ -99,13 +110,13 @@ export const SubmitButton: FC<ButtonProps<InputSubmitProps>> = ({
   labelToken,
   tokenArgs,
   className,
-  buttonType = "primary",
+  variant = "primary",
   ...props
 }) => {
   const { t } = useTranslation()
   const classes = cn(
     "flex px-4 py-3 font-medium",
-    getButtonColorClasses(buttonType),
+    getButtonColorClasses(variant),
     className,
   )
   return (

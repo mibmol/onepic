@@ -4,18 +4,20 @@ import { SessionProvider } from "next-auth/react"
 import { AppPropsWithLayout } from "@/lib/utils/next"
 import { ReduxProvider } from "@/lib/state/store"
 import { Toaster } from "react-hot-toast"
-import { ThemeSystemChangeListener } from "@/lib/hooks/useTheme"
+import { ThemeModeInitializer } from "@/lib/hooks"
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page)
   return (
-    <SessionProvider {...{ session }}>
-      <ReduxProvider>
-        {getLayout(<Component {...pageProps} />)}
-        <Toaster position="bottom-right" />
-        <ThemeSystemChangeListener />
-      </ReduxProvider>
-    </SessionProvider>
+    <div className="min-h-screen">
+      <SessionProvider {...{ session }}>
+        <ReduxProvider>
+          {getLayout(<Component {...pageProps} />)}
+          <Toaster position="bottom-right" />
+          <ThemeModeInitializer />
+        </ReduxProvider>
+      </SessionProvider>
+    </div>
   )
 }
 

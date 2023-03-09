@@ -81,10 +81,14 @@ export const ModelForm = () => {
 
   return (
     <form {...{ onSubmit }}>
-      <div className={cn("flex flex-col mt-4", { hidden: models.length === 1 })}>
-        <label htmlFor="modelName">
-          {t("Don't like the result? Try another method")}
-        </label>
+      <div className={cn("flex flex-col mt-6", { hidden: models.length === 1 })}>
+        <Text
+          as="label"
+          htmlFor="modelName"
+          labelToken="Don't like the result? Try another method"
+          className="mb-2"
+          medium
+        />
         <select {...register("modelName")} id="modelName">
           {models.map(({ name, labelToken }) => (
             <option key={name} value={name}>
@@ -96,15 +100,18 @@ export const ModelForm = () => {
       {selectedModel?.fields.map((field) => (
         <div
           key={field.name}
-          className={cn("flex mt-4", {
-            "flex-col": field.type !== "boolean",
-            "flex-row-reverse justify-end items-center": field.type === "boolean",
+          className={cn("flex", {
+            "flex-col mt-3": field.type !== "boolean",
+            "flex-row-reverse justify-end items-center mt-5": field.type === "boolean",
           })}
         >
           <Text
             as="label"
             htmlFor={field.name}
-            className={cn({ "mx-4": field.type === "boolean" })}
+            className={cn({
+              "mb-2": field.type !== "boolean",
+              "mx-4": field.type === "boolean",
+            })}
             labelToken={field.labelToken}
             medium
           />
@@ -140,7 +147,7 @@ export const ModelForm = () => {
           )}
         </div>
       ))}
-      <div className="flex justify-left mt-4">
+      <div className="flex justify-left mt-12">
         <Submit />
       </div>
     </form>

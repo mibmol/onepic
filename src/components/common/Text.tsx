@@ -5,7 +5,10 @@ import { useTranslation } from "next-i18next"
 
 type TextSize = "xm" | "sm" | "md" | "lg" | "xl" | "4xl"
 
-type TextCustomProps<TTag extends keyof JSX.IntrinsicElements> = {
+// using this intead of `keyof JSX.IntrinsicElements` due to type inference performance
+type TextTags = "span" | "p" | "h1" | "h2" | "h3" | "label" | "div"
+
+type TextCustomProps<TTag extends TextTags> = {
   as?: TTag
   labelToken?: string
   className?: string
@@ -18,7 +21,7 @@ type TextCustomProps<TTag extends keyof JSX.IntrinsicElements> = {
   gray?: boolean
 } & JSX.IntrinsicElements[TTag]
 
-type TextProps = PropsWithChildren & TextCustomProps<keyof JSX.IntrinsicElements>
+type TextProps = PropsWithChildren & TextCustomProps<TextTags>
 
 const getTextSizeClass = (size: TextSize) => {
   switch (size) {
@@ -55,21 +58,21 @@ export const Text: FC<TextProps> = ({
 }) => {
   const { t } = useTranslation()
   const classes = cn(
-    "text-slate-800 dark:text-slate-200",
+    "text-gray-800 dark:text-gray-200",
     {
       italic,
       "font-medium": medium,
       "font-semibold": semibold,
       "font-bold": bold,
-      "text-slate-600 dark:text-slate-400": gray,
-      [getTextSizeClass(size)]: true,
+      "text-gray-600 dark:text-gray-400": gray,
     },
+    getTextSizeClass(size),
     className,
   )
 
   return createElement(
     as ?? "span",
     assoc("className", classes, props),
-    children ?? t(labelToken, tokenArgs),
+    children ?? t(labelToken, tokenArgs ?? {}),
   )
 }

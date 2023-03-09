@@ -8,6 +8,8 @@ import { aiFeatures } from "@/lib/data/models"
 import { ImageDisplaySection } from "@/components/content/ImageDisplaySection"
 import { ImageActionsSection } from "@/components/content/ImageActionsSection"
 import { PagePropsProvider } from "@/lib/hooks/usePageProps"
+import { Footer } from "@/components/layout/Footer"
+import { SharedHead } from "@/components/layout/header/headUtils"
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
@@ -47,19 +49,15 @@ const ToolPage: NextPage<ToolPageProps> = ({
   descriptionToken,
   featureId,
 }) => {
-  const { t } = useTranslation()
-
   return (
     <PagePropsProvider value={{ titleToken, descriptionToken, featureId }}>
-      <Head>
-        <title>{t(titleToken)}</title>
-        <meta name="description" content={t(descriptionToken)} />
-      </Head>
+      <SharedHead />
       <Header />
-      <main className="h-screen w-10/12 md:flex mx-auto mt-16">
+      <main className="w-10/12 md:flex mx-auto mt-14">
         <ImageDisplaySection />
         <ImageActionsSection />
       </main>
+      <Footer />
     </PagePropsProvider>
   )
 }

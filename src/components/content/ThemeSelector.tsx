@@ -9,16 +9,16 @@ import {
 } from "@heroicons/react/20/solid"
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline"
 import { propEq } from "ramda"
-import { useCallback } from "react"
-import { useTranslation } from "next-i18next"
+import { FC, useCallback } from "react"
 import { useDispatch } from "react-redux"
 import { Text } from "@/components/common"
+import { cn } from "@/lib/utils"
 
 const { setMode } = themeSlice.actions
 
 const iconClassName = `
   w-4 h-4
-  dark:text-slate-300
+  dark:text-gray-300
 `
 const themesOptions = [
   {
@@ -38,8 +38,12 @@ const themesOptions = [
   },
 ]
 
-export const ThemeSelector = () => {
-  const { t } = useTranslation()
+type ThemeSelectorProps = {
+  dropdownPlacement?: "top" | "bottom"
+}
+export const ThemeSelector: FC<ThemeSelectorProps> = ({
+  dropdownPlacement = "bottom",
+}) => {
   const { mode } = useTheme()
   const dispatch = useDispatch()
   const selected = themesOptions.find(propEq("name", mode))
@@ -49,8 +53,8 @@ export const ThemeSelector = () => {
     <Listbox as="div" className="relative" onChange={changeThemeMode}>
       <Listbox.Button
         className={`
-          w-32 py-1.5 px-3 flex justify-between items-center rounded border border-slate-300
-          hover:border-slate-500 dark:text-slate-200 dark:border-slate-700 dark:hover:border-slate-500
+          w-32 py-1.5 px-3 flex justify-between items-center rounded border border-gray-300
+          hover:border-gray-500 dark:text-gray-200 dark:border-gray-700 dark:hover:border-gray-500
         `}
       >
         <div className="flex items-center text-sm">
@@ -59,13 +63,18 @@ export const ThemeSelector = () => {
         </div>
         <ChevronUpDownIcon className="h-5 w-5" />
       </Listbox.Button>
-      <Listbox.Options className="absolute w-32 py-2 rounded shadow-lg cursor-pointer bg-slate-100 dark:bg-slate-800">
+      <Listbox.Options
+        className={cn(
+          "absolute w-32 py-2 rounded shadow-lg cursor-pointer bg-gray-100 dark:bg-gray-800",
+          { "bottom-10": dropdownPlacement === "top" },
+        )}
+      >
         {themesOptions.map((theme) => (
           <Listbox.Option
             key={theme.name}
             value={theme}
             className={
-              "flex items-center py-1 hover:bg-slate-300 dark:hover:bg-slate-700"
+              "flex items-center py-1 hover:bg-gray-300 dark:hover:bg-gray-700"
             }
           >
             <div className="w-3 ml-3">

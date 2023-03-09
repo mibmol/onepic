@@ -12,16 +12,13 @@ const FeaturesMenuTrigger = ({ open }) => {
   return (
     <div
       className={cn(
-        `flex items-center rounded h-10 pl-5 pr-4 hover:text-slate-800 hover:bg-slate-100`,
-        {
-          "bg-slate-200 dark:bg-slate-700": open,
-        },
+        "flex items-center rounded h-10 pl-5 pr-4 hover:text-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700",
       )}
     >
       <Text labelToken="Features" />
       <ChevronDownIcon
         className={cn(
-          "h-5 w-5 mt-0.5 ml-px transition ease-in-out duration-300 dark:text-slate-300",
+          "h-5 w-5 mt-0.5 ml-px transition ease-in-out duration-300 dark:text-gray-300",
           open ? "rotate-180" : "rotate-0",
         )}
       />
@@ -32,14 +29,14 @@ const FeaturesMenuTrigger = ({ open }) => {
 const ToolsMenuContent = () => {
   const { t } = useTranslation()
   return (
-    <ul className="w-64 rounded-lg shadow-lg bg-white py-2 dark:bg-slate-900 dark:shadow-slate-800">
+    <ul className="w-64 rounded-lg shadow-lg bg-white py-2 dark:border dark:shadow-none dark:bg-black dark:border-gray-800">
       {aiFeatures.map(({ path, titleToken }) => (
         <li key={path} className="w-full">
           <Link
             href={`/${path}`}
             className={`
-              w-full inline-block py-3 px-5 text-slate-600 
-              hover:text-slate-800 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700
+              w-full inline-block py-3 px-5 text-gray-600 
+              hover:text-gray-800 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700
             `}
           >
             {t(titleToken)}
@@ -54,7 +51,7 @@ const HeaderLink = ({ href, labelToken }) => {
   return (
     <Link
       {...{ href }}
-      className="flex items-center rounded h-10 px-5 hover:bg-slate-100 dark:hover:bg-slate-700"
+      className="flex items-center rounded h-10 px-5 hover:bg-gray-100 dark:hover:bg-gray-700"
     >
       <Text {...{ labelToken }} />
     </Link>
