@@ -5,7 +5,10 @@ import { FC, Fragment, ReactElement, useRef } from "react"
 type PopoverMenuProps = {
   trigger: (open: boolean) => ReactElement
   triggerClassName?: string
-  content: ReactElement
+  content: (handlers: {
+    onMouseEnter: () => void
+    onMouseLeave: () => void
+  }) => ReactElement
   contentClassName?: string
 }
 
@@ -37,7 +40,10 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
         const onMouseLeave = () => handleLeave(open)
         return (
           <div {...{ onMouseEnter, onMouseLeave }}>
-            <Popover.Button className={cn("outline-none",triggerClassName)} ref={triggerRef}>
+            <Popover.Button
+              className={cn("outline-none", triggerClassName)}
+              ref={triggerRef}
+            >
               {trigger(open)}
             </Popover.Button>
             <Transition
@@ -50,7 +56,7 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
               leaveTo="opacity-0 translate-y-1"
             >
               <Popover.Panel className={cn("absolute z-50 mt-3", contentClassName)}>
-                {content}
+                {content({ onMouseEnter, onMouseLeave })}
               </Popover.Panel>
             </Transition>
           </div>

@@ -48,7 +48,7 @@ const getButtonColorClasses = cond<ButtonVariant[], string>([
     equals<ButtonVariant>("secondary"),
     always(
       `cursor-pointer bg-white text-gray-600 rounded-md border border-gray-300 
-        dark:bg-gray-900 dark:border-gray-600 dark:text-gray-300
+        dark:bg-black dark:border-gray-600 dark:text-gray-300
         hover:text-gray-900 hover:border-gray-900
           dark:hover:text-white dark:hover:border-white
         active:bg-gray-200 

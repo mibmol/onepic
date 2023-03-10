@@ -9,6 +9,7 @@ type ImageProcessingState = {
   displayImageUrl: string
   uploading: boolean
   processing: boolean
+  predictionId?: string
 }
 
 const initialState: ImageProcessingState = {
@@ -17,6 +18,7 @@ const initialState: ImageProcessingState = {
   displayImageUrl: null,
   uploading: false,
   processing: false,
+  predictionId: null,
 }
 
 type ThunkArgs<T> = {
@@ -63,14 +65,12 @@ export const imageGenerationSlice = createSlice({
   reducers: {
     clearImages: (state) => {
       state.inputImageUrl = state.displayImageUrl = state.resultImageUrl = null
+      state.predictionId = null
     },
-    setDisplayImageFromFile: (state, { payload }) => {
-      state.displayImageUrl = state.inputImageUrl = payload
-    },
-    setResultImage: (state, { payload }) => {
-      state.displayImageUrl = state.resultImageUrl = payload
-
+    setResultImage: (state, { payload: { output, predictionId } }) => {
+      state.displayImageUrl = state.resultImageUrl = output
       state.processing = false
+      state.predictionId = predictionId
     },
     stopProcessing: (state) => {
       state.processing = false
@@ -81,9 +81,12 @@ export const imageGenerationSlice = createSlice({
     builder.addCase(uploadImage.pending, (state, { meta: { arg } }) => {
       state.displayImageUrl = URL.createObjectURL(arg.value)
       state.uploading = true
+      state.resultImageUrl = null
+      state.predictionId = null
     })
     builder.addCase(uploadImage.fulfilled, (state, { payload }) => {
-      state.inputImageUrl = state.displayImageUrl = payload
+      state.inputImageUrl = payload
+      state.displayImageUrl = payload
       state.uploading = false
     })
     builder.addCase(uploadImage.rejected, (state, action) => {

@@ -35,3 +35,12 @@ export const getImageUrl = async (
   const { signedUrl } = await fetchJson("/api/image/signed-url?" + params.toString())
   return signedUrl
 }
+
+export const uploadUserResultImage = async (file: any, predictionId: string) => {
+  const { imagePath } = await uploadUserImage(file)
+  const signedUrl = await getImageUrl(imagePath)
+  await fetchJson("/api/image/update-result-image?", {
+    method: "PUT",
+    body: JSON.stringify({ signedUrl, predictionId }),
+  })
+}

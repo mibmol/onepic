@@ -26,7 +26,7 @@ const FeaturesMenuTrigger = ({ open }) => {
   )
 }
 
-const ToolsMenuContent = () => {
+const ToolsMenuContent = ({ onItemClick }) => {
   const { t } = useTranslation()
   return (
     <ul className="w-64 rounded-lg shadow-lg bg-white py-2 dark:border dark:shadow-none dark:bg-black dark:border-gray-800">
@@ -34,6 +34,7 @@ const ToolsMenuContent = () => {
         <li key={path} className="w-full">
           <Link
             href={`/${path}`}
+            onClickCapture={onItemClick}
             className={`
               w-full inline-block py-3 px-5 text-gray-600 
               hover:text-gray-800 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700
@@ -71,7 +72,9 @@ export const Header: FC = () => {
             <PopoverMenu
               trigger={(open) => <FeaturesMenuTrigger {...{ open }} />}
               triggerClassName="rounded border-none"
-              content={<ToolsMenuContent />}
+              content={({ onMouseLeave }) => (
+                <ToolsMenuContent onItemClick={onMouseLeave} />
+              )}
               contentClassName="left-1/2 transform -translate-x-1/2"
             />
           </li>

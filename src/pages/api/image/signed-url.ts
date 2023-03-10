@@ -1,7 +1,8 @@
 import { getImageSignedUrl } from "@/lib/data/supabaseService"
+import { authenticated } from "@/lib/server/authenticated"
 import type { NextApiRequest, NextApiResponse } from "next"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { imagePath, width, height } = req.query
   if (!imagePath) {
     return res.status(400).json({ error: { validation: [{ property: "imagePath" }] } })
@@ -15,3 +16,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   res.status(200).json(data)
 }
+
+export default authenticated(handler)

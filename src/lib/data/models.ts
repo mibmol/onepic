@@ -105,7 +105,7 @@ export const aiFeatures: AIFeature[] = [
             name: "scale",
             type: "integer",
             labelToken: "fieldLabel.scale",
-            defaultValue: 5,
+            defaultValue: 3,
             min: 1,
             max: 10,
           },

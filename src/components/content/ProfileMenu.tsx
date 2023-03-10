@@ -5,7 +5,6 @@ import { useTranslation } from "next-i18next"
 import { Button, Img, PopoverMenu, Text } from "@/components/common"
 import { useState } from "react"
 import { ThemeSelector } from "./ThemeSelector"
-import { cn } from "@/lib/utils"
 
 export function ProfileMenu() {
   const { data: session } = useSession()
@@ -18,9 +17,9 @@ export function ProfileMenu() {
           labelToken="Log In"
           onClick={() => signIn()}
           variant="secondary"
-          className="mr-3"
+          className="mr-3 py-2"
         />
-        <Button labelToken="Sign Up" onClick={() => signIn()} />
+        <Button labelToken="Sign Up" onClick={() => signIn()} className="py-2" />
       </div>
     )
   }
@@ -30,7 +29,7 @@ export function ProfileMenu() {
       triggerClassName="outline-none rounded-full w-10 h-10 flex items-center justify-center"
       trigger={() => <ProfileMenuTrigger imageUrl={session.user.image} />}
       contentClassName="right-px"
-      content={<ProfileMenuContent user={session.user} />}
+      content={() => <ProfileMenuContent user={session.user} />}
     />
   )
 }

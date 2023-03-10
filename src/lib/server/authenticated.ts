@@ -2,9 +2,9 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next"
 import { authOptions } from "@/pages/api/auth/[...nextauth]"
 import { getServerSession } from "next-auth"
 
-type authenticatedDecorator = (handler: NextApiHandler) => NextApiHandler
+type AuthenticatedDecorator = (handler: NextApiHandler) => NextApiHandler
 
-export const authenticated: authenticatedDecorator = (handler: NextApiHandler) => {
+export const authenticated: AuthenticatedDecorator = (handler: NextApiHandler) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await getServerSession(req, res, authOptions)
     if (!session) {

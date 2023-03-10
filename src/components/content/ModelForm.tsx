@@ -16,13 +16,12 @@ const checkProcessingState = async (
   dispatch: AppDispatch,
   t: TFunction,
 ) => {
-  let intervalId = null
-  intervalId = setInterval(async () => {
+  let intervalId = setInterval(async () => {
     try {
       const { output, status } = await getProcessImageState(predictionId)
       if (status === "succeeded") {
         clearInterval(intervalId)
-        dispatch(setResultImage(output))
+        dispatch(setResultImage({ output, predictionId }))
       }
       if (status === "failed") {
         throw new Error(status)

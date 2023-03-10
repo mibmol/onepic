@@ -1,4 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
+import { assoc, compose, isNil, when } from "ramda"
+import { removeNilKeys } from "../utils/object"
 import { ReplicatePrediction } from "./entities"
 
 // Use on SERVER only!
@@ -37,12 +39,19 @@ export const insertPrediction = (
     prediction_id: id,
   })
 
-export const updatePrediction = ({ id, status, metrics, output }: ReplicatePrediction) =>
-  supabaseService
+export const updatePrediction = ({
+  id,
+  status,
+  metrics,
+  output,
+}: ReplicatePrediction) => {
+  const updateFields = removeNilKeys({
+    status,
+    run_time: metrics?.predict_time,
+    output: Array.isArray(output) ? output[0] : output,
+  })
+  return supabaseService
     .from("prediction_result")
-    .update({
-      status,
-      run_time: metrics?.predict_time,
-      output: Array.isArray(output) ? output[0] : output,
-    })
+    .update(updateFields)
     .eq("prediction_id", id)
+}

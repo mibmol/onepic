@@ -1,8 +1,8 @@
 export type ReplicatePrediction = {
   id: string
-  status: string
+  status?: string
   output?: string[]
-  metrics: {
+  metrics?: {
     predict_time?: number
   }
 

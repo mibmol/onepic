@@ -1,23 +1,22 @@
 import { updatePrediction } from "@/lib/data/supabaseService"
+import { authenticated } from "@/lib/server/authenticated"
+import { isURL } from "class-validator"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"
 
 const logger = pino({ name: "result-replicate-webhook.handler" })
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method !== "PUT") {
     return res.status(404).json({ error: "method not allowed" })
   }
-
-  const { output, status, id, metrics, ...rest } =
-    typeof req.body === "string" ? JSON.parse(req.body) : req.body
-
-  if (rest.error) {
-    logger.error(rest.error)
+  const { signedUrl, predictionId: id } = req.body
+  if (!isURL(signedUrl)) {
+    return res.status(400).json({ error: { validation: [{ property: "signedUrl" }] } })
   }
 
   try {
-    const { error } = await updatePrediction({ output, status, id, metrics })
+    const { error } = await updatePrediction({ output: signedUrl, id })
     if (error) {
       logger.error(error)
       return res.status(500).json({ error })
@@ -28,3 +27,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: error.toString() })
   }
 }
+
+export default authenticated(handler)
