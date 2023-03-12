@@ -13,6 +13,7 @@ type ImgProps = {
   fallbackSrc?: string
   maxRetries?: number
   onEndRetries?: () => void
+  successLoad?: () => void
 } & DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
 
 const getUrlWithRandParam = compose(
@@ -28,6 +29,7 @@ export const Img: FC<ImgProps> = ({
   fallbackSrc,
   maxRetries,
   onEndRetries,
+  successLoad,
   ...imgProps
 }) => {
   const maxRetryRef = useRef(maxRetries ?? 1)
@@ -52,5 +54,5 @@ export const Img: FC<ImgProps> = ({
   )
 
   // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-  return <img onError={handleError} {...imgProps} />
+  return <img onError={handleError} {...imgProps} onLoad={successLoad} />
 }

@@ -1,5 +1,5 @@
 import { ArrowRightOnRectangleIcon, UserCircleIcon } from "@heroicons/react/24/outline"
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { useTranslation } from "next-i18next"
 import { Button, Img, PopoverMenu, Text } from "@/components/common"
@@ -8,12 +8,9 @@ import { ThemeSelector } from "./ThemeSelector"
 
 export function ProfileMenu() {
   const { data: session } = useSession()
-  const { t } = useTranslation()
 
   if (!session) {
-    return (
-      <Button labelToken="Sign-in / Sign-up" onClick={() => signIn()} className="py-2" />
-    )
+    return <Button href="/auth/signin" labelToken="Sign-in / Sign-up" className="py-2" />
   }
 
   return (
@@ -37,6 +34,7 @@ const ProfileMenuTrigger = ({ imageUrl }) => {
         src={imageUrl}
         alt={t("User photo")}
         onEndRetries={() => setShowUserImage(false)}
+        successLoad={() => setShowUserImage(true)}
       />
     </picture>
   ) : (
