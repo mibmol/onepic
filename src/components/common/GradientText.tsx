@@ -1,7 +1,6 @@
-import { FC, useEffect, useRef } from "react"
+import { FC } from "react"
 import { useTranslation } from "next-i18next"
 import { Text, TextProps } from "./Text"
-import { splitAt } from "ramda"
 
 type GradientTextProps = {
   charRange: [number, number?]
@@ -23,13 +22,19 @@ export const GradientText: FC<GradientTextProps> = ({
   const { t } = useTranslation()
   const text = t(labelToken)
   const [leftText, gradientText, rightText] = splitRange(text, charRange)
-  console.log(leftText, "<>", gradientText, "<>", rightText)
 
   return (
     <Text {...props}>
       <>
         {leftText}
-        <span className="bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-500 bg-clip-text text-transparent">{gradientText}</span>
+        <span
+          className={`
+            bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-700 
+            dark:from-cyan-400 dark:via-indigo-400 dark:to-purple-400
+          `}
+        >
+          {gradientText}
+        </span>
         {rightText}
       </>
     </Text>
