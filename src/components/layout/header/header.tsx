@@ -2,7 +2,6 @@ import { FC } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useTranslation } from "next-i18next"
-import { aiFeatures } from "@/lib/data/models"
 import { ProfileMenu } from "@/components/content/ProfileMenu"
 import { PopoverMenu, Text } from "@/components/common"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
@@ -26,17 +25,36 @@ const FeaturesMenuTrigger = ({ open }) => {
   )
 }
 
+const toolsOptions = [
+  {
+    path: "/restore-photo-image",
+    titleToken: "feature.restorePhotos",
+  },
+  {
+    path: "/quality-resolution-enhancer",
+    titleToken: "feature.qualityEnhancer",
+  },
+  {
+    path: "/remove-background",
+    titleToken: "feature.removeBackground",
+  },
+  {
+    path: "/colorize-image",
+    titleToken: "feature.colorizeImage",
+  },
+]
+
 const ToolsMenuContent = ({ onItemClick }) => {
   const { t } = useTranslation()
   return (
-    <ul className="w-64 rounded-lg shadow-lg bg-white py-2 dark:border dark:shadow-none dark:bg-black dark:border-gray-800">
-      {aiFeatures.map(({ path, titleToken }) => (
-        <li key={path} className="w-full">
+    <ul className="rounded-lg shadow-lg bg-white py-2 dark:border dark:shadow-none dark:bg-black dark:border-gray-800">
+      {toolsOptions.map(({ path, titleToken }) => (
+        <li key={path} className="min-w-max">
           <Link
-            href={`/${path}`}
+            href={path}
             onClickCapture={onItemClick}
             className={`
-              w-full inline-block py-3 px-5 text-gray-600 
+              w-full flex items-center py-3 px-6 text-gray-600 
               hover:text-gray-800 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700
             `}
           >
@@ -59,10 +77,13 @@ const HeaderLink = ({ href, labelToken }) => {
   )
 }
 
-export const Header: FC = () => {
+type HeaderProps = {
+  className?: string
+}
+export const Header: FC<HeaderProps> = ({ className }) => {
   const { t } = useTranslation()
   return (
-    <section className="flex justify-between items-center px-12 py-6">
+    <section className={cn("flex justify-between items-center px-12 py-5", className)}>
       <Link href="/">
         <Image width="40" height="40" src="/brain_icon.png" alt={t("general.Home")} />
       </Link>

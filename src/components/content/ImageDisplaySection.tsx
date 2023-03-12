@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/state/hooks"
 import { imageGenerationSlice } from "@/lib/state/imageProcessingSlice"
 import { useRouter } from "next/router"
 import { AppState } from "@/lib/state/store"
-import { ImageInputDisplay } from "./ImageInputDisplay"
+import { ImageInputDisplay } from "./ImageDisplay"
 import { ImageSelector } from "./ImageSelector"
 
 const { clearImages } = imageGenerationSlice.actions

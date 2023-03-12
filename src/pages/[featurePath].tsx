@@ -34,7 +34,6 @@ export const getStaticProps: GetStaticProps = async ({
       descriptionToken,
       featureId,
     },
-    revalidate: 16,
   }
 }
 

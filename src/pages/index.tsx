@@ -4,13 +4,16 @@ import { GetStaticProps, NextPage } from "next"
 import { Header } from "@/components/layout"
 import { SharedHead } from "@/components/layout/header/headUtils"
 import { PagePropsProvider } from "@/lib/hooks"
+import { Button, Text } from "@/components/common"
+import { Footer } from "@/components/layout/Footer"
+import { ArrowRightIcon } from "@heroicons/react/24/outline"
+import { GradientText } from "@/components/common/GradientText"
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
 
   return {
     props: { ...localeProps },
-    revalidate: 16,
   }
 }
 
@@ -21,7 +24,35 @@ const Home: NextPage = ({}) => {
     >
       <SharedHead />
       <Header />
-      <section className="px-12">landing page</section>
+      <main className="w-full">
+        <section className="mt-32 text-center">
+          <GradientText
+            charRange={[27]}
+            as="h1"
+            className="max-w-3xl mx-auto"
+            labelToken="Transform Your Photos with AI Magic"
+            size="7xl"
+            bold
+          />
+          <Text
+            as="h3"
+            className="max-w-2xl mx-auto mt-12"
+            labelToken="Discover the power of AI and take your images to the next level with just one click."
+            size="xl"
+            semibold
+            gray
+          />
+        </section>
+        <section>
+          <Button
+            labelToken="Explore tools"
+            Icon={ArrowRightIcon}
+            iconPlacement="right"
+            className="mx-auto mt-24"
+          />
+        </section>
+      </main>
+      <Footer />
     </PagePropsProvider>
   )
 }

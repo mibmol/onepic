@@ -8,7 +8,7 @@ import { cn, notification } from "@/lib/utils"
 import { TFunction, useTranslation } from "next-i18next"
 import { FC, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
-import { SubmitButton, Text } from "@/components/common"
+import { SubmitButton, Text, Select, NumberInput, Checkbox } from "@/components/common"
 
 const { setResultImage, stopProcessing, clearImages } = imageGenerationSlice.actions
 const checkProcessingState = async (
@@ -88,13 +88,14 @@ export const ModelForm = () => {
           className="mb-2"
           medium
         />
-        <select {...register("modelName")} id="modelName">
-          {models.map(({ name, labelToken }) => (
-            <option key={name} value={name}>
-              {labelToken ? t(labelToken) : name}
-            </option>
-          ))}
-        </select>
+        <Select
+          {...register("modelName")}
+          id="modelName"
+          options={models.map(({ name, labelToken }) => ({
+            value: name,
+            labelToken: labelToken ?? name,
+          }))}
+        />
       </div>
       {selectedModel?.fields.map((field) => (
         <div
@@ -115,7 +116,7 @@ export const ModelForm = () => {
             medium
           />
           {field.type === "boolean" && (
-            <input
+            <Checkbox
               {...register(field.name)}
               id={field.name}
               type="checkbox"
@@ -123,7 +124,7 @@ export const ModelForm = () => {
             />
           )}
           {field.type === "float" && (
-            <input
+            <NumberInput
               {...register(field.name)}
               id={field.name}
               defaultValue={field.defaultValue}
@@ -134,7 +135,7 @@ export const ModelForm = () => {
             />
           )}
           {field.type === "integer" && (
-            <input
+            <NumberInput
               {...register(field.name)}
               id={field.name}
               defaultValue={field.defaultValue}

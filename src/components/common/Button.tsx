@@ -38,9 +38,11 @@ const getButtonColorClasses = cond<ButtonVariant[], string>([
         hover:bg-white hover:text-gray-900
           dark:hover:bg-gray-900 dark:hover:text-white dark:hover:border-white
         active:bg-gray-200 
-          dark:active:bg-gray-800
+          dark:active:bg-gray-800 
         disabled:bg-gray-200 disabled:text-gray-900 disabled:cursor-not-allowed
           dark:disabled:bg-gray-900 dark:disabled:text-white dark:disabled:border-white
+        focus:ring focus:ring-indigo-200 focus:ring-opacity-50 
+          dark:focus:ring-indigo-600
       `,
     ),
   ],
@@ -73,7 +75,7 @@ export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({
   const { t } = useTranslation()
   const iconPlacementRight = iconPlacement === "right"
   const classes = cn(
-    "flex px-4 py-3 font-medium",
+    "flex px-4 py-3 font-medium items-center",
     getButtonColorClasses(variant),
     { "flex-row-reverse": iconPlacement === "right" },
     className,

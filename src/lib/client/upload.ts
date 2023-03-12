@@ -14,10 +14,10 @@ const supabase = createClient(
 )
 
 export const uploadUserImage = async (file: File) => {
-  const imagePath = `${uuidv4()}.${file.name}`
+  const imagePath = uuidv4()
   const { data, error } = await supabase.storage
     .from("user-images")
-    .upload(imagePath, file, { contentType: "File" })
+    .upload(imagePath, file, { contentType: file.type ?? "File" })
 
   if (error) {
     throw error

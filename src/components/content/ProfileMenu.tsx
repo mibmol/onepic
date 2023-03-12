@@ -12,15 +12,7 @@ export function ProfileMenu() {
 
   if (!session) {
     return (
-      <div className="flex">
-        <Button
-          labelToken="Log In"
-          onClick={() => signIn()}
-          variant="secondary"
-          className="mr-3 py-2"
-        />
-        <Button labelToken="Sign Up" onClick={() => signIn()} className="py-2" />
-      </div>
+      <Button labelToken="Sign-in / Sign-up" onClick={() => signIn()} className="py-2" />
     )
   }
 
@@ -97,7 +89,7 @@ const ProfileMenuContent = ({ user }) => {
         </li>
         <li>
           <button
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: "/auth/signin" })}
             className={`
               w-full pr-4 py-3 pl-6
               group hover:bg-gray-100 dark:hover:bg-gray-700

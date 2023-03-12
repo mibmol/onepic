@@ -4,6 +4,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import Head from "next/head"
 import { useTranslation } from "next-i18next"
 import { SharedHead } from "@/components/layout/header/headUtils"
+import { Footer } from "@/components/layout/Footer"
 
 export const getStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
@@ -20,7 +21,8 @@ const PricingPage = () => {
     >
       <SharedHead />
       <Header />
-      <section className="px-12">pricing</section>
+      <main className="px-12">{t("Pricing")}</main>
+      <Footer />
     </PagePropsProvider>
   )
 }

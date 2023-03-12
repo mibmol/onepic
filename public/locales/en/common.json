@@ -8,13 +8,13 @@
     "processing": "Processing"
   },
   "feature": {
-    "restorePhotos": "Restore photos",
+    "restorePhotos": "Photo restoration",
     "restorePhotosDescription": "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
-    "qualityEnhancer": "Quality enhancer",
+    "qualityEnhancer": "Image upscaler",
     "qualityEnhancerDescription": "Upscaling tool that create high-quality images from low-quality images",
     "removeBackground": "Remove background",
     "removeBackgroundDescription": "A deep learning approach to remove background",
-    "colorizeImage": "Colorize image",
+    "colorizeImage": "Colorize photo",
     "colorizeImageDescription": "Add colours to old images",
     "optionOneFaster": "Option 1 - Faster",
     "optionTwoSlower": "Option 2 - Allow removing scratches"
@@ -26,9 +26,9 @@
     "backgroundEnhance": "Enhance background",
     "faceUpsample": "Apply face upsample",
     "upscale": "Upscale factor",
-    "inputIsHighResolution": "Image is in High Resolution",
-    "withScratch": "Image has scratches",
-    "faceEnhance": "Face Enhancing"
+    "inputIsHighResolution": "Image is in high resolution",
+    "withScratch": "Remove scratches",
+    "faceEnhance": "Face enhancing"
   },
   "theme": {
     "system": "System",
