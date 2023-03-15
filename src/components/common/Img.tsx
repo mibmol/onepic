@@ -3,6 +3,7 @@ import { compose, toString } from "ramda"
 import {
   DetailedHTMLProps,
   FC,
+  forwardRef,
   ImgHTMLAttributes,
   SyntheticEvent,
   useCallback,
@@ -25,13 +26,10 @@ const getUrlWithRandParam = compose(
   (url: string) => new URL(url),
 )
 
-export const Img: FC<ImgProps> = ({
-  fallbackSrc,
-  maxRetries,
-  onEndRetries,
-  successLoad,
-  ...imgProps
-}) => {
+export const Img: FC<ImgProps> = forwardRef(function Img(
+  { fallbackSrc, maxRetries, onEndRetries, successLoad, ...imgProps },
+  imgRef,
+) {
   const maxRetryRef = useRef(maxRetries ?? 1)
 
   const handleError = useCallback(
@@ -54,5 +52,5 @@ export const Img: FC<ImgProps> = ({
   )
 
   // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-  return <img onError={handleError} {...imgProps} onLoad={successLoad} />
-}
+  return <img onError={handleError} {...imgProps} ref={imgRef} onLoad={successLoad} />
+})

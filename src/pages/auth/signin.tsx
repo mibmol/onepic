@@ -50,9 +50,7 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
   const { t } = useTranslation()
 
   useEffect(() => {
-    if (session) {
-      router.replace("/")
-    }
+    if (session) router.replace("/")
   }, [session, router])
 
   return (
@@ -74,7 +72,9 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
                 key={id}
                 type="submit"
                 className={cn("mt-4 px-12 py-3 flex font-medium rounded-md", className)}
-                onClick={() => signIn(id, { callbackUrl: "/" })}
+                onClick={() =>
+                  signIn(id, { callbackUrl: (router.query.callbackUrl as string) ?? "/" })
+                }
               >
                 {<Icon className="w-6 h-6 mr-3" />}
                 {t(labelToken)}

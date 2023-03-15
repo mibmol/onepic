@@ -1,13 +1,17 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
-import Head from "next/head"
 import { GetStaticProps, NextPage } from "next"
 import { Header } from "@/components/layout"
 import { SharedHead } from "@/components/layout/header/headUtils"
 import { PagePropsProvider } from "@/lib/hooks"
-import { Button, Text } from "@/components/common"
+import { Button, Img, Text } from "@/components/common"
 import { Footer } from "@/components/layout/Footer"
 import { ArrowRightIcon } from "@heroicons/react/24/outline"
+import { ArrowDownIcon } from "@heroicons/react/20/solid"
 import { GradientText } from "@/components/common/GradientText"
+import { FC, useEffect, useRef } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { useTranslation } from "next-i18next"
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
@@ -25,7 +29,7 @@ const Home: NextPage = ({}) => {
       <SharedHead />
       <Header />
       <main className="w-full">
-        <section className="mt-32 text-center">
+        <section className="mt-40 text-center">
           <GradientText
             charRange={[27]}
             as="h1"
@@ -46,14 +50,181 @@ const Home: NextPage = ({}) => {
         <section>
           <Button
             labelToken="Explore tools"
-            Icon={ArrowRightIcon}
+            Icon={ArrowDownIcon}
             iconPlacement="right"
-            className="mx-auto mt-24"
+            className="mx-auto mt-32"
+            onClick={() =>
+              document
+                .getElementById("featuresSection")
+                .scrollIntoView({ behavior: "smooth", block: "center" })
+            }
           />
+        </section>
+        <section
+          id="featuresSection"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:max-w-7xl  mx-auto mt-40"
+        >
+          {features.map((feature) => (
+            <FeatureBox key={feature.titleToken} {...{ feature }} />
+          ))}
         </section>
       </main>
       <Footer />
     </PagePropsProvider>
+  )
+}
+
+type Feature = {
+  titleToken: string
+  descriptionToken: string
+  isAnimation?: boolean
+  isSlider?: boolean
+  imgUrls?: { before: string; after: string }
+  animationUrl?: string
+  link: string
+}
+
+const features: Feature[] = [
+  {
+    titleToken: "Photo Restoration",
+    descriptionToken:
+      "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
+    isSlider: true,
+    imgUrls: { before: "/images/old_before.png", after: "/images/old_after.png" },
+    animationUrl: "",
+    link: "/restore-photo-image",
+  },
+  {
+    titleToken: "Image upscaler",
+    descriptionToken:
+      "Upscaling tool that create high-quality images from low-quality images",
+    isSlider: true,
+    imgUrls: {
+      before: "/images/upscaler_before.png",
+      after: "/images/upscaler_after.png",
+    },
+    animationUrl: "",
+    link: "/quality-resolution-enhancer",
+  },
+  {
+    titleToken: "Photo Restoration 3",
+    descriptionToken:
+      "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
+    isSlider: true,
+    imgUrls: { before: "/images/old_before.png", after: "/images/old_after.png" },
+    animationUrl: "",
+    link: "/restore-photo-image",
+  },
+  {
+    titleToken: "Photo Restoration 4",
+    descriptionToken:
+      "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
+    isSlider: true,
+    imgUrls: { before: "/images/old_before.png", after: "/images/old_after.png" },
+    animationUrl: "",
+    link: "/restore-photo-image",
+  },
+]
+type FeatureBoxProps = {
+  feature: Feature
+}
+const FeatureBox: FC<FeatureBoxProps> = ({
+  feature: {
+    titleToken,
+    descriptionToken,
+    isAnimation,
+    isSlider,
+    imgUrls,
+    animationUrl,
+    link,
+  },
+}) => {
+  return (
+    <Link
+      href={link}
+      className="group relative h-96 border border-gray-300 bg-white p-6 rounded-xl dark:bg-gray-900 dark:border-none"
+    >
+      {isSlider && <ImageSlider {...{ imgUrls }} altTextToken={titleToken} />}
+      <FakeButton labelToken={titleToken} />
+      <article className="absolute top-64">
+        <Text as="h1" size="xl" labelToken={titleToken} className="mb-2" bold />
+        <Text as="p" size="sm" labelToken={descriptionToken} medium />
+      </article>
+    </Link>
+  )
+}
+
+const ImageSlider = ({ imgUrls: { before, after }, altTextToken }) => {
+  const { t } = useTranslation()
+  const imgRef = useRef<HTMLImageElement>(null)
+  const sliderRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const slider = sliderRef.current
+    const onChange = (e: Event) => {
+      e.preventDefault()
+      e.stopPropagation()
+      const percentage = (e.target as HTMLInputElement).value
+      imgRef.current.setAttribute(
+        "style",
+        `clip-path: polygon(0px 0px, ${percentage}% 0px, ${percentage}% 100%, 0px 100%);`,
+      )
+    }
+    slider.addEventListener("change", onChange)
+    return () => {
+      slider.removeEventListener("change", onChange)
+    }
+  }, [])
+
+  return (
+    <div
+      className={`
+        absolute h-60 w-full top-0 left-0 z-20 rounded-t-xl overflow-hidden
+        duration-300 group-hover:h-full hover:rounded-b-xl
+      `}
+    >
+      <Img
+        ref={imgRef}
+        src={before}
+        alt={t(altTextToken)}
+        className="absolute object-cover w-full h-full z-20"
+        style={{ clipPath: "polygon(0px 0px, 50% 0px, 50% 100%, 0px 100%)" }}
+        onDragStart={() => false}
+      />
+      <Img
+        src={after}
+        alt={t(altTextToken)}
+        className="no-drag absolute object-cover w-full h-full"
+        onDragStart={() => false}
+      />
+      <div className="absolute inset-0 z-30">
+        <input
+          ref={sliderRef}
+          type="range"
+          min={0}
+          max={100}
+          step={0.1}
+          className="left-0 top-1/2 z-30 w-full"
+          onClick={(e)=> e.stopPropagation()}
+          onChange={(e) => {
+            e.stopPropagation()
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
+const FakeButton = ({ labelToken }) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className="absolute flex justify-center left-0 right-0 bottom-12 z-30 hidden duration-400 group-hover:flex">
+      <div className="flex items-center rounded-lg bg-blue-700 text-white px-5 py-3">
+        <div className="font-bold">{t(labelToken)}</div>
+        <ArrowRightIcon className="w-5 h-5 ml-2 stroke-2" />
+      </div>
+    </div>
   )
 }
 

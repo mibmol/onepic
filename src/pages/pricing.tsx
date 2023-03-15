@@ -1,7 +1,6 @@
 import { Header } from "@/components/layout"
 import { PagePropsProvider } from "@/lib/hooks"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
-import Head from "next/head"
 import { useTranslation } from "next-i18next"
 import { SharedHead } from "@/components/layout/header/headUtils"
 import { Footer } from "@/components/layout/Footer"

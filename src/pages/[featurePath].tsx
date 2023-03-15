@@ -1,8 +1,6 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { propEq } from "ramda"
-import { useTranslation } from "next-i18next"
-import Head from "next/head"
 import { Header } from "@/components/layout"
 import { aiFeatures } from "@/lib/data/models"
 import { ImageDisplaySection } from "@/components/content/ImageDisplaySection"

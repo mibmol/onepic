@@ -20,8 +20,7 @@ export const GradientText: FC<GradientTextProps> = ({
   ...props
 }) => {
   const { t } = useTranslation()
-  const text = t(labelToken)
-  const [leftText, gradientText, rightText] = splitRange(text, charRange)
+  const [leftText, gradientText, rightText] = splitRange(t(labelToken), charRange)
 
   return (
     <Text {...props}>
@@ -29,7 +28,7 @@ export const GradientText: FC<GradientTextProps> = ({
         {leftText}
         <span
           className={`
-            bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-700 
+            bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-indigo-600 
             dark:from-cyan-400 dark:via-indigo-400 dark:to-purple-400
           `}
         >
