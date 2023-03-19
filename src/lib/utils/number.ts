@@ -1,1 +1,2 @@
-export const randomInt = (max: number = 10000) => Math.floor(Math.random() * max)
+export const randomInt = (max: number = Number.MAX_SAFE_INTEGER) =>
+  Math.floor(Math.random() * max)
