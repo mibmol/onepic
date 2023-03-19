@@ -89,7 +89,7 @@ const features: Feature[] = [
     descriptionToken:
       "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
     isSlider: true,
-    imgUrls: { before: "/images/old_before.png", after: "/images/old_after.png" },
+    imgUrls: { before: "/images/old_before.jpg", after: "/images/old_after.jpg" },
     link: "/restore-photo-image",
   },
   {
@@ -98,7 +98,7 @@ const features: Feature[] = [
       "Upscaling tool that create high-quality images from low-quality images",
     isSlider: true,
     imgUrls: {
-      before: "/images/upscaler_before.png",
+      before: "/images/upscaler_before.jpg",
       after: "/images/upscaler_after.png",
     },
     link: "/quality-resolution-enhancer",
@@ -107,7 +107,7 @@ const features: Feature[] = [
     titleToken: "Remove background",
     descriptionToken: "A deep learning approach to remove background",
     isSlider: true,
-    imgUrls: { before: "/images/rembg_before.png", after: "/images/rembg_after.png" },
+    imgUrls: { before: "/images/rembg_before.jpg", after: "/images/rembg_after.png" },
     link: "/remove-background",
   },
   {
@@ -115,8 +115,8 @@ const features: Feature[] = [
     descriptionToken: "Add colours to old photos or any black and white images",
     isSlider: true,
     imgUrls: {
-      before: "/images/colorize_before.png",
-      after: "/images/colorize_after.png",
+      before: "/images/colorize_before.jpg",
+      after: "/images/colorize_after.jpg",
     },
     link: "/colorize-image",
   },
@@ -188,7 +188,10 @@ const ImageSlider = ({ imgUrls: { before, after }, altTextToken }) => {
         alt={t(altTextToken)}
         className="absolute object-cover w-full h-full bg-purple-300"
       />
-      <div ref={sliderRef} className="z-30 absolute left-1/2 w-px h-full bg-gray-400/25" />
+      <div
+        ref={sliderRef}
+        className="z-30 absolute left-1/2 w-px h-full bg-gray-400/25"
+      />
     </div>
   )
 }
