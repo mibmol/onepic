@@ -1,4 +1,4 @@
-import { cancelPrediction } from "@/lib/data/replicateService"
+import { cancelPrediction } from "@/lib/server/replicateService"
 import { isString } from "class-validator"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"

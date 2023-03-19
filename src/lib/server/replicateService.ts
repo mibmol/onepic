@@ -1,6 +1,6 @@
 import { fetchJson, isProd } from "@/lib/utils"
-import { Prediction } from "./entities"
-import { getModelByName } from "./models"
+import { Prediction } from "@/lib/data/entities"
+import { getModelByName } from "@/lib/data/models"
 
 export const generatePrediction = async ({
   modelName,
@@ -17,7 +17,7 @@ export const generatePrediction = async ({
       version,
       input: { ...options, [modelInputType.name]: input },
       webhook_completed: isProd()
-        ? `https://${process.env.ENV_URL}/api/result_replicate_webhook`
+        ? `https://${process.env.ENV_URL}/api/webhook/replicate`
         : process.env.WEBHOOK_RELAY_URL,
     }),
   })

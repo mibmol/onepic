@@ -6,19 +6,19 @@ import { postProcessImage } from "@/lib/client/processing"
 type ImageProcessingState = {
   inputImageUrl: string
   resultImageUrl: string
-  displayImageUrl: string
   uploading: boolean
   processing: boolean
   predictionId?: string
+  currentModelName?: string
 }
 
 const initialState: ImageProcessingState = {
   inputImageUrl: null,
   resultImageUrl: null,
-  displayImageUrl: null,
   uploading: false,
   processing: false,
   predictionId: null,
+  currentModelName: null,
 }
 
 type ThunkArgs<T> = {
@@ -33,6 +33,7 @@ export const uploadImage = createAsyncThunk(
       const { imagePath } = await uploadUserImage(file)
       return await getImageUrl(imagePath)
     } catch (error) {
+      console.log(error)
       onError?.(error)
       return rejectWithValue("something went bad")
     }
@@ -64,34 +65,37 @@ export const imageGenerationSlice = createSlice({
   initialState,
   reducers: {
     clearImages: (state) => {
-      state.inputImageUrl = state.displayImageUrl = state.resultImageUrl = null
+      state.inputImageUrl = state.resultImageUrl = null
       state.predictionId = null
     },
     setResultImage: (state, { payload: { output, predictionId } }) => {
-      state.displayImageUrl = state.resultImageUrl = output
+      console.log(output)
+      state.resultImageUrl = output
       state.processing = false
       state.predictionId = predictionId
     },
     stopProcessing: (state) => {
       state.processing = false
     },
+    setCurrentModelName: (state, { payload }) => {
+      state.currentModelName = payload
+    },
   },
   extraReducers: (builder) => {
     // uploadImage
     builder.addCase(uploadImage.pending, (state, { meta: { arg } }) => {
-      state.displayImageUrl = URL.createObjectURL(arg.value)
+      state.inputImageUrl = URL.createObjectURL(arg.value)
       state.uploading = true
       state.resultImageUrl = null
       state.predictionId = null
     })
     builder.addCase(uploadImage.fulfilled, (state, { payload }) => {
       state.inputImageUrl = payload
-      state.displayImageUrl = payload
       state.uploading = false
     })
     builder.addCase(uploadImage.rejected, (state, action) => {
+      state.inputImageUrl = null
       state.uploading = false
-      state.displayImageUrl = null
     })
 
     // processImage

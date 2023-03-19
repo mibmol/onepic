@@ -1,4 +1,4 @@
-import { getPrediction } from "@/lib/data/supabaseService"
+import { getPrediction } from "@/lib/server/supabaseService"
 import { isString } from "class-validator"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"

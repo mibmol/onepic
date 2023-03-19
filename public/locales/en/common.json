@@ -3,9 +3,9 @@
     "home": "Home",
     "chooseAPhoto": "Choose a photo",
     "newPhoto": "New photo",
-    "uploading": "Uploading...",
+    "uploading": "Uploading.",
     "submit": "Submit",
-    "processing": "Processing"
+    "processing": "Processing."
   },
   "feature": {
     "restorePhotos": "Photo restoration",

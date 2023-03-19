@@ -16,6 +16,7 @@ type ModelInputType = {
 
 export type Model = {
   name: string
+  credits?: number
   labelToken?: string
   replicateURL: string
   version: string
@@ -40,6 +41,7 @@ export const aiFeatures: AIFeature[] = [
     models: [
       {
         name: "GFPGAN",
+        credits: 1,
         labelToken: "feature.optionOneFaster",
         replicateURL: "https://replicate.com/tencentarc/gfpgan",
         version: "9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3",
@@ -64,6 +66,7 @@ export const aiFeatures: AIFeature[] = [
       },
       {
         name: "CVPR 2020",
+        credits: 2,
         labelToken: "feature.optionTwoSlower",
         replicateURL: "https://replicate.com/microsoft/bringing-old-photos-back-to-life",
         version: "c75db81db6cbd809d93cc3b7e7a088a351a3349c9fa02b6d393e35e0d51ba799",
@@ -94,6 +97,7 @@ export const aiFeatures: AIFeature[] = [
     models: [
       {
         name: "REAL-ESRGAN",
+        credits: 1,
         replicateURL: "https://replicate.com/nightmareai/real-esrgan",
         version: "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b",
         modelInputType: {
@@ -127,6 +131,7 @@ export const aiFeatures: AIFeature[] = [
     models: [
       {
         name: "ModNET",
+        credits: 0,
         replicateURL: "https://replicate.com/pollinations/modnet",
         version: "4f40b36544786857fbc499be0996ba5152627ce61d614eeab7e19a7e1fd61ac6",
         modelInputType: {
@@ -137,6 +142,7 @@ export const aiFeatures: AIFeature[] = [
       },
       {
         name: "RemBG",
+        credits: 0,
         replicateURL: "https://replicate.com/cjwbw/rembg",
         version: "fb8af171cfa1616ddcf1242c093f9c46bcada5ad4cf6f2fbe8b81b330ec5c003",
         modelInputType: {
@@ -155,6 +161,7 @@ export const aiFeatures: AIFeature[] = [
     models: [
       {
         name: "Deoldify",
+        credits: 1,
         replicateURL: "https://replicate.com/arielreplicate/deoldify",
         version: "0bd6fc67227010511fd1b54dc2f3ba3412867ea5a5e5ce92634f45f9ef493665",
         modelInputType: {

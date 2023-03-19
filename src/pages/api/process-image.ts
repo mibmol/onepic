@@ -1,7 +1,9 @@
 import { Prediction } from "@/lib/data/entities/prediction"
-import { generatePrediction } from "@/lib/data/replicateService"
-import { insertPrediction } from "@/lib/data/supabaseService"
+import { getModelByName } from "@/lib/data/models"
+import { generatePrediction } from "@/lib/server/replicateService"
+import { insertPrediction } from "@/lib/server/supabaseService"
 import { authenticated } from "@/lib/server/authenticated"
+import { isNotNil } from "@/lib/utils"
 import { validate } from "class-validator"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"
@@ -33,4 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 
-export default authenticated(handler)
+export default authenticated(handler, (session, req) => {
+  const { credits } = getModelByName(req.body.modelName) ?? {}
+  return credits === 0 || isNotNil(session)
+})

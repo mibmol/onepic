@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
-import { assoc, compose, isNil, when } from "ramda"
-import { removeNilKeys } from "../utils/object"
-import { ReplicatePrediction } from "./entities"
+import { ReplicatePrediction } from "@/lib/data/entities"
+import { removeNilKeys } from "@/lib/utils/object"
 
 // Use on SERVER only!
 const supabaseService = createClient(

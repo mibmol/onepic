@@ -58,13 +58,20 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
       <SharedHead />
       <Header className="border-b border-gray-200 dark:border-gray-800" />
       <main className="w-10/12 md:flex mx-auto mt-14">
-        <div className="text-center mx-auto mt-8">
+        <div className="flex flex-col items-center mx-auto mt-8">
           <Text
             as="h1"
-            labelToken="Log in to AImage"
+            labelToken="Sign-In to AImage"
             size="2xl"
-            className="mb-8 mt-16"
+            className="mb-4 mt-16"
             bold
+          />
+          <Text
+            as="p"
+            labelToken="Signin and get 10 credits every week for free"
+            className="mb-8"
+            medium
+            gray
           />
           {providers.map(({ id, className, labelToken, Icon }) => {
             return (

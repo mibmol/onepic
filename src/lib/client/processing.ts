@@ -10,6 +10,7 @@ export const postProcessImage = async (values) => {
 
   const response = await fetchJson("/api/process-image", {
     method: "POST",
+    redirectToLogin: false,
     body: JSON.stringify(formatedValues),
   })
 

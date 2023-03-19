@@ -1,5 +1,4 @@
-import { getImageSignedUrl } from "@/lib/data/supabaseService"
-import { authenticated } from "@/lib/server/authenticated"
+import { getImageSignedUrl } from "@/lib/server/supabaseService"
 import type { NextApiRequest, NextApiResponse } from "next"
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -14,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json({ error: error })
   }
 
-  res.status(200).json(data)
+  return res.status(200).json(data)
 }
 
-export default authenticated(handler)
+export default handler

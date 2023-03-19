@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useTranslation } from "next-i18next"
 import { ProfileMenu } from "@/components/content/ProfileMenu"
-import { PopoverMenu, Text } from "@/components/common"
+import { PopoverMenu, Text, Tag } from "@/components/common"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { cn } from "@/lib/utils"
 
@@ -37,6 +37,7 @@ const toolsOptions = [
   {
     path: "/remove-background",
     titleToken: "feature.removeBackground",
+    isFree: true,
   },
   {
     path: "/colorize-image",
@@ -48,7 +49,7 @@ const ToolsMenuContent = ({ onItemClick }) => {
   const { t } = useTranslation()
   return (
     <ul className="rounded-lg shadow-lg bg-white py-2 dark:border dark:shadow-none dark:bg-black dark:border-gray-800">
-      {toolsOptions.map(({ path, titleToken }) => (
+      {toolsOptions.map(({ path, titleToken, isFree }) => (
         <li key={path} className="min-w-max">
           <Link
             href={path}
@@ -59,6 +60,7 @@ const ToolsMenuContent = ({ onItemClick }) => {
             `}
           >
             {t(titleToken)}
+            {isFree && <Tag labelToken="Free" className="ml-3" />}
           </Link>
         </li>
       ))}
@@ -83,7 +85,14 @@ type HeaderProps = {
 export const Header: FC<HeaderProps> = ({ className }) => {
   const { t } = useTranslation()
   return (
-    <section className={cn("flex justify-between items-center px-12 py-5", className)}>
+    <header
+      className={cn(
+        `
+        sticky top-0 flex justify-between items-center px-12 py-5 border-b border-gray-200 bg-white 
+        dark:bg-black dark:border-gray-800 z-50`,
+        className,
+      )}
+    >
       <Link href="/">
         <Image width="40" height="40" src="/brain_icon.png" alt={t("general.Home")} />
       </Link>
@@ -110,6 +119,6 @@ export const Header: FC<HeaderProps> = ({ className }) => {
       <div>
         <ProfileMenu />
       </div>
-    </section>
+    </header>
   )
 }

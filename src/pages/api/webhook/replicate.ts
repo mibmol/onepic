@@ -1,8 +1,8 @@
-import { updatePrediction } from "@/lib/data/supabaseService"
+import { updatePrediction } from "@/lib/server/supabaseService"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"
 
-const logger = pino({ name: "result-replicate-webhook.handler" })
+const logger = pino({ name: "replicate-webhook.handler" })
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {

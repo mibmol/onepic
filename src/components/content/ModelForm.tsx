@@ -9,8 +9,12 @@ import { TFunction, useTranslation } from "next-i18next"
 import { FC, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { SubmitButton, Text, Select, NumberInput, Checkbox } from "@/components/common"
+import { useSession } from "next-auth/react"
+import { redirectToLogin } from "@/lib/utils/clientRouting"
 
-const { setResultImage, stopProcessing, clearImages } = imageGenerationSlice.actions
+const { setResultImage, stopProcessing, clearImages, setCurrentModelName } =
+  imageGenerationSlice.actions
+  
 const checkProcessingState = async (
   predictionId: string,
   dispatch: AppDispatch,
@@ -49,6 +53,7 @@ const checkValidationErrors = (error, t: TFunction) => {
 
 export const ModelForm = () => {
   const { t } = useTranslation()
+  const { data: session } = useSession()
   const dispatch = useAppDispatch()
   const { register, handleSubmit, watch, reset } = useForm()
   const { featureId } = usePageProps<any>()
@@ -63,19 +68,25 @@ export const ModelForm = () => {
 
   const modelName = watch("modelName", defaultModel?.name)
   const selectedModel = useMemo(
-    () => getModelByName(modelName) ?? defaultModel,
+    () => {
+      const model = getModelByName(modelName) ?? defaultModel
+      dispatch(setCurrentModelName(model.name))
+      return model
+    },
     // eslint-disable-next-line
     [modelName],
   )
 
   const onSubmit = handleSubmit((values) => {
-    dispatch(
-      processImage({
-        value: values,
-        onSuccess: ({ id }) => checkProcessingState(id, dispatch, t),
-        onError: (error) => checkValidationErrors(error, t),
-      }),
-    )
+    session || selectedModel.credits === 0
+      ? dispatch(
+          processImage({
+            value: values,
+            onSuccess: ({ id }) => checkProcessingState(id, dispatch, t),
+            onError: (error) => checkValidationErrors(error, t),
+          }),
+        )
+      : redirectToLogin()
   })
 
   return (
@@ -121,17 +132,6 @@ export const ModelForm = () => {
               id={field.name}
               type="checkbox"
               defaultChecked={field.defaultValue}
-            />
-          )}
-          {field.type === "float" && (
-            <NumberInput
-              {...register(field.name)}
-              id={field.name}
-              defaultValue={field.defaultValue}
-              type="number"
-              min={field.min}
-              max={field.max}
-              step={0.05}
             />
           )}
           {field.type === "integer" && (

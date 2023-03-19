@@ -21,6 +21,9 @@ module.exports = {
       },
       boxShadow: {
         "lg": "0 5px 15px 0px rgb(0 0 0 / 0.1)",
+      },
+      strokeWidth: {
+        '3': '3',
       }
     },
   },

@@ -27,6 +27,7 @@ type ButtonProps<NativeProps> = PropsWithChildren & {
   iconPlacement?: "left" | "right"
   disabled?: boolean
   variant?: ButtonVariant
+  download?: any
 } & NativeProps
 
 const getButtonColorClasses = cond<ButtonVariant[], string>([
@@ -70,6 +71,7 @@ export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({
   Icon,
   iconPlacement = "left",
   variant = "primary",
+  download,
   ...props
 }) => {
   const { t } = useTranslation()
