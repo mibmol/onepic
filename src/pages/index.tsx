@@ -99,7 +99,7 @@ const features: Feature[] = [
     isSlider: true,
     imgUrls: {
       before: "/images/upscaler_before.jpg",
-      after: "/images/upscaler_after.png",
+      after: "/images/upscaler_after.jpg",
     },
     link: "/quality-resolution-enhancer",
   },
