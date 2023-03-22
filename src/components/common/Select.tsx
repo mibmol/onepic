@@ -2,7 +2,7 @@ import { DetailedHTMLProps, FC, forwardRef, SelectHTMLAttributes } from "react"
 import { useTranslation } from "next-i18next"
 import { cn } from "@/lib/utils"
 
-type SelectOption = {
+export type SelectOption = {
   labelToken: string
   value: number | string
 }
@@ -17,7 +17,7 @@ export const Select: FC<SelectProps> = forwardRef(function Select(
   const { t } = useTranslation()
   const classes = cn(
     `
-    w-full rounded-md border-gray-300 
+    w-full rounded-md border-gray-300 cursor-pointer
         dark:bg-black dark:text-white dark:border-gray-700
     focus:ring focus:ring-indigo-200 focus:ring-opacity-50
         dark:focus:ring-indigo-300

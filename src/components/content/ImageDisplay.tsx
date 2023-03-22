@@ -153,7 +153,7 @@ const ImageView = () => {
       {showSlider && (
         <div
           ref={sliderRef}
-          className="absolute flex-1 z-30 left-1/2 w-px top-0 bottom-0 bg-gray-600/25"
+          className="absolute flex-1 z-30 left-1/2 w-px top-0 bottom-0 bg-gray-300/25"
         />
       )}
     </div>

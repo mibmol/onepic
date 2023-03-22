@@ -1,20 +1,22 @@
-import { FC } from "react"
-import Image from "next/image"
+import { FC, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useTranslation } from "next-i18next"
 import { ProfileMenu } from "@/components/content/ProfileMenu"
-import { PopoverMenu, Text, Tag } from "@/components/common"
+import { PopoverMenu, Text, Tag, Button } from "@/components/common"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { cn } from "@/lib/utils"
+import { Logo } from "@/components/common/icons"
 
 const FeaturesMenuTrigger = ({ open }) => {
   return (
     <div
-      className={cn(
-        "flex items-center rounded h-10 pl-5 pr-4 hover:text-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700",
-      )}
+      className={cn(`
+        flex items-center rounded h-10 pl-5 pr-4 
+          dark:hover:bg-gray-700
+        hover:text-gray-800 hover:bg-gray-100 
+      `)}
     >
-      <Text labelToken="Features" />
+      <Text labelToken="Features" medium />
       <ChevronDownIcon
         className={cn(
           "h-5 w-5 mt-0.5 ml-px transition ease-in-out duration-300 dark:text-gray-300",
@@ -55,7 +57,7 @@ const ToolsMenuContent = ({ onItemClick }) => {
             href={path}
             onClickCapture={onItemClick}
             className={`
-              w-full flex items-center py-3 px-6 text-gray-600 
+              w-full flex items-center py-3 px-6 text-gray-600
               hover:text-gray-800 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700
             `}
           >
@@ -73,8 +75,9 @@ const HeaderLink = ({ href, labelToken }) => {
     <Link
       {...{ href }}
       className="flex items-center rounded h-10 px-5 hover:bg-gray-100 dark:hover:bg-gray-700"
+      scroll={false}
     >
-      <Text {...{ labelToken }} />
+      <Text {...{ labelToken }} medium />
     </Link>
   )
 }
@@ -83,18 +86,30 @@ type HeaderProps = {
   className?: string
 }
 export const Header: FC<HeaderProps> = ({ className }) => {
-  const { t } = useTranslation()
+  const headerRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const handler = () => {
+      window.scrollY > 16
+        ? headerRef.current.classList.add("border-b")
+        : headerRef.current.classList.remove("border-b")
+    }
+    document.addEventListener("scroll", handler)
+    return () => document.removeEventListener("scroll", handler)
+  }, [])
+
   return (
     <header
+      ref={headerRef}
       className={cn(
         `
-        sticky top-0 flex justify-between items-center px-12 py-5 border-b border-gray-200 bg-white 
+        sticky top-0 flex justify-between items-center px-12 py-5 border-gray-200 bg-white 
         dark:bg-black dark:border-gray-800 z-50`,
         className,
       )}
     >
       <Link href="/">
-        <Image width="40" height="40" src="/brain_icon.png" alt={t("general.Home")} />
+        <Logo className="h-6" />
       </Link>
       <nav>
         <ul className="flex items-center">
@@ -109,14 +124,17 @@ export const Header: FC<HeaderProps> = ({ className }) => {
             />
           </li>
           <li className="ml-2">
-            <HeaderLink href="/pricing" labelToken="Pricing" />
+            <HeaderLink href="/#pricing" labelToken="Pricing" />
           </li>
           <li className="ml-2">
             <HeaderLink href="/support" labelToken="Support" />
           </li>
+          <li>
+            <Button labelToken="Feedback" variant="secondary" className="py-1 ml-2" />
+          </li>
         </ul>
       </nav>
-      <div>
+      <div className="flex">
         <ProfileMenu />
       </div>
     </header>

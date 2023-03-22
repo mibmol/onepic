@@ -1,5 +1,4 @@
-import { GithubIcon } from "@/components/common/icons/GithubIcon"
-import { GoogleIcon } from "@/components/common/icons/GoogleIcon"
+import { GithubIcon, GoogleIcon } from "@/components/common/icons"
 import { Header } from "@/components/layout"
 import { Footer } from "@/components/layout/Footer"
 import { SharedHead } from "@/components/layout/header/headUtils"
@@ -56,7 +55,7 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
   return (
     <>
       <SharedHead />
-      <Header className="border-b border-gray-200 dark:border-gray-800" />
+      <Header className="border-b" />
       <main className="w-10/12 md:flex mx-auto mt-14">
         <div className="flex flex-col items-center mx-auto mt-8">
           <Text
@@ -73,6 +72,9 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
             medium
             gray
           />
+          {router.query.error === "OAuthAccountNotLinked" && (
+            <Text labelToken="To confirm your identity, sign in with the same account you used initially" />
+          )}
           {providers.map(({ id, className, labelToken, Icon }) => {
             return (
               <button

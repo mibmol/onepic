@@ -59,7 +59,7 @@ const getButtonColorClasses = cond<ButtonVariant[], string>([
       `,
     ),
   ],
-  [equals<ButtonVariant>("tertiary"), always("")],
+  [equals<ButtonVariant>("tertiary"), always(``)],
 ])
 
 export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({

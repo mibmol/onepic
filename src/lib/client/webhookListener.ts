@@ -33,7 +33,7 @@ export const startWebhookListener = async () => {
     }
 
     if (type === "webhook" && data) {
-      fetchJson("/api/result_replicate_webhook", {
+      fetchJson("/api/webhook/replicate", {
         method: "POST",
         body,
       })
