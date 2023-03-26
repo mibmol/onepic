@@ -1,4 +1,4 @@
-import { getPrediction } from "@/lib/server/supabaseService"
+import * as supabaseService from "@/lib/server/supabaseService"
 import { isString } from "class-validator"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"
@@ -16,18 +16,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const {
-      error,
-      data: [result],
-    } = await getPrediction(predictionId)
+    const { error, prediction } = await supabaseService.getPrediction(predictionId)
     if (error) {
       logger.error(error)
       return res.status(500).json({ error })
     }
-    if (!result) {
+    if (!prediction) {
       return res.status(404).json({ error: "not found" })
     }
-    return res.status(200).json(result)
+    return res.status(200).json(prediction)
   } catch (error) {
     logger.error(error)
     return res.status(500).json({ error: error.toString() })

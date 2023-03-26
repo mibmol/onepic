@@ -1,4 +1,4 @@
-import { cancelPrediction } from "@/lib/server/replicateService"
+import * as replicateService from "@/lib/server/replicateService"
 import { isString } from "class-validator"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const result = await cancelPrediction({ predictionId })
+    const result = await replicateService.cancelPrediction({ predictionId })
     return res.status(200).json(result)
   } catch (error) {
     logger.error(error)

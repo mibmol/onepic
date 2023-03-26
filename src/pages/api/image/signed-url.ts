@@ -1,4 +1,4 @@
-import { getImageSignedUrl } from "@/lib/server/supabaseService"
+import * as supabaseService from "@/lib/server/supabaseService"
 import type { NextApiRequest, NextApiResponse } from "next"
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -7,7 +7,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: { validation: [{ property: "imagePath" }] } })
   }
 
-  const { data, error } = await getImageSignedUrl(imagePath as string, { width, height })
+  const { data, error } = await supabaseService.getImageSignedUrl(imagePath as string, {
+    width,
+    height,
+  })
 
   if (error) {
     return res.status(500).json({ error: error })

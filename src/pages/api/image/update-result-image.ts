@@ -1,5 +1,5 @@
 import { getModelByName } from "@/lib/data/models"
-import { updatePrediction } from "@/lib/server/supabaseService"
+import * as supabaseService from "@/lib/server/supabaseService"
 import { authenticated } from "@/lib/server/authenticated"
 import { isNotNil } from "@/lib/utils"
 import { isURL } from "class-validator"
@@ -18,7 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const { error } = await updatePrediction({ output: signedUrl, id })
+    const { error } = await supabaseService.updatePrediction({ output: signedUrl, id })
     if (error) {
       logger.error(error)
       return res.status(500).json({ error })

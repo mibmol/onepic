@@ -1,7 +1,10 @@
 import Router from "next/router"
 
 export const redirectToLogin = async () => {
-  const params = new URLSearchParams({ callbackUrl: window.location.pathname })
+  const { pathname, search } = window.location
+  const params = new URLSearchParams({
+    callbackUrl: pathname + (search ?? ""),
+  })
   return Router.push(`/auth/signin?${params.toString()}`)
 }
 

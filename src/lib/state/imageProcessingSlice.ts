@@ -69,7 +69,6 @@ export const imageGenerationSlice = createSlice({
       state.predictionId = null
     },
     setResultImage: (state, { payload: { output, predictionId } }) => {
-      console.log(output)
       state.resultImageUrl = output
       state.processing = false
       state.predictionId = predictionId

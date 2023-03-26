@@ -9,6 +9,7 @@ declare module "next-auth" {
   interface Session {
     supabaseAccessToken?: string
     user: {
+      id: string
       address: string
     } & DefaultSession["user"]
   }
@@ -23,16 +24,23 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.SUPABASE_SERVICE_KEY,
   }),
   callbacks: {
-    async session({ session, user }: { session: Session; user: User | AdapterUser }) {
+    session: async ({
+      session,
+      user,
+    }: {
+      session: Session
+      user: User | AdapterUser
+    }) => {
       const signingSecret = process.env.SUPABASE_JWT_SECRET
-
       const payload = {
         aud: "authenticated",
         exp: Math.floor(new Date(session.expires).getTime() / 1000),
         sub: user.id,
         email: user.email,
+        noop: "zxcv",
         role: "authenticated",
       }
+      session.user.id = user.id
       session.supabaseAccessToken = jwt.sign(payload, signingSecret)
       return session
     },

@@ -25,6 +25,10 @@ module.exports = {
       },
       strokeWidth: {
         '3': '3',
+      },
+      zIndex: {
+        '100': '100',
+        '150': '150',
       }
     },
   },

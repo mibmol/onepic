@@ -1,16 +1,16 @@
 import { Prediction } from "@/lib/data/entities/prediction"
 import { getModelByName } from "@/lib/data/models"
-import { generatePrediction } from "@/lib/server/replicateService"
-import { insertPrediction } from "@/lib/server/supabaseService"
-import { authenticated } from "@/lib/server/authenticated"
+import * as replicateService from "@/lib/server/replicateService"
+import * as supabaseService from "@/lib/server/supabaseService"
+import { authenticated, NextApiRequestWithSession } from "@/lib/server/authenticated"
 import { isNotNil } from "@/lib/utils"
 import { validate } from "class-validator"
-import type { NextApiRequest, NextApiResponse } from "next"
+import type { NextApiResponse } from "next"
 import pino from "pino"
 
 const logger = pino({ name: "process-image.handler" })
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(404).json({ error: "method not allowed" })
   }
@@ -22,8 +22,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const result = await generatePrediction(predictionOptions)
-    const { error } = await insertPrediction(predictionOptions, result)
+    const result = await replicateService.generatePrediction(predictionOptions)
+    const { error } = await supabaseService.insertPrediction(
+      predictionOptions,
+      result,
+      req.session,
+    )
 
     if (error) {
       throw error

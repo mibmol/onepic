@@ -1,7 +1,8 @@
 import { Button, Select, SelectOption, Tag, Text } from "@/components/common"
+import { PlanType } from "@/lib/data/entities"
 import { cn } from "@/lib/utils"
+import { getCreditPrice, getSubscriptionPrice } from "@/lib/utils"
 import { ArrowRightIcon, CheckIcon } from "@heroicons/react/24/outline"
-import { always, cond, equals } from "ramda"
 import { FC, useState } from "react"
 
 export const PricingSection = () => {
@@ -10,12 +11,13 @@ export const PricingSection = () => {
       <div className="text-center">
         <Text as="h2" labelToken="Choose your plan" size="4xl" bold />
       </div>
-      <div className="mt-12 grid gap-8 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-12 px-8 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <PricingBox
           titleToken="Free"
           descriptionItems={[
             { labelToken: "Unlimated background removal" },
-            { labelToken: "10 credits per week for free" },
+            { labelToken: "15 credits for free" },
+            { labelToken: "No credit card needed, just sign in" },
           ]}
           price={{ value: 0 }}
           link="/auth/signin"
@@ -80,7 +82,7 @@ const PricingBox: FC<PricingBoxProps> = ({
               key={labelToken}
               className={cn("flex", { "mb-3": index !== descriptionItems.length - 1 })}
             >
-              <CheckIcon className="w-5 stroke-3 mr-2 stroke-purple-700" />
+              <CheckIcon className="w-5 stroke-3 mr-2 stroke-purple-700 dark:stroke-purple-500" />
               <Text {...{ labelToken }} medium gray />
             </li>
           ))}
@@ -97,47 +99,41 @@ const PricingBox: FC<PricingBoxProps> = ({
   )
 }
 
-const getCreditPrice = cond([
-  [equals("50-credits"), always({ value: 3 })],
-  [equals("100-credits"), always({ value: 5.5 })],
-  [equals("200-credits"), always({ value: 10 })],
-  [equals("300-credits"), always({ value: 14 })],
-])
-
 const CreditsSelector = () => {
-  const [value, setValue] = useState("50-credits")
+  const [value, setValue] = useState("50")
+  const params = new URLSearchParams({ plan: value, planType: PlanType.credits })
   return (
     <PricingBox
       titleToken="Credits"
-      descriptionItems={[{ labelToken: "Use all features with your credits" }]}
+      descriptionItems={[
+        { labelToken: "Use all features with your credits" },
+        { labelToken: "Credits never expires" },
+      ]}
       price={getCreditPrice(value)}
       onChange={(e) => setValue(e.target.value)}
-      link="/auth/signin"
+      link={`/payment/?${params.toString()}`}
       linkToken="Buy credits"
       options={[
-        { value: "50-credits", labelToken: "50 credits" },
-        { value: "100-credits", labelToken: "100 credits" },
-        { value: "200-credits", labelToken: "200 credits" },
-        { value: "300-credits", labelToken: "300 credits" },
+        { value: "50", labelToken: "50 credits" },
+        { value: "100", labelToken: "100 credits" },
+        { value: "200", labelToken: "200 credits" },
+        { value: "500", labelToken: "500 credits" },
+        { value: "1000", labelToken: "1000 credits" },
       ]}
     />
   )
 }
 
-const getSubscriptionPrice = cond([
-  [equals("month"), always({ value: 7 })],
-  [equals("year"), always({ value: 74, messageToken: "save 12%" })],
-])
-
 const SubscriptionSelector = () => {
   const [value, setValue] = useState("month")
+  const params = new URLSearchParams({ plan: value, planType: PlanType.subscription })
   return (
     <PricingBox
       titleToken="Subscription"
       descriptionItems={[{ labelToken: "Unlimated usage for all features" }]}
       price={getSubscriptionPrice(value)}
       onChange={(e) => setValue(e.target.value)}
-      link="/auth/signin"
+      link={`/payment/?${params.toString()}`}
       linkToken="Subscribe"
       options={[
         { value: "month", labelToken: "Monthly" },

@@ -1,6 +1,8 @@
 import { createClient } from "@supabase/supabase-js"
-import { ReplicatePrediction } from "@/lib/data/entities"
+import { PlanType, ReplicatePrediction } from "@/lib/data/entities"
 import { removeNilKeys } from "@/lib/utils/object"
+import { Session } from "next-auth"
+import { getModelByName } from "@/lib/data/models"
 
 // Use on SERVER only!
 const supabaseService = createClient(
@@ -24,18 +26,38 @@ export const getImageSignedUrl = (
       ...(options?.width && options?.height && { transform: options }),
     })
 
-export const getPrediction = (predictionId: string) =>
-  supabaseService.from("prediction_result").select().eq("prediction_id", predictionId)
+export const getUser = async (userId: string) => {
+  const {
+    error,
+    data: [user],
+  } = await supabaseService.from("users").select().eq("id", userId)
+
+  return { error, user }
+}
+
+export const getPrediction = async (predictionId: string) => {
+  const {
+    error,
+    data: [prediction],
+  } = await supabaseService
+    .from("prediction_result")
+    .select()
+    .eq("prediction_id", predictionId)
+
+  return { error, prediction }
+}
 
 export const insertPrediction = (
   { input, modelName },
   { status, id }: ReplicatePrediction,
+  session: Session,
 ) =>
   supabaseService.from("prediction_result").insert({
     input,
     status,
     model_name: modelName,
     prediction_id: id,
+    user_id: session?.user?.id ?? null,
   })
 
 export const updatePrediction = ({
@@ -53,4 +75,16 @@ export const updatePrediction = ({
     .from("prediction_result")
     .update(updateFields)
     .eq("prediction_id", id)
+}
+
+export const updateUserCredits = async ({ predictionId }) => {
+  const { error, prediction } = await getPrediction(predictionId)
+  if (error || !prediction?.user_id) return
+
+  const { user } = await getUser(prediction.user_id)
+  if (user?.plan_type === PlanType.credits && user?.credits > 0) {
+    const { credits } = getModelByName(prediction.model_name)
+    console.log({ credits })
+    await supabaseService.rpc("decrement_user_credits", { user_id: user.id, n: credits })
+  }
 }

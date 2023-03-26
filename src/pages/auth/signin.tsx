@@ -49,7 +49,10 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
   const { t } = useTranslation()
 
   useEffect(() => {
-    if (session) router.replace("/")
+    if (session) {
+      const { callbackUrl } = router.query
+      callbackUrl ? router.replace(callbackUrl as string) : router.replace("/")
+    }
   }, [session, router])
 
   return (

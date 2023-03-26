@@ -1,4 +1,5 @@
-import { updatePrediction } from "@/lib/server/supabaseService"
+import { ReplicateStatus } from "@/lib/data/entities"
+import * as supabaseService from "@/lib/server/supabaseService"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"
 
@@ -17,10 +18,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { error } = await updatePrediction({ output, status, id, metrics })
+    const { error } = await supabaseService.updatePrediction({
+      output,
+      status,
+      id,
+      metrics,
+    })
     if (error) {
       logger.error(error)
       return res.status(500).json({ error })
+    }
+    if (status === ReplicateStatus.succeeded) {
+      await supabaseService.updateUserCredits({ predictionId: id })
     }
     return res.status(200).json({ msg: "updated" })
   } catch (error) {

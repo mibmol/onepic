@@ -8,16 +8,30 @@
     "processing": "Processing."
   },
   "feature": {
-    "restorePhotos": "Photo restoration",
-    "restorePhotosDescription": "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
-    "qualityEnhancer": "Image upscaler",
-    "qualityEnhancerDescription": "Upscaling tool that create high-quality images from low-quality images",
-    "removeBackground": "Remove background",
-    "removeBackgroundDescription": "A deep learning approach to remove background",
-    "colorizeImage": "Colorize photo",
-    "colorizeImageDescription": "Add colours to old images",
-    "optionOneFaster": "Option 1 - Faster",
-    "optionTwoSlower": "Option 2 - Allow removing scratches"
+    "restorePhotos": {
+      "title": "Photo restoration",
+      "description": "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
+      "options": {
+        "faster": "Option 1 - Faster",
+        "slower": "Option 2 - Allow removing scratches"
+      }
+    },
+    "qualityEnhancer": {
+      "title": "Image upscaler",
+      "description": "Upscaling tool that create high-quality images from low-quality images",
+      "options": {
+        "slower": "Option 1",
+        "faster": "Option 2 - Faster"
+      }
+    },
+    "removeBackground": {
+      "title": "Remove background",
+      "description": "A deep learning approach to remove background from images"
+    },
+    "colorizeImage": {
+      "title": "Colorize photo",
+      "description": "Add colours to old photos or black & white images"
+    }
   },
   "fieldLabel": {
     "image": "Image",

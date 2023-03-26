@@ -6,6 +6,7 @@ import { PopoverMenu, Text, Tag, Button } from "@/components/common"
 import { ChevronDownIcon } from "@heroicons/react/20/solid"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/common/icons"
+import { useRouter } from "next/router"
 
 const FeaturesMenuTrigger = ({ open }) => {
   return (
@@ -30,20 +31,20 @@ const FeaturesMenuTrigger = ({ open }) => {
 const toolsOptions = [
   {
     path: "/restore-photo-image",
-    titleToken: "feature.restorePhotos",
+    titleToken: "feature.restorePhotos.title",
   },
   {
     path: "/quality-resolution-enhancer",
-    titleToken: "feature.qualityEnhancer",
+    titleToken: "feature.qualityEnhancer.title",
   },
   {
     path: "/remove-background",
-    titleToken: "feature.removeBackground",
+    titleToken: "feature.removeBackground.title",
     isFree: true,
   },
   {
     path: "/colorize-image",
-    titleToken: "feature.colorizeImage",
+    titleToken: "feature.colorizeImage.title",
   },
 ]
 
@@ -87,6 +88,7 @@ type HeaderProps = {
 }
 export const Header: FC<HeaderProps> = ({ className }) => {
   const headerRef = useRef<HTMLElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     const handler = () => {
@@ -103,8 +105,9 @@ export const Header: FC<HeaderProps> = ({ className }) => {
       ref={headerRef}
       className={cn(
         `
-        sticky top-0 flex justify-between items-center px-12 py-5 border-gray-200 bg-white 
-        dark:bg-black dark:border-gray-800 z-50`,
+          sticky top-0 flex justify-between items-center px-12 py-5 border-gray-200 bg-white z-150
+          dark:bg-black dark:border-gray-800
+        `,
         className,
       )}
     >
@@ -124,7 +127,10 @@ export const Header: FC<HeaderProps> = ({ className }) => {
             />
           </li>
           <li className="ml-2">
-            <HeaderLink href="/#pricing" labelToken="Pricing" />
+            <HeaderLink
+              href={router.pathname === "/" ? "/#pricing" : "/pricing"}
+              labelToken="Pricing"
+            />
           </li>
           <li className="ml-2">
             <HeaderLink href="/support" labelToken="Support" />

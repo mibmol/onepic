@@ -1,7 +1,9 @@
 import { FC } from "react"
 import { SvgIconProps } from "./types"
 
-export const Spinner: FC<SvgIconProps> = ({ className }) => {
+export const Spinner: FC<
+  SvgIconProps & { circleStroke?: string; semiCircleStroke?: string }
+> = ({ className, circleStroke = "#eeeeee44", semiCircleStroke = "#eeeeee" }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -15,7 +17,7 @@ export const Spinner: FC<SvgIconProps> = ({ className }) => {
         cy="50"
         r="30"
         fill="none"
-        stroke="#eeeeee44"
+        stroke={circleStroke}
         strokeWidth="6"
       ></circle>
       <circle
@@ -23,7 +25,7 @@ export const Spinner: FC<SvgIconProps> = ({ className }) => {
         cy="50"
         r="30"
         fill="none"
-        stroke="#eeeeee"
+        stroke={semiCircleStroke}
         strokeLinecap="round"
         strokeWidth="6"
       >

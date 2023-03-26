@@ -36,13 +36,13 @@ export const aiFeatures: AIFeature[] = [
   {
     path: "restore-photo-image",
     featureId: "restorePhoto",
-    titleToken: "feature.restorePhotos",
-    descriptionToken: "feature.restorePhotosDescription",
+    titleToken: "feature.restorePhotos.title",
+    descriptionToken: "feature.restorePhotos.description",
     models: [
       {
         name: "GFPGAN",
         credits: 1,
-        labelToken: "feature.optionOneFaster",
+        labelToken: "feature.restorePhotos.options.faster",
         replicateURL: "https://replicate.com/tencentarc/gfpgan",
         version: "9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3",
         modelInputType: {
@@ -67,7 +67,7 @@ export const aiFeatures: AIFeature[] = [
       {
         name: "CVPR 2020",
         credits: 2,
-        labelToken: "feature.optionTwoSlower",
+        labelToken: "feature.restorePhotos.options.slower",
         replicateURL: "https://replicate.com/microsoft/bringing-old-photos-back-to-life",
         version: "c75db81db6cbd809d93cc3b7e7a088a351a3349c9fa02b6d393e35e0d51ba799",
         modelInputType: {
@@ -92,14 +92,42 @@ export const aiFeatures: AIFeature[] = [
   {
     path: "quality-resolution-enhancer",
     featureId: "qualityEnhancer",
-    titleToken: "feature.qualityEnhancer",
-    descriptionToken: "feature.qualityEnhancerDescription",
+    titleToken: "feature.qualityEnhancer.title",
+    descriptionToken: "feature.qualityEnhancer.description",
     models: [
       {
         name: "REAL-ESRGAN",
+        labelToken: "feature.qualityEnhancer.options.slower",
         credits: 1,
         replicateURL: "https://replicate.com/nightmareai/real-esrgan",
         version: "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b",
+        modelInputType: {
+          name: "image",
+          type: "file",
+        },
+        fields: [
+          {
+            name: "scale",
+            type: "integer",
+            labelToken: "fieldLabel.scale",
+            defaultValue: 3,
+            min: 1,
+            max: 10,
+          },
+          {
+            name: "face_enhance",
+            type: "boolean",
+            labelToken: "fieldLabel.faceEnhance",
+            defaultValue: false,
+          },
+        ],
+      },
+      {
+        name: "REAL-ESRGAN-A100",
+        labelToken: "feature.qualityEnhancer.options.faster",
+        credits: 2,
+        replicateURL: "https://replicate.com/daanelson/real-esrgan-a100",
+        version: "499940604f95b416c3939423df5c64a5c95cfd32b464d755dacfe2192a2de7ef",
         modelInputType: {
           name: "image",
           type: "file",
@@ -126,8 +154,8 @@ export const aiFeatures: AIFeature[] = [
   {
     path: "remove-background",
     featureId: "removeBackground",
-    titleToken: "feature.removeBackground",
-    descriptionToken: "feature.removeBackgroundDescription",
+    titleToken: "feature.removeBackground.title",
+    descriptionToken: "feature.removeBackground.description",
     models: [
       {
         name: "ModNET",
@@ -156,8 +184,8 @@ export const aiFeatures: AIFeature[] = [
   {
     path: "colorize-image",
     featureId: "colorizeImage",
-    titleToken: "feature.colorizeImage",
-    descriptionToken: "feature.colorizeImageDescription",
+    titleToken: "feature.colorizeImage.title",
+    descriptionToken: "feature.colorizeImage.description",
     models: [
       {
         name: "Deoldify",

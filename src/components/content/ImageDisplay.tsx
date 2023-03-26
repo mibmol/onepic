@@ -8,8 +8,16 @@ import {
   ArrowDownOnSquareIcon,
   ArrowDownTrayIcon,
   ArrowUpOnSquareIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/outline"
-import { MouseEventHandler, useCallback, useEffect, useRef } from "react"
+import {
+  DragEventHandler,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react"
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
 import { useTranslation } from "react-i18next"
 import { dowloadImage, downloadFile, imgToObjectUrl, isNotNil } from "@/lib/utils"
@@ -117,7 +125,7 @@ const ImageView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [predictionId])
 
-  const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
+  const onDrag: DragEventHandler<HTMLDivElement> = useCallback(
     ({ clientX, currentTarget }) => {
       const { right, left } = currentTarget.getBoundingClientRect()
       const percentage = (((clientX - left) * 100) / (right - left)).toFixed(1)
@@ -132,7 +140,7 @@ const ImageView = () => {
 
   const showSlider = isNotNil(resultImageUrl)
   return (
-    <div {...(showSlider && { onMouseMove, className: "cursor-ew-resize" })}>
+    <div {...(showSlider && { className: "select-none" })}>
       {showSlider && (
         <Img
           ref={clipImgRef}
@@ -151,10 +159,19 @@ const ImageView = () => {
         crossOrigin="anonymous"
       />
       {showSlider && (
-        <div
-          ref={sliderRef}
-          className="absolute flex-1 z-30 left-1/2 w-px top-0 bottom-0 bg-gray-300/25"
-        />
+        <>
+          <div
+            ref={sliderRef}
+            className="absolute flex-1 z-100 left-1/2 w-0.5 top-0 bottom-0 bg-gray-100/50"
+          />
+          <div
+            {...{ onDrag }}
+            className="absolute cursor-pointer  group z-150 top-1/2 left-1/2 rounded-full bg-white flex justify-center items-center w-8 h-8 "
+          >
+            <ChevronLeftIcon className="w-4 h-4 stroke-3 stroke-gray-500 group-hover:stroke-gray-800" />
+            <ChevronRightIcon className="w-4 h-4 stroke-3 stroke-gray-500 group-hover:stroke-gray-800" />
+          </div>
+        </>
       )}
     </div>
   )

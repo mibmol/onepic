@@ -29,7 +29,7 @@ export const GradientText: FC<GradientTextProps> = ({
         <span
           className={`
             bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-indigo-600 
-            dark:from-cyan-400 dark:via-indigo-400 dark:to-purple-400
+              dark:from-cyan-400 dark:via-indigo-400 dark:to-purple-400
           `}
         >
           {gradientText}
