@@ -178,20 +178,16 @@ const SubscriptionPlanPayment = () => {
     }
   }
 
-  const onApprove: OnApproveHandler = async ({ orderID, subscriptionID }) => {
+  const onApprove: OnApproveHandler = async ({ subscriptionID, ...rest }) => {
     try {
       await paymentClient.saveUserPlan({
-        orderId: orderID,
         planType: PlanType.subscription,
-        selectedPlan: plan,
         subscriptionId: subscriptionID,
+        selectedPlan: plan,
       })
-      notification.success(
-        t("Subscribed successfully. You can start using the whole app!"),
-        {
-          duration: 3000,
-        },
-      )
+      notification.success(t("Subscribed successfully. You can start using the app!"), {
+        duration: 3000,
+      })
       router.push("/")
     } catch (error) {
       console.error(error)

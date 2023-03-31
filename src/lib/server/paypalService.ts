@@ -1,13 +1,6 @@
-import { always, cond, equals } from "ramda"
-import { fetchJson } from "../utils"
+import { fetchJson, getSubscriptionPlanId } from "@/lib/utils"
 
-const {
-  NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-  PAYPAL_CLIENT_SECRET,
-  PAYPAL_API_URL,
-  PAYPAL_MONTHLY_PLAN_ID,
-  PAYPAL_YEARLY_PLAN_ID,
-} = process.env
+const { NEXT_PUBLIC_PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_API_URL } = process.env
 
 export async function generateAccessToken(): Promise<string> {
   const basicTokenBuffer = Buffer.from(
@@ -63,11 +56,6 @@ export async function getOrder(orderId: string) {
   })
 }
 
-const getSubscriptionPlanId = cond([
-  [equals("month"), always(PAYPAL_MONTHLY_PLAN_ID)],
-  [equals("year"), always(PAYPAL_YEARLY_PLAN_ID)],
-])
-
 export async function createSubscription(plan: string) {
   const accessToken = await generateAccessToken()
 
@@ -94,4 +82,13 @@ export async function getClientToken() {
     },
   )
   return client_token
+}
+
+export async function getSubscription(subscriptionId: string) {
+  const accessToken = await generateAccessToken()
+  return fetchJson(`${PAYPAL_API_URL}/v1/billing/subscriptions/${subscriptionId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
 }

@@ -1,4 +1,7 @@
+import { compose, nth, path, split, toLower } from "ramda"
 import { fetchJson } from "../utils"
+
+const getSender = compose(toLower, nth(0), split("/"), path(["User-Agent", 0]))
 
 export const startWebhookListener = async () => {
   const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBHOOK_RELAY_WS)
@@ -21,7 +24,7 @@ export const startWebhookListener = async () => {
   })
 
   ws.addEventListener("message", ({ data }) => {
-    const { type, body, status } = JSON.parse(data)
+    const { type, body, status, headers } = JSON.parse(data ?? "{}")
     // if we got authentication confirmation, send subscribe event to the server
     if (type === "status" && status === "authenticated") {
       ws.send(
@@ -32,13 +35,26 @@ export const startWebhookListener = async () => {
       )
     }
 
-    if (type === "webhook" && data) {
-      fetchJson("/api/webhook/replicate", {
-        method: "POST",
-        body,
-      })
-        .then(console.log)
-        .catch(console.error)
+    if (type === "webhook" && headers && body) {
+      const sender = getSender(headers)
+      switch (sender) {
+        case "paypal":
+          fetchJson("/api/webhook/paypal", {
+            method: "POST",
+            body: JSON.stringify(body),
+          })
+            .then(console.log)
+            .catch(console.error)
+        case "replicate-webhook":
+          fetchJson("/api/webhook/replicate", {
+            method: "POST",
+            body: JSON.stringify(body),
+          })
+            .then(console.log)
+            .catch(console.error)
+        default:
+          break
+      }
     }
   })
 }

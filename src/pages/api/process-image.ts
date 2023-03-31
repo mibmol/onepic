@@ -39,7 +39,9 @@ const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => 
   }
 }
 
-export default authenticated(handler, (session, req) => {
-  const { credits } = getModelByName(req.body.modelName) ?? {}
-  return credits === 0 || isNotNil(session)
+export default authenticated(handler, {
+  customAuth: (session, req) => {
+    const { credits } = getModelByName(req.body.modelName) ?? {}
+    return credits === 0 || isNotNil(session)
+  },
 })

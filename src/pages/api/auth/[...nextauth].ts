@@ -37,7 +37,6 @@ export const authOptions: NextAuthOptions = {
         exp: Math.floor(new Date(session.expires).getTime() / 1000),
         sub: user.id,
         email: user.email,
-        noop: "zxcv",
         role: "authenticated",
       }
       session.user.id = user.id

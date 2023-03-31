@@ -10,7 +10,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(404).json({ error: "method not allowed" })
   }
-  const { plan, planType } = req.body
+  const { plan } = req.body
   const price = getCreditPrice(plan)
   if (!price) {
     return res.status(400).json({ error: "provided value not allowed" })

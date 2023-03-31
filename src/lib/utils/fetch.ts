@@ -50,7 +50,7 @@ export const fetchJsonRetry = async (
   try {
     return await fetchJson(url, options)
   } catch (err) {
-    if (options.retries === 1) {
+    if (options.retries <= 1) {
       throw err
     }
     options.retries--

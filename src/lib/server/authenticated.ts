@@ -9,10 +9,10 @@ export type NextApiRequestWithSession = NextApiRequest & { session: Session }
 
 type AuthenticatedDecorator = (
   handler: (req: NextApiRequestWithSession, res: NextApiResponse) => any,
-  customAuth?: EvaluatorFn,
+  options?: { customAuth?: EvaluatorFn },
 ) => NextApiHandler
 
-export const authenticated: AuthenticatedDecorator = (handler, customAuth) => {
+export const authenticated: AuthenticatedDecorator = (handler, { customAuth } = {}) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await getServerSession(req, res, authOptions)
     const reqWithSession = assoc("session", session, req) as NextApiRequestWithSession

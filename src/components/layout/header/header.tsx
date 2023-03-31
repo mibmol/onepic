@@ -105,7 +105,7 @@ export const Header: FC<HeaderProps> = ({ className }) => {
       ref={headerRef}
       className={cn(
         `
-          sticky top-0 flex justify-between items-center px-12 py-5 border-gray-200 bg-white z-150
+          sticky top-0 flex justify-between items-center px-12 py-5 border-gray-200 bg-white z-200
           dark:bg-black dark:border-gray-800
         `,
         className,

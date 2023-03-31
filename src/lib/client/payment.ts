@@ -1,6 +1,6 @@
 import { fetchJson, fetchJsonRetry } from "@/lib/utils"
 
-export const createCreditOrder = async ({ plan, planType }) => {
+export async function createCreditOrder({ plan, planType }): Promise<string> {
   const order = await fetchJson("/api/payment/order", {
     method: "POST",
     body: JSON.stringify({ plan, planType }),
@@ -8,7 +8,7 @@ export const createCreditOrder = async ({ plan, planType }) => {
   return order.id
 }
 
-export const captureCreditOrder = async ({ orderID }) => {
+export async function captureCreditOrder({ orderID }) {
   const { orderCaptureData } = await fetchJson("/api/payment/order-capture", {
     method: "POST",
     body: JSON.stringify({ orderID }),
@@ -17,19 +17,19 @@ export const captureCreditOrder = async ({ orderID }) => {
 }
 
 export const saveUserPlan = ({
-  orderId,
+  orderId = null,
   planType,
-  selectedPlan,
+  selectedPlan = null,
   subscriptionId = null,
 }) =>
   fetchJsonRetry(`/api/plan/save`, {
-    retries: 3,
+    retries: 2,
     redirectToLogin: false,
     method: "POST",
     body: JSON.stringify({ orderId, selectedPlan, planType, subscriptionId }),
   })
 
-export const createSubscription = async ({ plan }) => {
+export async function createSubscription({ plan }): Promise<string> {
   const subscription = await fetchJson("/api/payment/subscription", {
     method: "POST",
     body: JSON.stringify({ plan }),

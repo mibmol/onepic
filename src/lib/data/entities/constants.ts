@@ -11,3 +11,13 @@ export const ReplicateStatus = {
   failed: "failed",
   canceled: "canceled",
 }
+
+// https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions_get
+export const PaypalSubscriptionStatus = {
+  active: "ACTIVE",
+  approvalPending: "APPROVAL_PENDING",
+  approved: "APPROVED",
+  suspended: "SUSPENDED",
+  cancelled: "CANCELLED",
+  expired: "EXPIRED",
+}
