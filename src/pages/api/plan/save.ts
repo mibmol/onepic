@@ -1,12 +1,9 @@
-import { authenticated } from "@/lib/server/authenticated"
 import * as paypal from "@/lib/server/paypalService"
 import * as supabaseService from "@/lib/server/supabaseService"
-import pino from "pino"
 import { compose, either, equals, find, path, propEq } from "ramda"
 import { getCreditPrice, getSubscriptionPrice } from "@/lib/utils"
 import { PaypalSubscriptionStatus, PlanType } from "@/lib/data/entities"
-
-const logger = pino({ name: "plan/credits.handler" })
+import { createApiHandler } from "@/lib/server/apiHandler"
 
 const getLastCapture = compose<any, any, any>(
   find(propEq("final_capture", true)),
@@ -28,12 +25,10 @@ const isSubscriptionCompleted = either(
   equals(PaypalSubscriptionStatus.approved),
 )
 
-export default authenticated(async (req, res) => {
-  if (req.method !== "POST") {
-    return res.status(404).json({ error: "method not allowed" })
-  }
-
-  try {
+export default createApiHandler({
+  methods: ["POST"],
+  authenticated: true,
+  async handler(req, res) {
     const { orderId, selectedPlan, planType, subscriptionId } = req.body
     if (!selectedPlan || !planType || (!orderId && !subscriptionId)) {
       return res.status(422).json({ msg: "inconsistent data" })
@@ -74,8 +69,5 @@ export default authenticated(async (req, res) => {
     }
 
     return res.status(422).json({ msg: "inconsistent data" })
-  } catch (error) {
-    logger.error(error)
-    return res.status(500).json({ error })
-  }
+  },
 })

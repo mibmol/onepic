@@ -178,7 +178,6 @@ export async function getUserPlan({ userId }) {
   if (error || error2) {
     throw error ?? error2
   }
-  console.log({ user, subscriptions })
 
   return {
     credits: user.credits,

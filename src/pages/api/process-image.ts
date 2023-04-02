@@ -2,19 +2,17 @@ import { Prediction } from "@/lib/data/entities/prediction"
 import { getModelByName } from "@/lib/data/models"
 import * as replicateService from "@/lib/server/replicateService"
 import * as supabaseService from "@/lib/server/supabaseService"
-import { authenticated, NextApiRequestWithSession } from "@/lib/server/authenticated"
+import { NextApiRequestWithSession } from "@/lib/server/authenticated"
 import { isNotNil } from "@/lib/utils"
 import { validate } from "class-validator"
 import type { NextApiResponse } from "next"
 import pino from "pino"
+import { createApiHandler } from "@/lib/server/apiHandler"
 
 const logger = pino({ name: "process-image.handler" })
 
 const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => {
-  const { method, body, session } = req
-  if (method !== "POST") {
-    return res.status(404).json({ error: "method not allowed" })
-  }
+  const { body, session } = req
 
   const predictionOptions = new Prediction().setValues(body)
   const errors = await validate(predictionOptions)
@@ -33,27 +31,25 @@ const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => 
     return res.status(400).json({ msg: "no credits" })
   }
 
-  try {
-    const result = await replicateService.generatePrediction(predictionOptions)
-    const { error } = await supabaseService.insertPrediction(
-      predictionOptions,
-      result,
-      session.user,
-    )
+  const prediction = await replicateService.generatePrediction(predictionOptions)
+  const result = await supabaseService.insertPrediction(
+    predictionOptions,
+    prediction,
+    session.user,
+  )
 
-    if (error) {
-      throw error
-    }
-    return res.status(200).json(result)
-  } catch (error) {
-    logger.error(error)
-    return res.status(500).json({ error})
+  if (result.error) {
+    return res.status(500).json({ error })
   }
+  return res.status(200).json(prediction)
 }
 
-export default authenticated(handler, {
-  customAuth: (session, req) => {
+export default createApiHandler({
+  methods: ["POST"],
+  authenticated: true,
+  customAuthCheck: (session, req) => {
     const { credits } = getModelByName(req.body.modelName) ?? {}
     return credits === 0 || isNotNil(session)
   },
+  handler,
 })
