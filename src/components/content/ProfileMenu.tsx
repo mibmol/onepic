@@ -3,8 +3,10 @@ import { useSession, signOut } from "next-auth/react"
 import Link from "next/link"
 import { useTranslation } from "next-i18next"
 import { Button, Img, PopoverMenu, Text } from "@/components/common"
-import { useState } from "react"
+import { FC, useState } from "react"
 import { ThemeSelector } from "./ThemeSelector"
+import useSWR from "swr"
+import { getUserPlanInfo } from "@/lib/client/payment"
 
 export function ProfileMenu() {
   const { data: session } = useSession()
@@ -42,6 +44,11 @@ const ProfileMenuTrigger = ({ imageUrl }) => {
   )
 }
 
+const PlanInfo: FC = () => {
+  const {} = useSWR("planInfo", getUserPlanInfo)
+  return <></>
+}
+
 const ProfileMenuContent = ({ user }) => {
   const { t } = useTranslation()
   return (
@@ -53,6 +60,9 @@ const ProfileMenuContent = ({ user }) => {
         <Text as="h3" gray>
           {user.email}
         </Text>
+      </div>
+      <div>
+        <PlanInfo />
       </div>
       <ul className="mt-3">
         <li>

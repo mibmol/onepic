@@ -16,18 +16,19 @@ export async function captureCreditOrder({ orderID }) {
   return orderCaptureData
 }
 
-export const saveUserPlan = ({
+export async function saveUserPlan({
   orderId = null,
   planType,
   selectedPlan = null,
   subscriptionId = null,
-}) =>
-  fetchJsonRetry(`/api/plan/save`, {
+}) {
+  return fetchJsonRetry(`/api/plan/save`, {
     retries: 2,
     redirectToLogin: false,
     method: "POST",
     body: JSON.stringify({ orderId, selectedPlan, planType, subscriptionId }),
   })
+}
 
 export async function createSubscription({ plan }): Promise<string> {
   const subscription = await fetchJson("/api/payment/subscription", {
@@ -35,4 +36,8 @@ export async function createSubscription({ plan }): Promise<string> {
     body: JSON.stringify({ plan }),
   })
   return subscription.id
+}
+
+export function getUserPlanInfo() {
+  return fetchJson("/api/plan/info")
 }

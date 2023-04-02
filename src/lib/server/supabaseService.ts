@@ -1,8 +1,9 @@
 import { createClient } from "@supabase/supabase-js"
 import { PlanType, ReplicatePrediction } from "@/lib/data/entities"
 import { removeNilKeys } from "@/lib/utils/object"
-import { Session } from "next-auth"
+import { User } from "next-auth"
 import { getModelByName } from "@/lib/data/models"
+import { getSubscriptionPrice } from "../utils"
 
 // Use on SERVER only!
 const supabase = createClient(
@@ -52,14 +53,14 @@ export async function getPrediction(predictionId: string) {
 export async function insertPrediction(
   { input, modelName },
   { status, id }: ReplicatePrediction,
-  session: Session,
+  user: User,
 ) {
   return supabase.from("prediction_result").insert({
     input,
     status,
     model_name: modelName,
     prediction_id: id,
-    user_id: session?.user?.id ?? null,
+    user_id: user?.id ?? null,
   })
 }
 
@@ -97,15 +98,90 @@ export async function saveOrder({
   credits,
   paidAmount,
 }) {
-  return Promise.all([
-    supabase.rpc("increment_user_credits", { user_id: userId, n: credits }),
-    supabase.from("payments").insert({
-      plan_type: planType,
-      plan: selectedPlan,
-      order_id: orderId,
-      subscription_id: subscriptionId,
+  if (planType === PlanType.credits && orderId) {
+    const [{ error }, { error: error2 }] = await Promise.all([
+      supabase.rpc("increment_user_credits", { user_id: userId, n: credits }),
+      supabase.from("payments").insert({
+        plan_type: planType,
+        plan: selectedPlan,
+        order_id: orderId,
+        subscription_id: subscriptionId,
+        user_id: userId,
+        paid_amount: paidAmount,
+      }),
+    ])
+    if (error) throw error
+    if (error2) throw error2
+    return
+  }
+
+  if (planType === PlanType.subscription && subscriptionId) {
+    const { error } = await supabase.rpc("save_subscription", {
       user_id: userId,
-      paid_amount: paidAmount
-    }),
-  ])
+      subscription_id: subscriptionId,
+      plan: selectedPlan,
+      plan_type: planType,
+      paid_amount: paidAmount,
+      credits,
+    })
+    if (error) throw error
+    return
+  }
+
+  throw Error("Not allowed")
+}
+
+export async function getSubscription(id: string) {
+  const {
+    error,
+    data: [subscription],
+  } = await supabase.from("subscriptions").select().eq("subscription_id", id)
+
+  return { error, subscription }
+}
+
+export async function saveSubscriptionPayment({ subscriptionId, paidAmount }) {
+  const { error, subscription } = await getSubscription(subscriptionId)
+
+  if (error) {
+    throw error
+  }
+  const { plan, user_id } = subscription
+  const { totalCredits } = getSubscriptionPrice(plan)
+  const result = await supabase.rpc("save_subscription_payment", {
+    subscription_id: subscriptionId,
+    user_id,
+    plan,
+    plan_type: PlanType.subscription,
+    credits: totalCredits,
+    paid_amount: paidAmount,
+  })
+  if (result.error) throw error
+}
+
+export async function endSubscription({ subscriptionId }) {
+  const { error } = await supabase
+    .from("subscriptions")
+    .update({ end_date: new Date() })
+    .eq("subscription_id", subscriptionId)
+  if (error) {
+    throw error
+  }
+}
+
+export async function getUserPlan({ userId }) {
+  const [{ error, data: user }, { error: error2, data: subscriptions }] =
+    await Promise.all([
+      supabase.from("users").select().eq("id", userId).single(),
+      supabase.from("subscriptions").select().eq("user_id", userId),
+    ])
+  if (error || error2) {
+    throw error ?? error2
+  }
+  console.log({ user, subscriptions })
+
+  return {
+    credits: user.credits,
+    subscription: {},
+  }
 }

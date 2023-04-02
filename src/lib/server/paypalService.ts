@@ -92,3 +92,34 @@ export async function getSubscription(subscriptionId: string) {
     },
   })
 }
+
+export async function validateWebhook({
+  authAlgo,
+  certUrl,
+  transmissionId,
+  transmissionSig,
+  transmissionTime,
+  webhookEvent,
+  webhookId,
+}) {
+  const accessToken = await generateAccessToken()
+  const { verification_status } = await fetchJson(
+    `${PAYPAL_API_URL}/v1/notifications/verify-webhook-signature`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        auth_algo: authAlgo,
+        cert_url: certUrl,
+        transmission_id: transmissionId,
+        transmission_sig: transmissionSig,
+        transmission_time: transmissionTime,
+        webhook_event: webhookEvent,
+        webhook_id: webhookId,
+      }),
+    },
+  )
+  return verification_status === "SUCCESS"
+}

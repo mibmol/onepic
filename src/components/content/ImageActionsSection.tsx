@@ -1,16 +1,9 @@
-import { startWebhookListener } from "@/lib/client/webhookListener"
 import { usePageProps } from "@/lib/hooks/usePageProps"
-import { isClient, isDev } from "@/lib/utils"
-import { useEffect } from "react"
 import { ModelForm } from "./ModelForm"
 import { Text } from "@/components/common"
 
 export const ImageActionsSection = () => {
   const { titleToken, descriptionToken } = usePageProps<any>()
-
-  useEffect(() => {
-    if (isClient() && isDev()) startWebhookListener()
-  }, [])
 
   return (
     <section className="md:w-2/5 ml-12">

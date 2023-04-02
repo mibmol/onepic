@@ -1,7 +1,7 @@
+import pino from "pino"
+import type { NextApiRequest, NextApiResponse } from "next"
 import * as replicateService from "@/lib/server/replicateService"
 import { isString } from "class-validator"
-import type { NextApiRequest, NextApiResponse } from "next"
-import pino from "pino"
 
 const logger = pino({ name: "cancel.handler" })
 
@@ -20,6 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json(result)
   } catch (error) {
     logger.error(error)
-    return res.status(500).json({ error: error.toString() })
+    return res.status(500).json({ error })
   }
 }

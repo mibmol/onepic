@@ -59,7 +59,6 @@ export default authenticated(async (req, res) => {
     if (planType === PlanType.subscription) {
       const { status } = await paypal.getSubscription(subscriptionId)
       if (isSubscriptionCompleted(status)) {
-        console.log(selectedPlan, getSubscriptionPrice(selectedPlan))
         const { totalCredits, value } = getSubscriptionPrice(selectedPlan)
         await supabaseService.saveOrder({
           subscriptionId,

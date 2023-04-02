@@ -10,8 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(404).json({ error: "method not allowed" })
   }
 
-  const { output, status, id, metrics, ...rest } =
-    typeof req.body === "string" ? JSON.parse(req.body) : req.body
+  const { output, status, id, metrics, ...rest } = req.body
 
   if (rest.error) {
     logger.error(rest.error)
@@ -34,6 +33,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ msg: "updated" })
   } catch (error) {
     logger.error(error)
-    return res.status(500).json({ error: error.toString() })
+    return res.status(500).json({ error})
   }
 }

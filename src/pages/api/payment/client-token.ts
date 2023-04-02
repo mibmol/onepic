@@ -15,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ clientToken })
   } catch (error) {
     logger.error(error)
-    return res.status(500).json({ error: error.toString() })
+    return res.status(500).json({ error})
   }
 }
 

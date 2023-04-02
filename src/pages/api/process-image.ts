@@ -11,14 +11,26 @@ import pino from "pino"
 const logger = pino({ name: "process-image.handler" })
 
 const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => {
-  if (req.method !== "POST") {
+  const { method, body, session } = req
+  if (method !== "POST") {
     return res.status(404).json({ error: "method not allowed" })
   }
 
-  const predictionOptions = new Prediction().setValues(req.body)
+  const predictionOptions = new Prediction().setValues(body)
   const errors = await validate(predictionOptions)
   if (errors.length > 0) {
     return res.status(400).json({ error: { validation: errors } })
+  }
+
+  const { error, user } = await supabaseService.getUser(session.user.id)
+
+  if (error) {
+    logger.error(error)
+    return res.status(500).json({ error })
+  }
+
+  if (user.credits <= 0) {
+    return res.status(400).json({ msg: "no credits" })
   }
 
   try {
@@ -26,7 +38,7 @@ const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => 
     const { error } = await supabaseService.insertPrediction(
       predictionOptions,
       result,
-      req.session,
+      session.user,
     )
 
     if (error) {
@@ -35,7 +47,7 @@ const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => 
     return res.status(200).json(result)
   } catch (error) {
     logger.error(error)
-    return res.status(500).json({ error: error.toString() })
+    return res.status(500).json({ error})
   }
 }
 

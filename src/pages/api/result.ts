@@ -27,6 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json(prediction)
   } catch (error) {
     logger.error(error)
-    return res.status(500).json({ error: error.toString() })
+    return res.status(500).json({ error })
   }
 }
