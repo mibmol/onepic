@@ -9,10 +9,29 @@ declare module "next-auth" {
   interface Session {
     supabaseAccessToken?: string
     user: {
-      id?: string
-      address?: string
+      id: string
     } & DefaultSession["user"]
   }
+}
+
+async function session({
+  session,
+  user,
+}: {
+  session: Session
+  user: User | AdapterUser
+}) {
+  const signingSecret = process.env.SUPABASE_JWT_SECRET
+  const payload = {
+    aud: "authenticated",
+    exp: Math.floor(new Date(session.expires).getTime() / 1000),
+    sub: user.id,
+    email: user.email,
+    role: "authenticated",
+  }
+  session.user.id = user.id
+  session.supabaseAccessToken = jwt.sign(payload, signingSecret)
+  return session
 }
 
 export const authOptions: NextAuthOptions = {
@@ -24,25 +43,7 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.SUPABASE_SERVICE_KEY,
   }),
   callbacks: {
-    session: async ({
-      session,
-      user,
-    }: {
-      session: Session
-      user: User | AdapterUser
-    }) => {
-      const signingSecret = process.env.SUPABASE_JWT_SECRET
-      const payload = {
-        aud: "authenticated",
-        exp: Math.floor(new Date(session.expires).getTime() / 1000),
-        sub: user.id,
-        email: user.email,
-        role: "authenticated",
-      }
-      session.user.id = user.id
-      session.supabaseAccessToken = jwt.sign(payload, signingSecret)
-      return session
-    },
+    session,
   },
   providers: [
     GoogleProvider({
