@@ -4,6 +4,7 @@ import { AdapterUser } from "next-auth/adapters"
 import { SupabaseAdapter } from "@next-auth/supabase-adapter"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
+import { assoc, assocPath, compose } from "ramda"
 
 declare module "next-auth" {
   interface Session {
@@ -32,9 +33,12 @@ export const authOptions: NextAuthOptions = {
         email: user.email,
         role: "authenticated",
       }
-      session.user.id = user.id
-      session.supabaseAccessToken = jwt.sign(payload, signingSecret)
-      return session
+      // session.user.id = user.id
+      // session.supabaseAccessToken = jwt.sign(payload, signingSecret)
+      return compose(
+        assocPath(["user", "id"], user.id),
+        assoc("supabaseAccessToken", jwt.sign(payload, signingSecret)),
+      )(session) as any
     },
   },
   providers: [
