@@ -2,12 +2,11 @@ import { Prediction } from "@/lib/data/entities/prediction"
 import { getModelByName } from "@/lib/data/models"
 import * as replicateService from "@/lib/server/replicateService"
 import * as supabaseService from "@/lib/server/supabaseService"
-import { NextApiRequestWithSession } from "@/lib/server/authenticated"
 import { isNotNil } from "@/lib/utils"
 import { validate } from "class-validator"
 import type { NextApiResponse } from "next"
 import pino from "pino"
-import { createApiHandler } from "@/lib/server/apiHandler"
+import { createApiHandler, NextApiRequestWithSession } from "@/lib/server/apiHandler"
 
 const logger = pino({ name: "process-image.handler" })
 
