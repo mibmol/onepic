@@ -28,7 +28,7 @@ const getTextSizeClass = (size: TextSize) => {
     case "xm":
       return "text-xs"
     case "sm":
-      return "text-base"
+      return "text-sm"
     case "md":
       return "text-md"
     case "lg":

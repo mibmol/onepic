@@ -4,6 +4,7 @@ import { removeNilKeys } from "@/lib/utils/object"
 import { User } from "next-auth"
 import { getModelByName } from "@/lib/data/models"
 import { getSubscriptionPrice } from "../utils"
+import { isNil, propEq } from "ramda"
 
 // Use on SERVER only!
 const supabase = createClient(
@@ -178,9 +179,17 @@ export async function getUserPlan({ userId }) {
   if (error || error2) {
     throw error ?? error2
   }
-
+  const subscription = subscriptions?.find(({ end_date }) => isNil(end_date))
+  const haveSubscription = !isNil(subscription)
   return {
     credits: user.credits,
-    subscription: {},
+    planType: haveSubscription ? PlanType.subscription : PlanType.credits,
+    subscription: haveSubscription
+      ? {
+          plan: subscription.plan,
+          startDate: subscription.start_date,
+          subscriptionId: subscription.subscription_id,
+        }
+      : null,
   }
 }

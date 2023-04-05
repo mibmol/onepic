@@ -44,27 +44,43 @@ const ProfileMenuTrigger = ({ imageUrl }) => {
   )
 }
 
-const PlanInfo: FC = () => {
-  const {} = useSWR("planInfo", getUserPlanInfo)
-  return <></>
+const UserPlanInfo: FC<{ user: any }> = ({ user }) => {
+  const { data } = useSWR("planInfo", getUserPlanInfo)
+  return (
+    <div className="px-6">
+      <Text as="h2" semibold>
+        {user.name}
+      </Text>
+      {data ? (
+        <>
+          <Text as="h3">
+            <Text labelToken="Credits" size="sm" />:
+            <Text className="ml-2" size="sm" medium>
+              {data.credits}
+            </Text>
+          </Text>
+          {data.subscription && (
+            <Text as="h3">
+              <Text labelToken="Subscription" size="sm" />:
+              <Text className="ml-2" labelToken="active" size="sm" medium />
+            </Text>
+          )}
+        </>
+      ) : (
+        <></>
+      )}
+    </div>
+  )
 }
 
 const ProfileMenuContent = ({ user }) => {
   const { t } = useTranslation()
   return (
     <div className="w-72 py-4 rounded bg-white shadow-lg dark:bg-black dark:border dark:border-gray-800 ">
-      <div className="px-6">
-        <Text as="h3" semibold>
-          {user.name}
-        </Text>
-        <Text as="h3" gray>
-          {user.email}
-        </Text>
+      <div className="border-b border-gray-200 pb-4 dark:border-gray-700">
+        <UserPlanInfo {...{ user }} />
       </div>
-      <div>
-        <PlanInfo />
-      </div>
-      <ul className="mt-3">
+      <ul className="mt-2">
         <li>
           <Link
             href="/dashboard"
