@@ -26,7 +26,3 @@ export default createApiHandler({
     return res.status(200).json(prediction)
   },
 })
-
-export const config = {
-  runtime: "edge",
-}
