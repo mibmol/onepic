@@ -9,7 +9,7 @@ import { AppInitializer } from "@/components/content/AppInitializer"
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page)
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" >
       <SessionProvider {...{ session }}>
         <ReduxProvider>
           {getLayout(<Component {...pageProps} />)}

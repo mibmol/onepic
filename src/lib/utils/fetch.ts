@@ -20,6 +20,8 @@ const getBody = cond([
   [T, (response: Response) => response.json()],
 ])
 
+export type FetchJsonError<T = any> = Response & { body: T }
+
 export const fetchJson = async (url: RequestInfo | URL, options?: ReqOptions) => {
   const response = await fetch(url, {
     ...options,
@@ -36,7 +38,7 @@ export const fetchJson = async (url: RequestInfo | URL, options?: ReqOptions) =>
     if (response.status === 401 && shouldRedirectToLogin) {
       return redirectToLogin()
     }
-    throw { ...response, body }
+    throw { ...response, body } as FetchJsonError
   }
   return body
 }

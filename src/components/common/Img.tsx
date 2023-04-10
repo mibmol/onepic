@@ -1,4 +1,4 @@
-import { randomInt } from "@/lib/utils/number"
+import { randomInt } from "@/lib/utils"
 import { compose, toString } from "ramda"
 import {
   DetailedHTMLProps,

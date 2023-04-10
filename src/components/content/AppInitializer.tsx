@@ -1,4 +1,3 @@
-import { startWebhookListener } from "@/lib/client/webhookListener"
 import { useAppDispatch } from "@/lib/state/hooks"
 import { getUserMode, themeSlice } from "@/lib/state/themeSlice"
 import { isClient, isDev } from "@/lib/utils"
@@ -12,14 +11,22 @@ export const AppInitializer: FC = () => {
 
   useEffect(() => {
     const cleanUpFunctions = []
+
     if (isClient()) {
       dispatch(setMode(getUserMode()))
-      isDev() && cleanUpFunctions.push(startWebhookListener())
+      isDev() &&
+        import("@/lib/client/webhookListener").then(
+          ({ default: startWebhookListener }) => {
+            cleanUpFunctions.push(startWebhookListener())
+          },
+        )
     }
     return () => {
+      console.log("callbacks", cleanUpFunctions)
       callFunctionsInArray(cleanUpFunctions)
     }
-  }, [dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return <></>
 }

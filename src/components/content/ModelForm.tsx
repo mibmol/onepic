@@ -4,17 +4,17 @@ import { usePageProps } from "@/lib/hooks/usePageProps"
 import { useAppDispatch, useAppSelector } from "@/lib/state/hooks"
 import { imageGenerationSlice, processImage } from "@/lib/state/imageProcessingSlice"
 import { AppDispatch, AppState } from "@/lib/state/store"
-import { cn, notification } from "@/lib/utils"
+import { cn, FetchJsonError, notification, redirectToLogin } from "@/lib/utils"
 import { TFunction, useTranslation } from "next-i18next"
 import { FC, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { SubmitButton, Text, Select, NumberInput, Checkbox } from "@/components/common"
 import { useSession } from "next-auth/react"
-import { redirectToLogin } from "@/lib/utils/clientRouting"
+import { AppErrorCode, ReplicateStatus } from "@/lib/data/entities"
 
 const { setResultImage, stopProcessing, clearImages, setCurrentModelName } =
   imageGenerationSlice.actions
-  
+
 const checkProcessingState = async (
   predictionId: string,
   dispatch: AppDispatch,
@@ -23,23 +23,32 @@ const checkProcessingState = async (
   let intervalId = setInterval(async () => {
     try {
       const { output, status } = await getProcessImageState(predictionId)
-      if (status === "succeeded") {
+      if (status === ReplicateStatus.succeeded) {
         clearInterval(intervalId)
         dispatch(setResultImage({ output, predictionId }))
       }
-      if (status === "failed") {
+      if (status === ReplicateStatus.failed) {
         throw new Error(status)
       }
     } catch (error) {
       clearInterval(intervalId)
       dispatch(stopProcessing())
-      notification.error(t("And error occurred while processing"))
+      notification.error(t("And error occurred while processing"), {
+        position: "top-right",
+      })
     }
   }, 1500)
 }
 
-const checkValidationErrors = (error, t: TFunction) => {
-  const validations = error.body?.error?.validation
+const showErrors = (e: FetchJsonError, t: TFunction) => {
+  const { error, errorCode } = e.body ?? {}
+  if (errorCode === AppErrorCode.USER_OUT_OF_CREDITS) {
+    return notification.info(
+      t("You ran out of credits, please buy more credits or subscribe to a plan"),
+      { duration: 6000 },
+    )
+  }
+  const validations = error?.validation
   if (validations) {
     for (let { property } of validations) {
       if (property === "input") {
@@ -78,15 +87,16 @@ export const ModelForm = () => {
   )
 
   const onSubmit = handleSubmit((values) => {
-    session || selectedModel.credits === 0
-      ? dispatch(
-          processImage({
-            value: values,
-            onSuccess: ({ id }) => checkProcessingState(id, dispatch, t),
-            onError: (error) => checkValidationErrors(error, t),
-          }),
-        )
-      : redirectToLogin()
+    if (!session && selectedModel.credits > 0) {
+      return redirectToLogin()
+    }
+    dispatch(
+      processImage({
+        value: values,
+        onSuccess: ({ id }) => checkProcessingState(id, dispatch, t),
+        onError: (error) => showErrors(error, t),
+      }),
+    )
   })
 
   return (

@@ -4,7 +4,7 @@ import { isClient } from "@/lib/utils"
 
 export const useTheme = () => useAppSelector(({ theme }) => theme)
 
-export const useThemeMode = () => {
+export function useThemeMode() {
   const { mode, clientInitialized } = useTheme()
   if (!clientInitialized) return "system"
   if (mode === "system" && isClient()) return getSystemMode()

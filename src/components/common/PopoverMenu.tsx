@@ -55,7 +55,7 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className={cn("absolute z-50 mt-3", contentClassName)}>
+              <Popover.Panel className={cn("absolute z-200 mt-3", contentClassName)}>
                 {content({ onMouseEnter, onMouseLeave })}
               </Popover.Panel>
             </Transition>

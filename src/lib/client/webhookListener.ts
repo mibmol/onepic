@@ -1,12 +1,13 @@
 import { assoc, compose, curry, nth, path, split, toLower } from "ramda"
-import { fetchJson } from "../utils"
+import { fetchJson } from "@/lib/utils"
 
 const getSender = compose(toLower, nth(0), split("/"), path(["User-Agent", 0]))
 const headerGetter = curry((headers, headerName) => path([headerName, 0], headers))
 
-export const startWebhookListener = () => {
+export default function startWebhookListener() {
   const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBHOOK_RELAY_WS)
   ws.addEventListener("open", () => {
+    console.log("<--- ws open")
     ws.send(
       JSON.stringify({
         action: "auth",
@@ -17,7 +18,7 @@ export const startWebhookListener = () => {
   })
 
   ws.addEventListener("close", (e) => {
-    console.log("<--- ws closed", e)
+    console.log("<--- ws closed", e.reason)
   })
 
   ws.addEventListener("error", (e) => {
@@ -38,8 +39,8 @@ export const startWebhookListener = () => {
     }
 
     if (type === "webhook" && headers && body) {
-      console.log({ type, body: JSON.parse(body ?? "{}") })
       const sender = getSender(headers)
+      console.log({ type, sender, body: JSON.parse(body ?? "{}") })
       switch (sender) {
         case "paypal":
           const getHeader = headerGetter(headers)

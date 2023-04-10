@@ -7,6 +7,7 @@ import { validate } from "class-validator"
 import type { NextApiResponse } from "next"
 import pino from "pino"
 import { createApiHandler, NextApiRequestWithSession } from "@/lib/server/apiHandler"
+import { AppErrorCode } from "@/lib/data/entities"
 
 const logger = pino({ name: "process-image.handler" })
 
@@ -27,7 +28,9 @@ const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => 
   }
 
   if (user.credits <= 0) {
-    return res.status(400).json({ msg: "no credits" })
+    return res
+      .status(400)
+      .json({ msg: "no credits", errorCode: AppErrorCode.USER_OUT_OF_CREDITS })
   }
 
   const prediction = await replicateService.generatePrediction(predictionOptions)

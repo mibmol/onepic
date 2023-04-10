@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { getImageUrl, uploadUserImage } from "@/lib/client/upload"
 import { AppState } from "./store"
 import { postProcessImage } from "@/lib/client/processing"
+import { FetchJsonError } from "@/lib/utils"
 
 type ImageProcessingState = {
   inputImageUrl: string
@@ -21,11 +22,12 @@ const initialState: ImageProcessingState = {
   currentModelName: null,
 }
 
-type ThunkArgs<T> = {
+type ThunkArgs<T, E = any> = {
   value: T
-  onError?: (e: Error) => void
+  onError?: (e: E) => void
   onSuccess?: (e: any) => void
 }
+
 export const uploadImage = createAsyncThunk(
   "imageProcessing/upload",
   async ({ value: file, onError }: ThunkArgs<File>, { rejectWithValue }) => {
@@ -43,7 +45,7 @@ export const uploadImage = createAsyncThunk(
 export const processImage = createAsyncThunk(
   "imageProcessing/process",
   async (
-    { value, onError, onSuccess }: ThunkArgs<any>,
+    { value, onError, onSuccess }: ThunkArgs<any, FetchJsonError>,
     { getState, rejectWithValue },
   ) => {
     const {

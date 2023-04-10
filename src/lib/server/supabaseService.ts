@@ -1,10 +1,9 @@
 import { createClient } from "@supabase/supabase-js"
 import { PlanType, ReplicatePrediction } from "@/lib/data/entities"
-import { removeNilKeys } from "@/lib/utils/object"
+import { pickAndRename, removeNilKeys, getSubscriptionPrice } from "@/lib/utils"
 import { User } from "next-auth"
 import { getModelByName } from "@/lib/data/models"
-import { getSubscriptionPrice } from "../utils"
-import { isNil, propEq } from "ramda"
+import { isNil } from "ramda"
 
 // Use on SERVER only!
 const supabase = createClient(
@@ -81,12 +80,16 @@ export async function updatePrediction({
 
 export async function updateUserCredits({ predictionId }) {
   const { error, prediction } = await getPrediction(predictionId)
-  if (error || !prediction?.user) return
+  if (error) throw error
+  if (!prediction?.user) return
 
-  const { user } = prediction
-  if (user?.plan_type === PlanType.credits && user?.credits > 0) {
+  const {
+    user: { id, credits },
+  } = prediction
+
+  if (credits > 0) {
     const { credits } = getModelByName(prediction.model_name)
-    await supabase.rpc("decrement_user_credits", { user_id: user.id, n: credits })
+    await supabase.rpc("decrement_user_credits", { user_id: id, n: credits })
   }
 }
 
@@ -170,6 +173,12 @@ export async function endSubscription({ subscriptionId }) {
   }
 }
 
+const renameSubscriptionFields = pickAndRename([
+  "plan",
+  { field: "start_date", renameTo: "startDate" },
+  { field: "subscription_id", renameTo: "subscriptionId" },
+])
+
 export async function getUserPlan({ userId }) {
   const [{ error, data: user }, { error: error2, data: subscriptions }] =
     await Promise.all([
@@ -184,12 +193,25 @@ export async function getUserPlan({ userId }) {
   return {
     credits: user.credits,
     planType: haveSubscription ? PlanType.subscription : PlanType.credits,
-    subscription: haveSubscription
-      ? {
-          plan: subscription.plan,
-          startDate: subscription.start_date,
-          subscriptionId: subscription.subscription_id,
-        }
-      : null,
+    subscription: haveSubscription ? renameSubscriptionFields(subscription) : null,
   }
+}
+
+export async function getUserPredictions({ userId, lastId, limit }) {
+  let query = supabase
+    .from("prediction_result")
+    .select()
+    .eq("user_id", userId)
+    .order("id", { ascending: false })
+    .limit(limit)
+
+  if (lastId && lastId !== 0) {
+    query = query.lt("id", lastId)
+  }
+
+  const { error, data } = await query
+
+  if (error) throw error
+
+  return data
 }

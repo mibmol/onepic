@@ -1,4 +1,4 @@
-import { toast } from "react-hot-toast"
+import { toast, ToastOptions } from "react-hot-toast"
 import {
   ExclamationTriangleIcon,
   InformationCircleIcon,
@@ -7,9 +7,11 @@ import {
 export const notification = {
   success: toast.success,
   error: toast.error,
-  info: (message: string) =>
+  info: (message: string, options?: ToastOptions) =>
     toast(message, {
       icon: <InformationCircleIcon className="text-yellow-500" width={32} height={32} />,
+      ...options,
     }),
-  warning: (message: string) => toast(message, { icon: <ExclamationTriangleIcon /> }),
+  warning: (message: string, options?: ToastOptions) =>
+    toast(message, { icon: <ExclamationTriangleIcon />, ...options }),
 }

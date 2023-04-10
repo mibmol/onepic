@@ -85,29 +85,36 @@ const HeaderLink = ({ href, labelToken }) => {
 
 type HeaderProps = {
   className?: string
+  showBottomLineOnScroll?: boolean
+  noSticky?: boolean
 }
-export const Header: FC<HeaderProps> = ({ className }) => {
+export const Header: FC<HeaderProps> = ({
+  className,
+  showBottomLineOnScroll = true,
+  noSticky = false,
+}) => {
   const headerRef = useRef<HTMLElement>(null)
   const router = useRouter()
 
   useEffect(() => {
     const handler = () => {
-      window.scrollY > 16
+      showBottomLineOnScroll && window.scrollY > 16
         ? headerRef.current.classList.add("border-b")
         : headerRef.current.classList.remove("border-b")
     }
     document.addEventListener("scroll", handler)
     return () => document.removeEventListener("scroll", handler)
-  }, [])
+  }, [showBottomLineOnScroll])
 
   return (
     <header
       ref={headerRef}
       className={cn(
         `
-          sticky top-0 flex justify-between items-center px-12 py-5 border-gray-200 bg-white z-200
+          top-0 flex justify-between items-center px-12 py-5 border-gray-200 bg-white z-200
           dark:bg-black dark:border-gray-800
         `,
+        { sticky: !noSticky },
         className,
       )}
     >

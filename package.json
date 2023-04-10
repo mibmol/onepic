@@ -37,6 +37,7 @@
     "react-hook-form": "^7.42.1",
     "react-hot-toast": "^2.4.0",
     "react-i18next": "^12.1.4",
+    "react-loading-skeleton": "^3.2.0",
     "react-redux": "^8.0.5",
     "react-use": "^17.4.0",
     "swr": "^2.1.1",
