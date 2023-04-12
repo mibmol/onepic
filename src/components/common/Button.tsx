@@ -6,9 +6,10 @@ import {
   InputHTMLAttributes,
   PropsWithChildren,
   SVGProps,
+  useMemo,
 } from "react"
 import { useTranslation } from "next-i18next"
-import { cn } from "@/lib/utils"
+import { cn, removeSimilarClasses } from "@/lib/utils"
 import Link, { LinkProps } from "next/link"
 import { always, cond, equals } from "ramda"
 
@@ -76,11 +77,17 @@ export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({
 }) => {
   const { t } = useTranslation()
   const iconPlacementRight = iconPlacement === "right"
-  const classes = cn(
-    "flex px-4 py-3 font-medium items-center",
-    getButtonColorClasses(variant),
-    { "flex-row-reverse": iconPlacement === "right" },
-    className,
+  const classes = useMemo(
+    () =>
+      removeSimilarClasses(
+        cn(
+          "flex px-4 py-3 font-medium items-center",
+          getButtonColorClasses(variant),
+          { "flex-row-reverse": iconPlacement === "right" },
+          className,
+        ),
+      ),
+    [className, variant, iconPlacement],
   )
 
   const content = (
