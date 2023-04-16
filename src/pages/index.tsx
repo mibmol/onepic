@@ -32,7 +32,7 @@ const Home: NextPage = ({}) => {
             as="h1"
             className="max-w-3xl mx-auto"
             labelToken="Transform Your Photos with AI Magic"
-            size="7xl"
+            size="6xl"
             bold
           />
           <Text

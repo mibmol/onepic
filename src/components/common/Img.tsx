@@ -21,7 +21,7 @@ const getUrlWithRandParam = compose(
   toString,
   (url: URL) => {
     url.searchParams.set("imgRand", randomInt().toString())
-    return url
+    return
   },
   (url: string) => new URL(url),
 )

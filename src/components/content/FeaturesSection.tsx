@@ -57,7 +57,7 @@ export const FeaturesSection = () => {
   return (
     <section
       id="features"
-      className="mx-auto mt-40 mb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:max-w-6xl scroll-mt-48 md:scroll-mt-28"
+      className="mx-auto mt-40 mb-24 px-4 lg:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:max-w-6xl scroll-mt-48 md:scroll-mt-28"
     >
       {features.map((feature) => (
         <FeatureBox key={feature.titleToken} {...{ feature }} />
@@ -87,7 +87,7 @@ const FeatureBox: FC<FeatureBoxProps> = ({
     >
       {isSlider && <ImageSlider {...{ imgUrls }} altTextToken={titleToken} />}
       <FakeButton labelToken={titleToken} />
-      <article className="absolute top-64">
+      <article className="absolute top-64 pr-3">
         <Text as="h1" size="xl" labelToken={titleToken} className="mb-2" bold />
         <Text as="p" size="sm" labelToken={descriptionToken} medium />
       </article>

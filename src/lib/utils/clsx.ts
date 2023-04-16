@@ -2,7 +2,7 @@ export { clsx as cn } from "clsx"
 
 const defaultOption = { preferLast: true }
 
-export function removeSimilarClasses(
+export function removeSimilarTWClasses(
   classes: string,
   { preferLast } = defaultOption,
 ): string {
@@ -14,7 +14,9 @@ export function removeSimilarClasses(
     const i = classname.lastIndexOf("-")
     if (i !== -1) {
       const id = classname.slice(0, i)
-      if (ids.get(id)) {
+      if (id === "text") {
+        result.push(classname)
+      } else if (ids.get(id)) {
         preferLast && ids.set(id, classname)
       } else {
         ids.set(id, classname)

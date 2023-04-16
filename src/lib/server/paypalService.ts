@@ -1,4 +1,5 @@
 import { fetchJson, getSubscriptionPlanId } from "@/lib/utils"
+import { path } from "ramda"
 
 const { NEXT_PUBLIC_PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_API_URL } = process.env
 
@@ -122,4 +123,22 @@ export async function validateWebhook({
     },
   )
   return verification_status === "SUCCESS"
+}
+
+const getChargeTime = path(["billing_info", "next_billing_time"])
+
+export async function getSubscriptionNextChargeTime(subscriptionId: string) {
+  const subscription = await getSubscription(subscriptionId)
+  console.log("<---- subsus", subscription)
+  return getChargeTime(subscription)
+}
+
+export async function cancelSubscription(subscriptionId) {
+  const accessToken = await generateAccessToken()
+  await fetchJson(`${PAYPAL_API_URL}/v1/billing/subscriptions/${subscriptionId}/cancel`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
 }

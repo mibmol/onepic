@@ -1,16 +1,14 @@
-import jwt from "jsonwebtoken"
-import NextAuth, { DefaultSession, NextAuthOptions, Session, User } from "next-auth"
-import { AdapterUser } from "next-auth/adapters"
+import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth"
 import { SupabaseAdapter } from "@next-auth/supabase-adapter"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
-import { assoc, assocPath, compose } from "ramda"
 
 declare module "next-auth" {
   interface Session {
     supabaseAccessToken?: string
     user: {
       id: string
+      name: string
     } & DefaultSession["user"]
   }
 }
@@ -25,20 +23,8 @@ export const authOptions: NextAuthOptions = {
   }),
   callbacks: {
     session: async ({ session, user }) => {
-      const signingSecret = process.env.SUPABASE_JWT_SECRET
-      const payload = {
-        aud: "authenticated",
-        exp: Math.floor(new Date(session.expires).getTime() / 1000),
-        sub: user.id,
-        email: user.email,
-        role: "authenticated",
-      }
-      // session.user.id = user.id
-      // session.supabaseAccessToken = jwt.sign(payload, signingSecret)
-      return compose(
-        assocPath(["user", "id"], user.id),
-        assoc("supabaseAccessToken", jwt.sign(payload, signingSecret)),
-      )(session) as any
+      session.user.id = user.id
+      return session as any
     },
   },
   providers: [

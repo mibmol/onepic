@@ -41,3 +41,11 @@ export async function createSubscription({ plan }): Promise<string> {
 export function getUserPlanInfo() {
   return fetchJson("/api/plan/info")
 }
+
+export function getSubscriptionNextChargeTime() {
+  return fetchJson("/api/plan/next-charge")
+}
+
+export function cancelUserSubscription() {
+  return fetchJson("/api/plan/cancel-subscription", { method: "PATCH", body: "{}" })
+}

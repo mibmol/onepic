@@ -28,19 +28,19 @@ export default createApiHandler({
     }
 
     const { event_type, resource } = req.body
-    const billingId = resource.billing_agreement_id
+    const objectId = resource.billing_agreement_id ?? resource.id
     switch (event_type) {
       case PaypalWebhook.SALE_COMPLETED:
-        if (isSubscriptionId(billingId)) {
+        if (isSubscriptionId(objectId)) {
           await supabaseService.saveSubscriptionPayment({
-            subscriptionId: billingId,
+            subscriptionId: objectId,
             paidAmount: resource.amount.total,
           })
         }
       case PaypalWebhook.SUBSCRIPTION_CANCELLED:
       case PaypalWebhook.SUBSCRIPTION_EXPIRED:
       case PaypalWebhook.SUBSCRIPTION_SUSPENDED:
-        await supabaseService.endSubscription({ subscriptionId: billingId })
+        await supabaseService.endSubscription({ subscriptionId: objectId })
       default:
         break
     }

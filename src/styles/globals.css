@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+.dot-pulse-before {
+  animation: dot-pulse 0.5s infinite linear;
+  animation-delay: 0s;
+  animation-direction: alternate-reverse;
+}
+
+.dot-pulse {
+    animation: dot-pulse 0.5s infinite linear;
+    animation-delay: 0.2s;
+    animation-direction: alternate-reverse;
+  }
+
+.dot-pulse-after {
+  animation: dot-pulse 0.5s infinite ease-in-out;
+  animation-delay: 0.40s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes dot-pulse {
+  0% {
+    width: 20%;
+    height: 20%;
+  }
+
+  40% {
+    width: 40%;
+    height: 40%;
+  }
+
+  70% {
+    width: 70%;
+    height: 70%;
+  }
+
+  100% {
+    width: 100%;
+    height: 100%;
+  }
+}

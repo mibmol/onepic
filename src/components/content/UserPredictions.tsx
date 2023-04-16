@@ -1,7 +1,7 @@
 import { getUserPredictions } from "@/lib/client/dashboard"
 import { complement, compose, descend, isEmpty, nth, path, prop, sort } from "ramda"
 import { FC, Fragment, useEffect, useMemo } from "react"
-import { Img } from "@/components/common"
+import { Img, Text } from "@/components/common"
 import { useTranslation } from "next-i18next"
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
 import {
@@ -34,6 +34,7 @@ const fetcher = (lastId: string) =>
   })
 
 const shouldLoadMore = compose(complement(isEmpty), path(["predictions"]), last)
+const hasResultItems = compose(complement(isEmpty), path([0, "predictions"]))
 
 export const UserPredictions: FC = () => {
   const { t } = useTranslation()
@@ -65,13 +66,17 @@ export const UserPredictions: FC = () => {
         sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7
       `}
     >
-      {data?.map(({ predictions }, index) => (
-        <Fragment key={index}>
-          {predictions.map((item) => (
-            <PredictionItem key={item.id} {...item} />
-          ))}
-        </Fragment>
-      ))}
+      {hasResultItems(data) ? (
+        data?.map(({ predictions }, index) => (
+          <Fragment key={index}>
+            {predictions?.map((item) => (
+              <PredictionItem key={item.id} {...item} />
+            ))}
+          </Fragment>
+        ))
+      ) : (
+        <Text className="col-span-2" labelToken="Your processed images will appear here" size="xl" medium gray />
+      )}
       {isLoading && <LoadingSkeleton />}
     </ul>
   )
@@ -111,7 +116,7 @@ const LoadingSkeleton: FC = () => {
   const loadingCount = useMemo(() => sequentialIntegers(6), [])
 
   const [baseColor, highlightColor] =
-    themeMode === "dark" ? ["#09090b", "#18181b"] : ["#f9fafb", "#e5e7eb"]
+    themeMode === "dark" ? ["#111827", "#1f2937"] : ["#f3f4f6", "#d1d5db"]
   return (
     <>
       {loadingCount.map((n) => (

@@ -88,10 +88,11 @@ type HeaderProps = {
   showBottomLineOnScroll?: boolean
   noSticky?: boolean
 }
+
 export const Header: FC<HeaderProps> = ({
   className,
   showBottomLineOnScroll = true,
-  noSticky = false,
+  noSticky,
 }) => {
   const headerRef = useRef<HTMLElement>(null)
   const router = useRouter()
@@ -147,7 +148,7 @@ export const Header: FC<HeaderProps> = ({
           </li>
         </ul>
       </nav>
-      <div className="flex">
+      <div className="flex justify-end w-48">
         <ProfileMenu />
       </div>
     </header>

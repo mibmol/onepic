@@ -6,6 +6,7 @@ module.exports = {
     "./src/**/*.{jsx,tsx}",
   ],
   darkMode: "class",
+  safelist: [{ pattern: /text-(xm|sm|base|lg|xl|2xl|4xl|6xl|7xl)/ }],
   theme: {
     fontFamily: {
       sans: ["Inter", ...defaultTheme.fontFamily.sans],
@@ -29,7 +30,8 @@ module.exports = {
       zIndex: {
         '100': '100',
         '150': '150',
-        '200': '200'
+        '200': '200',
+        'max': '9999',
       }
     },
   },

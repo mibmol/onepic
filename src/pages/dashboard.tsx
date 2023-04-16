@@ -6,13 +6,15 @@ import { PagePropsProvider } from "@/lib/hooks"
 import { Footer } from "@/components/layout/Footer"
 import { Tab } from "@headlessui/react"
 import { BookOpenIcon, Cog6ToothIcon } from "@heroicons/react/24/outline"
-import { cn } from "@/lib/utils"
+import { cn, getQueryParams, toInt } from "@/lib/utils"
 import { useTranslation } from "next-i18next"
 import { UserPredictions } from "@/components/content/UserPredictions"
+import { UserSettings } from "@/components/content/UserSettings"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
-
   return {
     props: { ...localeProps },
   }
@@ -41,6 +43,27 @@ const TabButton = ({ selected, labelToken, Icon }) => {
   )
 }
 
+const CustomTabGroup = ({ children }) => {
+  const router = useRouter()
+  const [tabIndex, setTabIndex] = useState(0)
+  const currentIndex = getQueryParams().get("tabIndex")
+
+  useEffect(() => {
+    currentIndex && setTabIndex(toInt(currentIndex))
+  }, [currentIndex])
+
+  return (
+    <Tab.Group
+      selectedIndex={tabIndex}
+      onChange={(index) => {
+        router.push(router.pathname, { query: { tabIndex: index } })
+      }}
+    >
+      {children}
+    </Tab.Group>
+  )
+}
+
 const DashboardPage: NextPage = ({}) => {
   return (
     <PagePropsProvider
@@ -49,7 +72,7 @@ const DashboardPage: NextPage = ({}) => {
       <SharedHead />
       <Header className="border-b" showBottomLineOnScroll={false} noSticky />
       <main className=" pt-4">
-        <Tab.Group>
+        <CustomTabGroup>
           <Tab.List className="sticky top-0 pt-3 z-50 w-full pb-3 border-b border-gray-200 bg-white dark:bg-black dark:border-gray-700">
             <Tab className="ml-4 outline-none">
               {({ selected }) => (
@@ -74,9 +97,11 @@ const DashboardPage: NextPage = ({}) => {
             <Tab.Panel className="min-h-screen">
               <UserPredictions />
             </Tab.Panel>
-            <Tab.Panel>Content 2</Tab.Panel>
+            <Tab.Panel>
+              <UserSettings />
+            </Tab.Panel>
           </Tab.Panels>
-        </Tab.Group>
+        </CustomTabGroup>
       </main>
       <Footer />
     </PagePropsProvider>

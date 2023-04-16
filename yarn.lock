@@ -5,12 +5,21 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.9.2":
   version: 7.20.13
   resolution: "@babel/runtime@npm:7.20.13"
   dependencies:
     regenerator-runtime: ^0.13.11
   checksum: 09b7a97a05c80540db6c9e4ddf8c5d2ebb06cae5caf3a87e33c33f27f8c4d49d9c67a2d72f1570e796045288fad569f98a26ceba0c4f5fad2af84b6ad855c4fb
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.20.13":
+  version: 7.21.0
+  resolution: "@babel/runtime@npm:7.21.0"
+  dependencies:
+    regenerator-runtime: ^0.13.11
+  checksum: 7b33e25bfa9e0e1b9e8828bb61b2d32bdd46b41b07ba7cb43319ad08efc6fda8eb89445193e67d6541814627df0ca59122c0ea795e412b99c5183a0540d338ab
   languageName: node
   linkType: hard
 
@@ -255,10 +264,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@panva/hkdf@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "@panva/hkdf@npm:1.0.2"
-  checksum: 75183b4d5ea816ef516dcea70985c610683579a9e2ac540c2d59b9a3ed27eedaff830a43a1c43c1683556a457c92ac66e09109ee995ab173090e4042c4c4bb03
+"@panva/hkdf@npm:^1.0.2":
+  version: 1.0.4
+  resolution: "@panva/hkdf@npm:1.0.4"
+  checksum: d93b511eba76f5f1f1525834c3effb86e236e6a7d08d0abc067075694c6814909e172b7bed94b9eaeceb074306a6edd7981eb6a2a46922dd36b2f3d30ee9764e
   languageName: node
   linkType: hard
 
@@ -334,21 +343,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@supabase/functions-js@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@supabase/functions-js@npm:2.0.0"
+"@supabase/functions-js@npm:^2.1.0":
+  version: 2.1.1
+  resolution: "@supabase/functions-js@npm:2.1.1"
   dependencies:
     cross-fetch: ^3.1.5
-  checksum: 023d1bf17a7e58d40822ef09ea0d751a807dc9028ba5f47b93177f2d3c13bcebe1db109dc1c507e4b5d8efdedb8f1b13d2e1bfef34adf1e81126b6d970027cce
+  checksum: a8b74726e557a3a19efbe70db2c0080a5745e41a5ad7421b86a1286c96b96f77bfc0f89c988ae9ab4a328822956dc6ccdf5de6a718405baea15776015afe8e36
   languageName: node
   linkType: hard
 
-"@supabase/gotrue-js@npm:^2.10.2":
-  version: 2.11.0
-  resolution: "@supabase/gotrue-js@npm:2.11.0"
+"@supabase/gotrue-js@npm:^2.22.0":
+  version: 2.22.1
+  resolution: "@supabase/gotrue-js@npm:2.22.1"
   dependencies:
     cross-fetch: ^3.1.5
-  checksum: 7adf38317b1b3c9b1036abe2139ceaee89ea00abaef06d8ff701552ff2fd0c578b38189c3592db8095c9ee5be13e4c3e1360e4e1d02b59b57b0fb099da403fea
+  checksum: a2f66c5ded3e1da111eb7e141c6dbf010c4c222dd7821f123b4d2945e36fd0eabfcd7e428d7736b66e54e347576d2a73359fd670fad4453faf7f7424c079046e
   languageName: node
   linkType: hard
 
@@ -361,36 +370,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@supabase/realtime-js@npm:^2.4.0":
-  version: 2.6.0
-  resolution: "@supabase/realtime-js@npm:2.6.0"
+"@supabase/realtime-js@npm:^2.7.2":
+  version: 2.7.2
+  resolution: "@supabase/realtime-js@npm:2.7.2"
   dependencies:
     "@types/phoenix": ^1.5.4
+    "@types/websocket": ^1.0.3
     websocket: ^1.0.34
-  checksum: 3a3b696a0203fcc78c9be301f169315a131c8fd5efb88d470d2f48be24cacf2f8a4f37081a85b853b78c46e008b94875a6e8a3473fceb6a191965016e50c9e24
+  checksum: 0d6071991dfeeafcbfada30f39f6ed76ae83aefbdede611788879d493f7500c796050e0bef0bd589b9cf79cce0e170defe8a1d364e8cec3c8783cc4ac5314a3c
   languageName: node
   linkType: hard
 
-"@supabase/storage-js@npm:^2.1.0":
-  version: 2.3.0
-  resolution: "@supabase/storage-js@npm:2.3.0"
+"@supabase/storage-js@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "@supabase/storage-js@npm:2.5.1"
   dependencies:
     cross-fetch: ^3.1.5
-  checksum: 1b2b01f8334ae180f2895208d35f9ef266f83c8bea2e9b192f84e92b53647d08271e857c09a5fd6a0c4110fe40cb6a1c25954072efc6e6879f9eb8227db21aee
+  checksum: bff8673f7c5fb967385bff812e5dec22ad85df6982f3dc2745f46ecd2a0ede280684490adea752b647a995c1d3b33895921d87c2f0e3dd61d5704964a5b59bbd
   languageName: node
   linkType: hard
 
-"@supabase/supabase-js@npm:^2.4.0":
-  version: 2.7.0
-  resolution: "@supabase/supabase-js@npm:2.7.0"
+"@supabase/supabase-js@npm:^2.20.0":
+  version: 2.20.0
+  resolution: "@supabase/supabase-js@npm:2.20.0"
   dependencies:
-    "@supabase/functions-js": ^2.0.0
-    "@supabase/gotrue-js": ^2.10.2
+    "@supabase/functions-js": ^2.1.0
+    "@supabase/gotrue-js": ^2.22.0
     "@supabase/postgrest-js": ^1.1.1
-    "@supabase/realtime-js": ^2.4.0
-    "@supabase/storage-js": ^2.1.0
+    "@supabase/realtime-js": ^2.7.2
+    "@supabase/storage-js": ^2.5.1
     cross-fetch: ^3.1.5
-  checksum: 48a47f4efb3dc31bb4131f434073d00dad7884ff29a280a02e22a11dd4de017e5233a7ea664414e4a682431a3f7527fcae3f7c2d96af852429c0d8ca2c6a693a
+  checksum: 6795d2cfe6c1f009a9f0499368f731266e80f9113487a77a91e4e1bfd9b7e97c410b10579d3fc99362486c3cc27b822375a0ab0ced684ef2a73cfac9b7304438
   languageName: node
   linkType: hard
 
@@ -540,6 +550,15 @@ __metadata:
   version: 13.7.11
   resolution: "@types/validator@npm:13.7.11"
   checksum: fbf981a798f9c8dda774e55212945e6dd573eac6e1e520f6a56c11fd9232932d5537e2c848d2148ba6c4613787ad33616adc35d6a9b789614532a4c6a08d9d72
+  languageName: node
+  linkType: hard
+
+"@types/websocket@npm:^1.0.3":
+  version: 1.0.5
+  resolution: "@types/websocket@npm:1.0.5"
+  dependencies:
+    "@types/node": "*"
+  checksum: 41c7a620f877a0165ff36e713455d888b7f5df9c51e71b5d0f47994f98cf22ccd339b8c6cfdc6bb417e950d40f405693974d393bd916971490553cc5e9e67a9d
   languageName: node
   linkType: hard
 
@@ -713,7 +732,7 @@ __metadata:
     "@next/font": 13.1.2
     "@paypal/react-paypal-js": ^7.8.2
     "@reduxjs/toolkit": ^1.9.1
-    "@supabase/supabase-js": ^2.4.0
+    "@supabase/supabase-js": ^2.20.0
     "@tailwindcss/forms": ^0.5.3
     "@types/jsonwebtoken": ^9.0.1
     "@types/node": 18.11.18
@@ -729,7 +748,7 @@ __metadata:
     i18next: ^22.4.9
     jsonwebtoken: ^9.0.0
     next: 13.1.2
-    next-auth: ^4.18.8
+    next-auth: ^4.22.0
     next-i18next: ^13.0.3
     pino: ^8.8.0
     postcss: ^8.4.21
@@ -2851,10 +2870,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.10.0, jose@npm:^4.9.3":
+"jose@npm:^4.10.0":
   version: 4.11.2
   resolution: "jose@npm:4.11.2"
   checksum: bc9b2271c31683603857b2fd2903afa29f826fffd4bcefc0845355ed86995def87eaadf502033207996109d76698c912e5a986e279326d9629321a50504fe466
+  languageName: node
+  linkType: hard
+
+"jose@npm:^4.11.4":
+  version: 4.14.0
+  resolution: "jose@npm:4.14.0"
+  checksum: 107b64e005d1bac3ae648d57c141f80651d8956d4e7107a0c9e3481c685f74c8c8c4494463a412abd2ec0682dc0049c721883f2dac55fc8c25f4101093a4375a
   languageName: node
   linkType: hard
 
@@ -3279,16 +3305,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-auth@npm:^4.18.8":
-  version: 4.19.2
-  resolution: "next-auth@npm:4.19.2"
+"next-auth@npm:^4.22.0":
+  version: 4.22.0
+  resolution: "next-auth@npm:4.22.0"
   dependencies:
-    "@babel/runtime": ^7.16.3
-    "@panva/hkdf": ^1.0.1
+    "@babel/runtime": ^7.20.13
+    "@panva/hkdf": ^1.0.2
     cookie: ^0.5.0
-    jose: ^4.9.3
+    jose: ^4.11.4
     oauth: ^0.9.15
-    openid-client: ^5.1.0
+    openid-client: ^5.4.0
     preact: ^10.6.3
     preact-render-to-string: ^5.1.19
     uuid: ^8.3.2
@@ -3300,7 +3326,7 @@ __metadata:
   peerDependenciesMeta:
     nodemailer:
       optional: true
-  checksum: 7067147c80e4ba9ba328f27c548239895b746a04c0c4faa4f1e0c16cf82eb941ef7ed904a7d3bdf423f07791b471b55f5a2959f66b78495af4f02195d1a59c4e
+  checksum: 327a7715a963c890afd0b5a47316ce2c4cec887a86d96f2c208135df0f10b52c6e1fdcbb436a77926c24695165beea3bd0588da2411d5dec12fa19baae0c2533
   languageName: node
   linkType: hard
 
@@ -3627,15 +3653,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openid-client@npm:^5.1.0":
-  version: 5.3.4
-  resolution: "openid-client@npm:5.3.4"
+"openid-client@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "openid-client@npm:5.4.0"
   dependencies:
     jose: ^4.10.0
     lru-cache: ^6.0.0
     object-hash: ^2.0.1
     oidc-token-hash: ^5.0.1
-  checksum: 0daf48baa7bdc8a76487e58ed0881d13260e2bf320733cb43d774d863c215b85caa61983a74aaaf5e14592e95746adc44ebea0ca1a66f51d3e6488bd23f44c1f
+  checksum: d198dbcaf0aa1d8b9f0f1d99ae30e90ec594eaf9ae668b5d61f2ee9af94a4460968d8dea7e53bd18903a1fb9c445e05aefca965bb88be3688a4bac273d1634d9
   languageName: node
   linkType: hard
 

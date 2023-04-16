@@ -16,6 +16,17 @@ const supabase = createClient(
   },
 )
 
+const supabaseAuthSchema = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY,
+  {
+    db: { schema: "next_auth" },
+    global: {
+      fetch,
+    },
+  },
+)
+
 const defaultUrlDuration = 60 * 60 * 24 * 30 * 1 // 1 Month
 
 export async function getImageSignedUrl(
@@ -179,16 +190,26 @@ const renameSubscriptionFields = pickAndRename([
   { field: "subscription_id", renameTo: "subscriptionId" },
 ])
 
-export async function getUserPlan({ userId }) {
-  const [{ error, data: user }, { error: error2, data: subscriptions }] =
-    await Promise.all([
-      supabase.from("users").select().eq("id", userId).single(),
-      supabase.from("subscriptions").select().eq("user_id", userId),
-    ])
-  if (error || error2) {
-    throw error ?? error2
-  }
+export async function getUserActiveSubscription(userId: string): Promise<any> {
+  const { error, data: subscriptions } = await supabase
+    .from("subscriptions")
+    .select()
+    .eq("user_id", userId)
+
+  if (error) throw error
   const subscription = subscriptions?.find(({ end_date }) => isNil(end_date))
+  return subscription ? renameSubscriptionFields(subscription) : null
+}
+
+export async function getUserPlan({ userId }) {
+  const [{ error, data: user }, subscription] = await Promise.all([
+    supabase.from("users").select().eq("id", userId).single(),
+    getUserActiveSubscription(userId),
+  ])
+  if (error) {
+    throw error
+  }
+
   const haveSubscription = !isNil(subscription)
   return {
     credits: user.credits,
@@ -214,4 +235,19 @@ export async function getUserPredictions({ userId, lastId, limit }) {
   if (error) throw error
 
   return data
+}
+
+export async function updateUserName({ userId, newName }) {
+  const [{ error }, { error: error2 }] = await Promise.all([
+    supabase.from("users").update({ name: newName }).eq("id", userId),
+    supabaseAuthSchema.from("users").update({ name: newName }).eq("id", userId),
+  ])
+
+  if (error) throw error
+  if (error2) throw error2
+}
+
+export async function deleteUserAccount(userId: string) {
+  const { error } = await supabaseAuthSchema.rpc("delete_account", { user_id: userId })
+  if (error) throw error
 }
