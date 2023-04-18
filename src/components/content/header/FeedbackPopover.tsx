@@ -10,7 +10,7 @@ import { useMemo } from "react"
 import { useTranslation } from "next-i18next"
 import { RadioGroup } from "@headlessui/react"
 import { useForm } from "react-hook-form"
-import { cn, notification } from "@/lib/utils"
+import { cn, notification, removeSimilarTWClasses } from "@/lib/utils"
 import { postFeedback } from "@/lib/client/user"
 import { useMountedState } from "@/lib/hooks"
 
@@ -86,12 +86,14 @@ const FeedbackForm = ({ onSent }) => {
               key={name}
               value={name}
               className={({ checked }) =>
-                cn(
-                  "p-1.5 mr-2 cursor-pointer border rounded-full border-gray-200 outline-none hover:border-gray-700 dark:border-gray-600 dark:hover:border-gray-400",
-                  {
-                    "border-amber-600 bg-amber-100 hover:border-amber-600 dark:border-amber-400 dark:bg-amber-600/25":
-                      checked,
-                  },
+                removeSimilarTWClasses(
+                  cn(
+                    "p-1.5 mr-2 cursor-pointer border rounded-full border-gray-200 outline-none hover:border-gray-700 dark:border-gray-600 dark:hover:border-gray-400",
+                    {
+                      "border-amber-600 bg-amber-100 hover:border-amber-600 dark:border-amber-400 dark:bg-amber-600/25":
+                        checked,
+                    },
+                  ),
                 )
               }
             >
