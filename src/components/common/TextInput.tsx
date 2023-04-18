@@ -13,7 +13,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement>
 
 type TextInputProps = { textArea?: boolean } & (TextAreaProps | InputProps)
 
-export const TextInput: FC<TextInputProps> = forwardRef(function Text(
+export const TextInput = forwardRef(function Text(
   { textArea, className, ...props }: TextInputProps,
   ref,
 ) {
