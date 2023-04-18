@@ -86,6 +86,15 @@ const getButtonColorClasses = cond<ButtonVariant[], string>([
   ],
 ])
 
+export const getButtonStyles = (variant: ButtonVariant, className?: string) =>
+  removeSimilarTWClasses(
+    cn(
+      "relative group cursor-pointer rounded-md flex px-4 py-3 font-medium items-center",
+      getButtonColorClasses(variant),
+      className,
+    ),
+  )
+
 export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({
   labelToken,
   tokenArgs,
@@ -164,18 +173,16 @@ export const SubmitButton: FC<ButtonProps<InputSubmitProps>> = ({
   tokenArgs,
   className,
   variant = "primary",
+  loading,
   ...props
 }) => {
   const { t } = useTranslation()
-  const classes = cn(
-    "flex px-4 py-3 font-medium",
-    getButtonColorClasses(variant),
-    className,
-  )
+  const classes = useMemo(() => getButtonStyles(variant, className), [variant, className])
   return (
     <input
       type="submit"
       className={classes}
+      disabled={loading}
       value={t(labelToken, tokenArgs)}
       {...props}
     />

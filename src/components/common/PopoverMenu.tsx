@@ -6,10 +6,12 @@ type PopoverMenuProps = {
   trigger: (open: boolean) => ReactElement
   triggerClassName?: string
   content: (handlers: {
+    closeContent: () => void
     onMouseEnter: () => void
     onMouseLeave: () => void
   }) => ReactElement
   contentClassName?: string
+  openOnHover?: boolean
 }
 
 const timeoutDuration = 120
@@ -18,6 +20,7 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
   triggerClassName,
   content,
   contentClassName,
+  openOnHover = false,
 }) => {
   const triggerRef = useRef<HTMLButtonElement>()
   const timeOutRef = useRef(null)
@@ -38,8 +41,9 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
       {({ open }) => {
         const onMouseEnter = () => handleEnter(open)
         const onMouseLeave = () => handleLeave(open)
+        const closeContent = () => triggerRef.current?.click()
         return (
-          <div {...{ onMouseEnter, onMouseLeave }}>
+          <div {...(openOnHover && { onMouseEnter, onMouseLeave })}>
             <Popover.Button
               className={cn("outline-none", triggerClassName)}
               ref={triggerRef}
@@ -55,8 +59,8 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className={cn("absolute z-200 mt-3", contentClassName)}>
-                {content({ onMouseEnter, onMouseLeave })}
+              <Popover.Panel className={cn("absolute z-max mt-3", contentClassName)}>
+                {content({ onMouseEnter, onMouseLeave, closeContent })}
               </Popover.Panel>
             </Transition>
           </div>

@@ -7,4 +7,4 @@ function _selectFields<T>(fields: SelectField[], array: T[]) {
 
 export const selectFields = curry(_selectFields)
 
-export const sequentialIntegers = times(identity)
+export const sequentialIntegers = times<number>(identity)

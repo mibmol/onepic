@@ -1,6 +1,5 @@
 import { signOut, useSession } from "next-auth/react"
-import { Button, ConfigSection, Img, Modal, Text } from "@/components/common"
-import { TextInput } from "../common/TextInput"
+import { Button, ConfigSection, Img, Modal, Text, TextInput } from "@/components/common"
 import {
   cancelUserSubscription,
   getSubscriptionNextChargeTime,

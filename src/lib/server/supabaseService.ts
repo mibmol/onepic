@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { PlanType, ReplicatePrediction } from "@/lib/data/entities"
-import { pickAndRename, removeNilKeys, getSubscriptionPrice } from "@/lib/utils"
+import { pickAndRename, removeNils, getSubscriptionPrice } from "@/lib/utils"
 import { User } from "next-auth"
 import { getModelByName } from "@/lib/data/models"
 import { isNil } from "ramda"
@@ -81,7 +81,7 @@ export async function updatePrediction({
   metrics,
   output,
 }: ReplicatePrediction) {
-  const updateFields = removeNilKeys({
+  const updateFields = removeNils({
     status,
     run_time: metrics?.predict_time,
     output: Array.isArray(output) ? output[0] : output,
@@ -249,5 +249,12 @@ export async function updateUserName({ userId, newName }) {
 
 export async function deleteUserAccount(userId: string) {
   const { error } = await supabaseAuthSchema.rpc("delete_account", { user_id: userId })
+  if (error) throw error
+}
+
+export async function insertFeedback({ feedback, score, userId }) {
+  const { error } = await supabase
+    .from("feedback")
+    .insert({ feedback, score, user_id: userId })
   if (error) throw error
 }

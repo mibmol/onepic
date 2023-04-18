@@ -21,6 +21,7 @@ export function ProfileMenu() {
       trigger={() => <ProfileMenuTrigger imageUrl={session.user.image} />}
       contentClassName="right-px"
       content={() => <ProfileMenuContent user={session.user} />}
+      openOnHover
     />
   )
 }

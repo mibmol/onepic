@@ -6,6 +6,7 @@ import { getTextSizeClass, TextSize } from "./utils"
 
 // using this intead of `keyof JSX.IntrinsicElements` due to type inference performance
 type TextTags = "span" | "p" | "h1" | "h2" | "h3" | "label" | "div" | "option"
+type AAA = true | false
 
 type TextCustomProps<TTag extends TextTags> = {
   as?: TTag

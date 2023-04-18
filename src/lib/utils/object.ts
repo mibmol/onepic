@@ -1,6 +1,6 @@
 import { curry, isNil, reject } from "ramda"
 
-export const removeNilKeys = reject(isNil)
+export const removeNils = reject(isNil)
 
 export type SelectField = { field: string; renameTo?: string } | string
 
