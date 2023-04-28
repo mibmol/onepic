@@ -6,20 +6,28 @@ import { AppState } from "@/lib/state/store"
 import { ImageDisplay } from "./ImageDisplay"
 import { ImageSelector } from "./ImageSelector"
 import { isNil } from "ramda"
+import { getQueryParams } from "@/lib/utils"
 
-const { clearImages } = imageGenerationSlice.actions
+const { clearImages, setInputImage } = imageGenerationSlice.actions
 
-const hasSelectedImageSelector = (state: AppState) =>
-  !isNil(state.imageProcessing.inputImageUrl)
+const inputImageSelector = (state: AppState) => state.imageProcessing.inputImageUrl
 
 export const ImageDisplaySection: FC = () => {
   const dispatch = useAppDispatch()
-  const hasSelectedImage = useAppSelector(hasSelectedImageSelector)
   const router = useRouter()
+  const inputImageUrl = useAppSelector(inputImageSelector)
+  const hasSelectedImage = !isNil(inputImageUrl)
 
   useEffect(() => {
     dispatch(clearImages())
   }, [router.asPath, dispatch])
+
+  useEffect(() => {
+    const uploadedImageUrl = getQueryParams().get("inputImageUrl")
+    if (uploadedImageUrl && isNil(inputImageUrl)) {
+      dispatch(setInputImage(uploadedImageUrl))
+    }
+  }, [inputImageUrl, router, dispatch])
 
   return (
     <section className="md:w-3/5">

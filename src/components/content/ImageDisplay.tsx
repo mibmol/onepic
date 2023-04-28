@@ -11,7 +11,6 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/outline"
 import {
-  DragEventHandler,
   MouseEventHandler,
   TouchEventHandler,
   useCallback,
@@ -22,6 +21,7 @@ import { uploadImage } from "@/lib/state/imageProcessingSlice"
 import { useTranslation } from "react-i18next"
 import { dowloadImage, imgToObjectUrl, isNotNil } from "@/lib/utils"
 import { uploadUserResultImage } from "@/lib/client/upload"
+import { useRouter } from "next/router"
 
 const indicatorSelector = createSelector(
   (state: AppState) => state.imageProcessing.uploading,
@@ -35,12 +35,24 @@ const indicatorSelector = createSelector(
 )
 
 export const ImageDisplay = () => {
+  const router = useRouter()
   const dispatch = useAppDispatch()
   const { uploading, processing, resultImageUrl } = useAppSelector(indicatorSelector)
 
   const onFileChange = useCallback(
-    (file: File) => dispatch(uploadImage({ value: file })),
-    [dispatch],
+    (file: File) =>
+      dispatch(
+        uploadImage({
+          value: file,
+          onSuccess: (uploadedImageUrl: string) => {
+            router.push({
+              pathname: router.pathname,
+              query: { ...router.query, inputImageUrl: uploadedImageUrl },
+            })
+          },
+        }),
+      ),
+    [dispatch, router],
   )
   const [dropHandlers] = useDropArea({
     onFiles: (files = []) => onFileChange(files[0]),
@@ -127,17 +139,17 @@ const ImageView = () => {
 
   const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
     ({ clientX, currentTarget }) => {
-      if (!mousePosRef.current.start) {
+      if (!mousePosRef.current?.start) {
         return
       }
       const { left, right } = currentTarget.getBoundingClientRect()
       const percentage = (((clientX - left) * 100) / (right - left)).toFixed(1)
       if (clientX < left || clientX > right) return
-      rightImgRef.current.setAttribute(
+      rightImgRef.current?.setAttribute(
         "style",
         `clip-path: polygon(0px 0px, ${percentage}% 0px, ${percentage}% 100%, 0px 100%);`,
       )
-      sliderRef.current.setAttribute("style", `left: ${percentage}%;`)
+      sliderRef.current?.setAttribute("style", `left: ${percentage}%;`)
     },
     [],
   )
