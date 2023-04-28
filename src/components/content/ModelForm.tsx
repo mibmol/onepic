@@ -4,38 +4,51 @@ import { usePageProps } from "@/lib/hooks/usePageProps"
 import { useAppDispatch, useAppSelector } from "@/lib/state/hooks"
 import { imageGenerationSlice, processImage } from "@/lib/state/imageProcessingSlice"
 import { AppDispatch, AppState } from "@/lib/state/store"
-import { cn, notification } from "@/lib/utils"
+import { cn, FetchJsonError, notification, redirectToLogin } from "@/lib/utils"
 import { TFunction, useTranslation } from "next-i18next"
 import { FC, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
+import { SubmitButton, Text, Select, NumberInput, Checkbox } from "@/components/common"
+import { useSession } from "next-auth/react"
+import { AppErrorCode, ReplicateStatus } from "@/lib/data/entities"
 
-const { setResultImage, stopProcessing, clearImages } = imageGenerationSlice.actions
+const { setResultImage, stopProcessing, clearImages, setCurrentModelName } =
+  imageGenerationSlice.actions
+
 const checkProcessingState = async (
   predictionId: string,
   dispatch: AppDispatch,
   t: TFunction,
 ) => {
-  let intervalId = null
-  intervalId = setInterval(async () => {
+  let intervalId = setInterval(async () => {
     try {
       const { output, status } = await getProcessImageState(predictionId)
-      if (status === "succeeded") {
+      if (status === ReplicateStatus.succeeded) {
         clearInterval(intervalId)
-        dispatch(setResultImage(output))
+        dispatch(setResultImage({ output, predictionId }))
       }
-      if (status === "failed") {
+      if (status === ReplicateStatus.failed) {
         throw new Error(status)
       }
     } catch (error) {
       clearInterval(intervalId)
       dispatch(stopProcessing())
-      notification.error(t("And error occurred while processing"))
+      notification.error(t("And error occurred while processing"), {
+        position: "top-right",
+      })
     }
   }, 1500)
 }
 
-const checkValidationErrors = (error, t: TFunction) => {
-  const validations = error.body?.error?.validation
+const showErrors = (e: FetchJsonError, t: TFunction) => {
+  const { error, errorCode } = e.body ?? {}
+  if (errorCode === AppErrorCode.USER_OUT_OF_CREDITS) {
+    return notification.info(
+      t("You ran out of credits, please buy more credits or subscribe to a plan"),
+      { duration: 6000 },
+    )
+  }
+  const validations = error?.validation
   if (validations) {
     for (let { property } of validations) {
       if (property === "input") {
@@ -49,6 +62,7 @@ const checkValidationErrors = (error, t: TFunction) => {
 
 export const ModelForm = () => {
   const { t } = useTranslation()
+  const { data: session } = useSession()
   const dispatch = useAppDispatch()
   const { register, handleSubmit, watch, reset } = useForm()
   const { featureId } = usePageProps<any>()
@@ -63,70 +77,75 @@ export const ModelForm = () => {
 
   const modelName = watch("modelName", defaultModel?.name)
   const selectedModel = useMemo(
-    () => getModelByName(modelName) ?? defaultModel,
+    () => {
+      const model = getModelByName(modelName) ?? defaultModel
+      dispatch(setCurrentModelName(model.name))
+      return model
+    },
     // eslint-disable-next-line
     [modelName],
   )
 
   const onSubmit = handleSubmit((values) => {
+    if (!session && selectedModel.credits > 0) {
+      return redirectToLogin()
+    }
     dispatch(
       processImage({
         value: values,
         onSuccess: ({ id }) => checkProcessingState(id, dispatch, t),
-        onError: (error) => checkValidationErrors(error, t),
+        onError: (error) => showErrors(error, t),
       }),
     )
   })
 
   return (
     <form {...{ onSubmit }}>
-      <div className={cn("flex flex-col mt-4", { hidden: models.length === 1 })}>
-        <label htmlFor="modelName">
-          {t("Don't like the result? Try another method")}
-        </label>
-        <select {...register("modelName")} id="modelName">
-          {models.map(({ name, labelToken }) => (
-            <option key={name} value={name}>
-              {labelToken ? t(labelToken) : name}
-            </option>
-          ))}
-        </select>
+      <div className={cn("flex flex-col mt-6", { hidden: models.length === 1 })}>
+        <Text
+          as="label"
+          htmlFor="modelName"
+          labelToken="Don't like the result? Try another method"
+          className="mb-2"
+          medium
+        />
+        <Select
+          {...register("modelName")}
+          id="modelName"
+          options={models.map(({ name, labelToken }) => ({
+            value: name,
+            labelToken: labelToken ?? name,
+          }))}
+        />
       </div>
       {selectedModel?.fields.map((field) => (
         <div
           key={field.name}
-          className={cn("flex mt-4", {
-            "flex-col": field.type !== "boolean",
-            "flex-row-reverse justify-end items-center": field.type === "boolean",
+          className={cn("flex", {
+            "flex-col mt-3": field.type !== "boolean",
+            "flex-row-reverse justify-end items-center mt-5": field.type === "boolean",
           })}
         >
-          <label
+          <Text
+            as="label"
             htmlFor={field.name}
-            className={cn({ "mx-4": field.type === "boolean" })}
-          >
-            {t(field.labelToken)}
-          </label>
+            className={cn({
+              "mb-2": field.type !== "boolean",
+              "mx-4": field.type === "boolean",
+            })}
+            labelToken={field.labelToken}
+            medium
+          />
           {field.type === "boolean" && (
-            <input
+            <Checkbox
               {...register(field.name)}
               id={field.name}
               type="checkbox"
               defaultChecked={field.defaultValue}
             />
           )}
-          {field.type === "float" && (
-            <input
-              {...register(field.name)}
-              id={field.name}
-              defaultValue={field.defaultValue}
-              type="number"
-              min={field.min}
-              max={field.max}
-              step={0.05}
-            />
-          )}
           {field.type === "integer" && (
-            <input
+            <NumberInput
               {...register(field.name)}
               id={field.name}
               defaultValue={field.defaultValue}
@@ -138,7 +157,9 @@ export const ModelForm = () => {
           )}
         </div>
       ))}
-      <SubmitButton />
+      <div className="flex justify-left mt-12">
+        <Submit />
+      </div>
     </form>
   )
 }
@@ -146,19 +167,7 @@ export const ModelForm = () => {
 const submitDisabledSelector = ({ imageProcessing }: AppState) =>
   imageProcessing.uploading || imageProcessing.processing
 
-const SubmitButton: FC = () => {
-  const { t } = useTranslation()
+const Submit: FC = () => {
   const disabled = useAppSelector(submitDisabledSelector)
-
-  return (
-    <div className="flex justify-left mt-4">
-      <button
-        {...{ disabled }}
-        type="submit"
-        className="text-white px-6 py-4 rounded-md duration-200 bg-indigo-700 hover:bg-indigo-600 active:bg-indigo-900 disabled:bg-gray-300"
-      >
-        {t("general.submit")}
-      </button>
-    </div>
-  )
+  return <SubmitButton {...{ disabled }} labelToken="general.submit" />
 }

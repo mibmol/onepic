@@ -1,7 +1,9 @@
-import { randomInt } from "@/lib/utils/number"
+import { randomInt } from "@/lib/utils"
+import { compose, toString } from "ramda"
 import {
   DetailedHTMLProps,
   FC,
+  forwardRef,
   ImgHTMLAttributes,
   SyntheticEvent,
   useCallback,
@@ -12,14 +14,22 @@ type ImgProps = {
   fallbackSrc?: string
   maxRetries?: number
   onEndRetries?: () => void
+  successLoad?: () => void
 } & DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
 
-export const Img: FC<ImgProps> = ({
-  fallbackSrc,
-  maxRetries,
-  onEndRetries,
-  ...imgProps
-}) => {
+const getUrlWithRandParam = compose(
+  toString,
+  (url: URL) => {
+    url.searchParams.set("imgRand", randomInt().toString())
+    return
+  },
+  (url: string) => new URL(url),
+)
+
+export const Img: FC<ImgProps> = forwardRef(function Img(
+  { fallbackSrc, maxRetries, onEndRetries, successLoad, ...imgProps },
+  imgRef,
+) {
   const maxRetryRef = useRef(maxRetries ?? 1)
 
   const handleError = useCallback(
@@ -31,19 +41,16 @@ export const Img: FC<ImgProps> = ({
           onEndRetries?.()
         }
         return
-      } else if (maxRetryRef.current > 0) {
+      } else {
         setTimeout(() => {
-          const url = new URL(imgProps.src)
-          url.searchParams.set("imgRand", randomInt().toString())
-          currentTarget.src = url.toString()
-        }, 200)
-        maxRetryRef.current--
-      } else if (fallbackSrc) {
+          currentTarget.src = getUrlWithRandParam(imgProps.src)
+          maxRetryRef.current--
+        }, 400)
       }
     },
     [fallbackSrc, imgProps.src, onEndRetries],
   )
 
   // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-  return <img onError={handleError} {...imgProps} />
-}
+  return <img onError={handleError} {...imgProps} ref={imgRef} onLoad={successLoad} />
+})

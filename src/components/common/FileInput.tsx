@@ -1,6 +1,5 @@
-import { FC, ReactElement, useCallback, useRef, useState } from "react"
-import { useTranslation } from "next-i18next"
-import { cn } from "@/lib/utils/clsx"
+import { ComponentType, FC, SVGProps, useCallback, useRef } from "react"
+import { Button } from "./Button"
 
 type FileInputProps = {
   id: string
@@ -9,7 +8,7 @@ type FileInputProps = {
   onFileChange?: (file?: File) => void
   labelToken: string
   accept?: string
-  icon?: ReactElement
+  Icon?: ComponentType<SVGProps<SVGSVGElement>>
 }
 
 export const FileInput: FC<FileInputProps> = ({
@@ -19,10 +18,9 @@ export const FileInput: FC<FileInputProps> = ({
   onFileChange,
   labelToken,
   accept,
-  icon,
+  Icon,
 }) => {
   const ref = useRef(null)
-  const { t } = useTranslation()
 
   const onChange = useCallback(
     ({ target }) => onFileChange?.(target?.files[0]),
@@ -34,12 +32,9 @@ export const FileInput: FC<FileInputProps> = ({
   }, [])
 
   return (
-    <div>
+    <div {...{ className }}>
       <input {...{ ref, id, name, onChange, accept }} type="file" className="hidden" />
-      <button {...{ onClick }} className={cn("rounded-md duration-200", className)}>
-        {icon}
-        <span>{t(labelToken)}</span>
-      </button>
+      <Button {...{ Icon, labelToken, onClick }} />
     </div>
   )
 }

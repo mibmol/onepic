@@ -1,36 +1,57 @@
 import { Prediction } from "@/lib/data/entities/prediction"
-import { generatePrediction } from "@/lib/data/replicateService"
-import { insertPrediction } from "@/lib/data/supabaseService"
-import { authenticated } from "@/lib/server/authenticated"
+import { getModelByName } from "@/lib/data/models"
+import * as replicateService from "@/lib/server/replicateService"
+import * as supabaseService from "@/lib/server/supabaseService"
+import { isNotNil } from "@/lib/utils"
 import { validate } from "class-validator"
-import type { NextApiRequest, NextApiResponse } from "next"
+import type { NextApiResponse } from "next"
 import pino from "pino"
+import { createApiHandler, NextApiRequestWithSession } from "@/lib/server/apiHandler"
+import { AppErrorCode } from "@/lib/data/entities"
 
 const logger = pino({ name: "process-image.handler" })
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== "POST") {
-    return res.status(404).json({ error: "method not allowed" })
-  }
+const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => {
+  const { body, session } = req
 
-  const predictionOptions = new Prediction().setValues(req.body)
+  const predictionOptions = new Prediction().setValues(body)
   const errors = await validate(predictionOptions)
   if (errors.length > 0) {
     return res.status(400).json({ error: { validation: errors } })
   }
 
-  try {
-    const result = await generatePrediction(predictionOptions)
-    const { error } = await insertPrediction(predictionOptions, result)
+  const { error, user } = await supabaseService.getUser(session.user.id)
 
-    if (error) {
-      throw error
-    }
-    return res.status(200).json(result)
-  } catch (error) {
+  if (error) {
     logger.error(error)
-    return res.status(500).json({ error: error.toString() })
+    return res.status(500).json({ error })
   }
+
+  if (user.credits <= 0) {
+    return res
+      .status(400)
+      .json({ msg: "no credits", errorCode: AppErrorCode.USER_OUT_OF_CREDITS })
+  }
+
+  const prediction = await replicateService.generatePrediction(predictionOptions)
+  const result = await supabaseService.insertPrediction(
+    predictionOptions,
+    prediction,
+    session.user,
+  )
+
+  if (result.error) {
+    return res.status(500).json({ error })
+  }
+  return res.status(200).json(prediction)
 }
 
-export default authenticated(handler)
+export default createApiHandler({
+  methods: ["POST"],
+  authenticated: true,
+  customAuthCheck: (session, req) => {
+    const { credits } = getModelByName(req.body.modelName) ?? {}
+    return credits === 0 || isNotNil(session)
+  },
+  handler,
+})

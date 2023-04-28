@@ -1,3 +1,7 @@
 export * from "./AddImage"
 export * from "./DashSquare"
 export * from "./Spinner"
+export * from "./UpscaleIcon"
+export * from "./Logo"
+export * from "./GithubIcon"
+export * from "./GoogleIcon"

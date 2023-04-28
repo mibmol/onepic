@@ -3,21 +3,35 @@
     "home": "Home",
     "chooseAPhoto": "Choose a photo",
     "newPhoto": "New photo",
-    "uploading": "Uploading...",
+    "uploading": "Uploading.",
     "submit": "Submit",
-    "processing": "Processing"
+    "processing": "Processing."
   },
   "feature": {
-    "restorePhotos": "Restore photos",
-    "restorePhotosDescription": "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
-    "qualityEnhancer": "Quality enhancer",
-    "qualityEnhancerDescription": "Upscaling tool that create high-quality images from low-quality images",
-    "removeBackground": "Remove background",
-    "removeBackgroundDescription": "A deep learning approach to remove background",
-    "colorizeImage": "Colorize image",
-    "colorizeImageDescription": "Add colours to old images",
-    "optionOneFaster": "Option 1 - Faster",
-    "optionTwoSlower": "Option 2 - Support removing scratches"
+    "restorePhotos": {
+      "title": "Photo restoration",
+      "description": "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
+      "options": {
+        "faster": "Option 1 - Faster",
+        "slower": "Option 2 - Allow removing scratches"
+      }
+    },
+    "qualityEnhancer": {
+      "title": "Image upscaler",
+      "description": "Upscaling tool that create high-quality images from low-quality images",
+      "options": {
+        "slower": "Option 1",
+        "faster": "Option 2 - Faster"
+      }
+    },
+    "removeBackground": {
+      "title": "Remove background",
+      "description": "A deep learning approach to remove background from images"
+    },
+    "colorizeImage": {
+      "title": "Colorize photo",
+      "description": "Add colours to old photos or black & white images"
+    }
   },
   "fieldLabel": {
     "image": "Image",
@@ -26,9 +40,9 @@
     "backgroundEnhance": "Enhance background",
     "faceUpsample": "Apply face upsample",
     "upscale": "Upscale factor",
-    "inputIsHighResolution": "Image is in High Resolution",
-    "withScratch": "Image has scratches",
-    "faceEnhance": "Apply face enhancing"
+    "inputIsHighResolution": "Image is in high resolution",
+    "withScratch": "Remove scratches",
+    "faceEnhance": "Face enhancing"
   },
   "theme": {
     "system": "System",

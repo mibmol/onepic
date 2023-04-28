@@ -1,13 +1,13 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { propEq } from "ramda"
-import { useTranslation } from "next-i18next"
-import Head from "next/head"
 import { Header } from "@/components/layout"
 import { aiFeatures } from "@/lib/data/models"
 import { ImageDisplaySection } from "@/components/content/ImageDisplaySection"
 import { ImageActionsSection } from "@/components/content/ImageActionsSection"
 import { PagePropsProvider } from "@/lib/hooks/usePageProps"
+import { Footer } from "@/components/layout/Footer"
+import { SharedHead } from "@/components/layout/header/headUtils"
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
@@ -32,7 +32,6 @@ export const getStaticProps: GetStaticProps = async ({
       descriptionToken,
       featureId,
     },
-    revalidate: 16,
   }
 }
 
@@ -47,21 +46,15 @@ const ToolPage: NextPage<ToolPageProps> = ({
   descriptionToken,
   featureId,
 }) => {
-  const { t } = useTranslation()
-
   return (
     <PagePropsProvider value={{ titleToken, descriptionToken, featureId }}>
-      <Head>
-        <title>{t(titleToken)}</title>
-        <meta name="description" content={t(descriptionToken)} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <SharedHead />
       <Header />
-      <main className="h-screen w-10/12 md:flex mx-auto mt-16">
+      <main className="w-10/12 md:flex mx-auto mt-14">
         <ImageDisplaySection />
         <ImageActionsSection />
       </main>
+      <Footer />
     </PagePropsProvider>
   )
 }
