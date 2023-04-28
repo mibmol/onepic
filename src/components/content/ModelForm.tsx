@@ -12,8 +12,13 @@ import { SubmitButton, Text, Select, NumberInput, Checkbox } from "@/components/
 import { useSession } from "next-auth/react"
 import { AppErrorCode, ReplicateStatus } from "@/lib/data/entities"
 
-const { setResultImage, stopProcessing, clearImages, setCurrentModelName } =
-  imageGenerationSlice.actions
+const {
+  setResultImage,
+  stopProcessing,
+  clearImages,
+  setCurrentModelName,
+  setReplicateStatus,
+} = imageGenerationSlice.actions
 
 const checkProcessingState = async (
   predictionId: string,
@@ -23,12 +28,16 @@ const checkProcessingState = async (
   let intervalId = setInterval(async () => {
     try {
       const { output, status } = await getProcessImageState(predictionId)
-      if (status === ReplicateStatus.succeeded) {
-        clearInterval(intervalId)
-        dispatch(setResultImage({ output, predictionId }))
-      }
-      if (status === ReplicateStatus.failed) {
-        throw new Error(status)
+      dispatch(setReplicateStatus(status))
+      switch (status) {
+        case ReplicateStatus.succeeded:
+          clearInterval(intervalId)
+          dispatch(setResultImage({ output, predictionId }))
+          break
+        case ReplicateStatus.failed:
+          throw new Error(status)
+        default:
+          break
       }
     } catch (error) {
       clearInterval(intervalId)
@@ -118,6 +127,7 @@ export const ModelForm = () => {
           }))}
         />
       </div>
+      {selectedModel?.credits > 1 && <span>credits {selectedModel.credits}</span>}
       {selectedModel?.fields.map((field) => (
         <div
           key={field.name}

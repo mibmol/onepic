@@ -3,6 +3,7 @@ import { getImageUrl, uploadUserImage } from "@/lib/client/upload"
 import { AppState } from "./store"
 import { postProcessImage } from "@/lib/client/processing"
 import { FetchJsonError } from "@/lib/utils"
+import { ReplicateStatus } from "@/lib/data/entities"
 
 type ImageProcessingState = {
   inputImageUrl: string
@@ -11,6 +12,7 @@ type ImageProcessingState = {
   processing: boolean
   predictionId?: string
   currentModelName?: string
+  replicateStatus?: keyof typeof ReplicateStatus
 }
 
 const initialState: ImageProcessingState = {
@@ -25,15 +27,17 @@ const initialState: ImageProcessingState = {
 type ThunkArgs<T, E = any> = {
   value: T
   onError?: (e: E) => void
-  onSuccess?: (e: any) => void
+  onSuccess?: (result: any) => void
 }
 
 export const uploadImage = createAsyncThunk(
   "imageProcessing/upload",
-  async ({ value: file, onError }: ThunkArgs<File>, { rejectWithValue }) => {
+  async ({ value: file, onError, onSuccess }: ThunkArgs<File>, { rejectWithValue }) => {
     try {
       const { imagePath } = await uploadUserImage(file)
-      return await getImageUrl(imagePath)
+      const uploadedImageUrl = await getImageUrl(imagePath)
+      onSuccess?.(uploadedImageUrl)
+      return uploadedImageUrl
     } catch (error) {
       console.log(error)
       onError?.(error)
@@ -66,6 +70,9 @@ export const imageGenerationSlice = createSlice({
   name: "imageProcessing",
   initialState,
   reducers: {
+    setInputImage: (state, { payload }) => {
+      state.inputImageUrl = payload
+    },
     clearImages: (state) => {
       state.inputImageUrl = state.resultImageUrl = null
       state.predictionId = null
@@ -80,6 +87,12 @@ export const imageGenerationSlice = createSlice({
     },
     setCurrentModelName: (state, { payload }) => {
       state.currentModelName = payload
+    },
+    setReplicateStatus: (
+      state,
+      { payload }: { payload: keyof typeof ReplicateStatus },
+    ) => {
+      state.replicateStatus = payload
     },
   },
   extraReducers: (builder) => {

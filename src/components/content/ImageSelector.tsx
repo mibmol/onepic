@@ -1,4 +1,4 @@
-import { FC, useCallback } from "react"
+import { FC, useCallback, useEffect } from "react"
 import { useDropArea } from "react-use"
 import { cn } from "@/lib/utils/clsx"
 import { DashSquare, AddImageIcon } from "@/components/common/icons"
@@ -6,10 +6,12 @@ import { FileInput, Text } from "@/components/common"
 import { useAppDispatch } from "@/lib/state/hooks"
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
 import { useTranslation } from "next-i18next"
-import { notification } from "@/lib/utils"
+import { isHttpUrl, notification } from "@/lib/utils"
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline"
+import { useRouter } from "next/router"
 
 export const ImageSelector: FC = () => {
+  const router = useRouter()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const onFileChange = useCallback(
@@ -18,9 +20,15 @@ export const ImageSelector: FC = () => {
         uploadImage({
           value: file,
           onError: (e) => notification.error(t("Couldn't upload the image")),
+          onSuccess: (uploadedImageUrl: string) => {
+            router.push({
+              pathname: router.pathname,
+              query: { ...router.query, inputImageUrl: uploadedImageUrl },
+            })
+          },
         }),
       ),
-    [dispatch, t],
+    [dispatch, t, router],
   )
   const [dropHandlers, { over }] = useDropArea({
     onFiles: (files = []) => onFileChange(files[0]),

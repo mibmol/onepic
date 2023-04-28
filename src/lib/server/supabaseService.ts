@@ -33,11 +33,15 @@ export async function getImageSignedUrl(
   imagePath: string,
   options: { width: any; height: any },
 ) {
-  return supabase.storage
+  const { data, error } = await supabase.storage
     .from("user-images")
     .createSignedUrl(imagePath, defaultUrlDuration, {
       ...(options?.width && options?.height && { transform: options }),
     })
+  if (error) {
+    throw error
+  }
+  return data
 }
 
 export async function getUser(userId: string) {
