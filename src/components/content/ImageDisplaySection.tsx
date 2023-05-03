@@ -22,8 +22,11 @@ export const ImageDisplaySection: FC = () => {
     dispatch(clearImages())
   }, [router.asPath, dispatch])
 
+  console.log(inputImageUrl)
+
   useEffect(() => {
     const uploadedImageUrl = getQueryParams().get("inputImageUrl")
+    // const forceSetInput = getQueryParams().get("forceSetInput")
     if (uploadedImageUrl && isNil(inputImageUrl)) {
       dispatch(setInputImage(uploadedImageUrl))
     }

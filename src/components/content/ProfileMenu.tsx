@@ -66,6 +66,9 @@ const UserPlanInfo: FC<{ user: any }> = ({ user }) => {
               <Text className="ml-2" labelToken="active" size="sm" medium />
             </Text>
           )}
+          {data.credits === 0 && (
+            <Button variant="tertiary" href="/pricing" labelToken="Buy credits" className="-ml-3" />
+          )}
         </>
       ) : (
         <></>

@@ -13,7 +13,7 @@ type MessageVariant = "info" | "warning" | "danger"
 
 type MessageProps = {
   variant?: MessageVariant
-  title?: ReactNode
+  title: ReactNode
   description?: ReactNode
   actions?: ReactElement[]
   className?: string
@@ -74,7 +74,7 @@ export const Messsage: FC<MessageProps> = ({
               {title}
             </Text>
           )}
-          {description && <Text size="sm">{description}</Text>}
+          {description && <Text size="sm" className="max-w-xl">{description}</Text>}
           {actions}
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { features } from "process"
 import { compose, flatten, pluck, prop, propEq } from "ramda"
 
 type ModelField = {
@@ -211,3 +212,13 @@ export const getModelByName = (modelName: string, models?: Model[]): Model =>
   models
     ? models.find(propEq("name", modelName))
     : allModels.find(propEq("name", modelName))
+
+export const getFeatureByModelName = (modelName: string): AIFeature => {
+  for (const feature of aiFeatures) {
+    const model = getModelByName(modelName, feature.models)
+    if (model) {
+      return feature
+    }
+  }
+  return null
+}

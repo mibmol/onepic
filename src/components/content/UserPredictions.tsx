@@ -1,7 +1,7 @@
 import { getUserPredictions } from "@/lib/client/dashboard"
 import { complement, compose, descend, isEmpty, nth, path, prop, sort } from "ramda"
 import { FC, Fragment, useEffect, useMemo } from "react"
-import { Img, Text } from "@/components/common"
+import { Button, Img, Text } from "@/components/common"
 import { useTranslation } from "next-i18next"
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
 import {
@@ -15,6 +15,7 @@ import "react-loading-skeleton/dist/skeleton.css"
 import { useSWRInfinite, useThemeMode } from "@/lib/hooks"
 import { ReplicateStatus } from "@/lib/data/entities"
 import { LoadingSpinner } from "./LoadingSpinner"
+import { getFeatureByModelName, getModelByName } from "@/lib/data/models"
 
 const sortById = sort(descend(prop("id") as any) as any)
 const last = nth(-1)
@@ -75,11 +76,22 @@ export const UserPredictions: FC = () => {
           </Fragment>
         ))
       ) : (
-        <Text className="col-span-2" labelToken="Your processed images will appear here" size="xl" medium gray />
+        <Text
+          className="col-span-2"
+          labelToken="Your processed images will appear here"
+          size="xl"
+          medium
+          gray
+        />
       )}
       {isLoading && <LoadingSkeleton />}
     </ul>
   )
+}
+
+const getFeatureModelInputUrl = ({ modelName, input }): string => {
+  const { path } = getFeatureByModelName(modelName)
+  return `/${path}?${new URLSearchParams({ inputImageUrl: input }).toString()}`
 }
 
 const PredictionItem = ({ input, output, modelName, status }) => {
@@ -102,6 +114,17 @@ const PredictionItem = ({ input, output, modelName, status }) => {
       {status === ReplicateStatus.processing && (
         <div className="absolute z-30 inset-0 flex items-center justify-center bg-black/50">
           <LoadingSpinner labelToken="general.processing" spinnerClassName="w-20" />
+        </div>
+      )}
+      {status === ReplicateStatus.failed && (
+        <div className="absolute z-30 inset-0 flex flex-col items-center justify-center bg-black/50 dark:bg-black/75">
+          <span className="font-semibold text-white">{t("Failed")}</span>
+          <Button
+            variant="secondary"
+            href={getFeatureModelInputUrl({ modelName, input })}
+            labelToken="Try again"
+            className="py-1 mt-2"
+          />
         </div>
       )}
       <div className="absolute z-30 w-full h-12 bg-gray-900/75 bottom-0 hidden group-hover:flex items-center justify-center text-white">

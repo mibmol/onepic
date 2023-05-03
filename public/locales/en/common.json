@@ -10,7 +10,7 @@
   "feature": {
     "restorePhotos": {
       "title": "Photo restoration",
-      "description": "Bring Old Photos Back to Life · Improve or restore photos by deblurring and removing noise from old photos",
+      "description": "Improve or restore photos by deblurring and removing noise from old photos or damaged images",
       "options": {
         "faster": "Option 1 - Faster",
         "slower": "Option 2 - Allow removing scratches"
