@@ -26,7 +26,6 @@ export const ImageDisplaySection: FC = () => {
 
   useEffect(() => {
     const uploadedImageUrl = getQueryParams().get("inputImageUrl")
-    // const forceSetInput = getQueryParams().get("forceSetInput")
     if (uploadedImageUrl && isNil(inputImageUrl)) {
       dispatch(setInputImage(uploadedImageUrl))
     }

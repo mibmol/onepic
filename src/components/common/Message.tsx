@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn, removeSimilarTWClasses } from "@/lib/utils"
 import { always, cond, equals } from "ramda"
 import { FC, ReactElement, ReactNode, useState } from "react"
 import { Text } from "./Text"
@@ -15,8 +15,9 @@ type MessageProps = {
   variant?: MessageVariant
   title: ReactNode
   description?: ReactNode
-  actions?: ReactElement[]
+  actions?: ReactElement
   className?: string
+  iconClassName?: string
   dismissable?: boolean
 }
 
@@ -44,6 +45,7 @@ export const Messsage: FC<MessageProps> = ({
   description,
   actions,
   className,
+  iconClassName,
   dismissable = false,
 }) => {
   const [show, setShow] = useState(true)
@@ -62,10 +64,13 @@ export const Messsage: FC<MessageProps> = ({
     >
       <div className="flex">
         <Icon
-          className={cn(
-            "w-5 h-5 stroke-2 mt-1 mr-2",
-            getIconMesageColorClasses(variant),
-            !description && "mt-0",
+          className={removeSimilarTWClasses(
+            cn(
+              "w-5 h-5 stroke-2 mt-1 mr-2",
+              getIconMesageColorClasses(variant),
+              !description && "mt-0",
+              iconClassName,
+            ),
           )}
         />
         <div className="flex flex-col">
@@ -74,7 +79,11 @@ export const Messsage: FC<MessageProps> = ({
               {title}
             </Text>
           )}
-          {description && <Text size="sm" className="max-w-xl">{description}</Text>}
+          {description && (
+            <Text size="sm" className="max-w-xl">
+              {description}
+            </Text>
+          )}
           {actions}
         </div>
       </div>

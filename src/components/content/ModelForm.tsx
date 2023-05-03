@@ -15,9 +15,12 @@ import {
   NumberInput,
   Checkbox,
   Messsage,
+  Button,
 } from "@/components/common"
 import { useSession } from "next-auth/react"
 import { AppErrorCode, ReplicateStatus } from "@/lib/data/entities"
+import { getUserPlanInfo } from "@/lib/client/payment"
+import useSWR from "swr"
 
 const {
   setResultImage,
@@ -184,7 +187,7 @@ export const ModelForm = () => {
           )}
         </div>
       ))}
-      <div className="flex justify-left mt-12">
+      <div className="flex justify-left">
         <Submit />
       </div>
     </form>
@@ -195,6 +198,31 @@ const submitDisabledSelector = ({ imageProcessing }: AppState) =>
   imageProcessing.uploading || imageProcessing.processing
 
 const Submit: FC = () => {
+  const { t } = useTranslation()
   const disabled = useAppSelector(submitDisabledSelector)
-  return <SubmitButton {...{ disabled }} labelToken="general.submit" />
+  const { data } = useSWR("planInfo", getUserPlanInfo)
+
+  const hasCredits = data?.credits > 0
+  return (
+    <div className={cn(hasCredits && "mt-6")}>
+      {!hasCredits && (
+        <Messsage
+          title={
+            <div className="flex items-center">
+              {t("You ran out of credits")}{" "}
+              <Button
+                variant="tertiary"
+                labelToken="Buy credits"
+                href="/pricing"
+                className="py-1"
+              />
+            </div>
+          }
+          className="w-96 mb-6 mt-5"
+          iconClassName="mt-1"
+        />
+      )}
+      <SubmitButton {...{ disabled }} labelToken="general.submit" />
+    </div>
+  )
 }

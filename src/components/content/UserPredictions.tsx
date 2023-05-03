@@ -111,7 +111,7 @@ const PredictionItem = ({ input, output, modelName, status }) => {
           <ArrowDownTrayIcon className="w-6 h-6 stroke-white" />
         </button>
       )}
-      {status === ReplicateStatus.processing && (
+      {(status === ReplicateStatus.processing || status === ReplicateStatus.starting) && (
         <div className="absolute z-30 inset-0 flex items-center justify-center bg-black/50">
           <LoadingSpinner labelToken="general.processing" spinnerClassName="w-20" />
         </div>
