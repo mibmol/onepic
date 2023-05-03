@@ -8,7 +8,14 @@ import { cn, FetchJsonError, notification, redirectToLogin } from "@/lib/utils"
 import { TFunction, useTranslation } from "next-i18next"
 import { FC, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
-import { SubmitButton, Text, Select, NumberInput, Checkbox } from "@/components/common"
+import {
+  SubmitButton,
+  Text,
+  Select,
+  NumberInput,
+  Checkbox,
+  Messsage,
+} from "@/components/common"
 import { useSession } from "next-auth/react"
 import { AppErrorCode, ReplicateStatus } from "@/lib/data/entities"
 
@@ -127,7 +134,17 @@ export const ModelForm = () => {
           }))}
         />
       </div>
-      {selectedModel?.credits > 1 && <span>credits {selectedModel.credits}</span>}
+      {selectedModel?.credits > 1 && (
+        <>
+          <Messsage
+            title={t("This option will take {{credits}} of your credits", {
+              credits: selectedModel.credits,
+            })}
+            variant="info"
+            className="mt-3"
+          />
+        </>
+      )}
       {selectedModel?.fields.map((field) => (
         <div
           key={field.name}
