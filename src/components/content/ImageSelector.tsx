@@ -35,7 +35,7 @@ export const ImageSelector: FC = () => {
   })
 
   return (
-    <div className="bg-gray-100 h-72 lg:h-168 rounded-md pt-16 dark:bg-black dark:border dark:border-gray-800">
+    <div className="bg-gray-100 h-72 md:h-128 lg:h-168 rounded-md pt-16 dark:bg-black dark:border dark:border-gray-800">
       <div className="relative">
         <div className="hidden md:block">
           <div className="w-full h-full transparent absolute z-10" {...dropHandlers} />

@@ -59,7 +59,7 @@ const checkProcessingState = async (
     } catch (error) {
       clearInterval(intervalId)
       dispatch(stopProcessing())
-      notification.error(t("And error occurred while processing"), {
+      notification.error(t("An error occurred while processing"), {
         position: "top-right",
       })
     }

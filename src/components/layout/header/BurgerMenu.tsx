@@ -13,7 +13,13 @@ const ProfileInfo = () => {
   const { data: session } = useSession()
   const { t } = useTranslation()
   if (!session) {
-    return <Button href="/auth/signin" labelToken="Sign-in / Sign-up" className="py-2 justify-center mt-4" />
+    return (
+      <Button
+        href="/auth/signin"
+        labelToken="Sign-in / Sign-up"
+        className="py-2 justify-center mt-4"
+      />
+    )
   }
   return (
     <div className="flex justify-between mt-4 px-5">
@@ -33,19 +39,21 @@ export const BurguerMenu = () => {
     <PopoverMenu
       trigger={(isOpen) => <BurguerMenuButton {...{ isOpen }} />}
       contentClassName="px-4 top-20 left-0 right-0 bottom-0 bg-white dark:bg-black"
-      content={() => (
+      content={({ closeContent }) => (
         <>
           <div>
             <Button
               variant="secondary"
               labelToken="Support"
               href="/support"
+              onClickCapture={closeContent}
               className="py-1.5 justify-center"
             />
             <ProfileInfo />
             <Divider className="mt-3" />
             <Link
               href="/pricing"
+              onClickCapture={closeContent}
               className={`
                 inline-block w-full py-4 pl-5
                 group hover:bg-gray-100 dark:hover:bg-gray-900
@@ -60,6 +68,7 @@ export const BurguerMenu = () => {
             <Divider />
             <Link
               href="/dashboard"
+              onClickCapture={closeContent}
               className={`
                 inline-block w-full py-4 pl-5
                 group hover:bg-gray-100 dark:hover:bg-gray-900
@@ -96,6 +105,7 @@ export const BurguerMenu = () => {
               <Fragment key={path}>
                 <Link
                   href={path}
+                  onClickCapture={closeContent}
                   className={`
                     w-full flex items-center py-4 px-6 text-gray-600
                     hover:text-gray-800 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-900

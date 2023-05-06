@@ -93,7 +93,7 @@ const DashboardPage: NextPage = ({}) => {
               )}
             </Tab>
           </Tab.List>
-          <Tab.Panels className="mt-4 px-12" id="appContainer">
+          <Tab.Panels className="mt-4 px-3 lg:px-12" id="appContainer">
             <Tab.Panel className="min-h-screen">
               <UserPredictions />
             </Tab.Panel>

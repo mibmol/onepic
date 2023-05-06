@@ -51,17 +51,21 @@ const ToolPage: NextPage<ToolPageProps> = ({
     <PagePropsProvider value={{ titleToken, descriptionToken, featureId }}>
       <SharedHead />
       <Header />
-      <main className="grid w-10/12 mx-auto mt-14">
-        <section className="lg:w-2/5">
+      <main className="grid grid-cols-1 lg:grid-cols-2 px-6 md:px-16 lg:px-0 lg:w-10/12 mx-auto mt-14 ">
+        <section className="lg:hidden">
           <div className="text-center max-w-lg mx-auto mb-6">
             <Text as="h1" className="mb-6" labelToken={titleToken} size="4xl" bold />
             <Text as="p" labelToken={descriptionToken} gray />
           </div>
         </section>
-        <section className="lg:w-3/5">
+        <section>
           <ImageDisplaySection />
         </section>
-        <section>
+        <section className="lg:ml-8">
+          <div className="hidden lg:block mb-6">
+            <Text as="h1" className="mb-6" labelToken={titleToken} size="4xl" bold />
+            <Text as="p" labelToken={descriptionToken} gray />
+          </div>
           <ModelForm />
         </section>
       </main>

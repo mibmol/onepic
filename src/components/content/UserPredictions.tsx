@@ -15,7 +15,7 @@ import "react-loading-skeleton/dist/skeleton.css"
 import { useSWRInfinite, useThemeMode } from "@/lib/hooks"
 import { ReplicateStatus } from "@/lib/data/entities"
 import { LoadingSpinner } from "./LoadingSpinner"
-import { getFeatureByModelName, getModelByName } from "@/lib/data/models"
+import { getFeatureByModelName } from "@/lib/data/models"
 
 const sortById = sort(descend(prop("id") as any) as any)
 const last = nth(-1)
@@ -106,7 +106,7 @@ const PredictionItem = ({ input, output, modelName, status }) => {
       {status === ReplicateStatus.succeeded && (
         <button
           onClick={() => dowloadImage(output).catch(console.error)}
-          className="hidden group-hover:flex p-2 absolute top-4 right-4 rounded-full bg-gray-900 active:bg-gray-700"
+          className="lg:hidden group-hover:flex p-2 absolute top-4 right-4 rounded-full bg-gray-900 active:bg-gray-700"
         >
           <ArrowDownTrayIcon className="w-6 h-6 stroke-white" />
         </button>
@@ -127,9 +127,6 @@ const PredictionItem = ({ input, output, modelName, status }) => {
           />
         </div>
       )}
-      <div className="absolute z-30 w-full h-12 bg-gray-900/75 bottom-0 hidden group-hover:flex items-center justify-center text-white">
-        {modelName}
-      </div>
     </li>
   )
 }
