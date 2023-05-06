@@ -7,6 +7,7 @@ import { FC, useState } from "react"
 import { ThemeSelector } from "./ThemeSelector"
 import useSWR from "swr"
 import { getUserPlanInfo } from "@/lib/client/payment"
+import { cn, removeSimilarTWClasses } from "@/lib/utils"
 
 export function ProfileMenu() {
   const { data: session } = useSession()
@@ -45,29 +46,43 @@ const ProfileMenuTrigger = ({ imageUrl }) => {
   )
 }
 
-const UserPlanInfo: FC<{ user: any }> = ({ user }) => {
+export const UserPlanInfo: FC<{ user: any; textGray?: boolean }> = ({
+  user,
+  textGray,
+}) => {
   const { data } = useSWR("planInfo", getUserPlanInfo)
   return (
-    <div className="px-6">
-      <Text as="h2" semibold>
+    <div>
+      <Text as="h2" gray={textGray} semibold>
         {user.name}
       </Text>
       {data ? (
         <>
           <Text as="h3">
-            <Text labelToken="Credits" size="sm" />:
-            <Text className="ml-2" size="sm" medium>
+            <Text labelToken="Credits" size="sm" gray={textGray} />:
+            <Text className="ml-2" size="sm" gray={textGray} medium>
               {data.credits}
             </Text>
           </Text>
           {data.subscription && (
             <Text as="h3">
-              <Text labelToken="Subscription" size="sm" />:
-              <Text className="ml-2" labelToken="active" size="sm" medium />
+              <Text labelToken="Subscription" size="sm" gray={textGray} />:
+              <Text
+                className="ml-2"
+                labelToken="active"
+                size="sm"
+                gray={textGray}
+                medium
+              />
             </Text>
           )}
           {data.credits === 0 && (
-            <Button variant="tertiary" href="/pricing" labelToken="Buy credits" className="-ml-3" />
+            <Button
+              variant="tertiary"
+              href="/pricing"
+              labelToken="Buy credits"
+              className="-ml-3"
+            />
           )}
         </>
       ) : (
@@ -77,11 +92,11 @@ const UserPlanInfo: FC<{ user: any }> = ({ user }) => {
   )
 }
 
-const ProfileMenuContent = ({ user }) => {
+export const ProfileMenuContent = ({ user }) => {
   const { t } = useTranslation()
   return (
     <div className="w-72 py-4 rounded bg-white shadow-lg dark:bg-black dark:border dark:border-gray-800 ">
-      <div className="border-b border-gray-200 pb-4 dark:border-gray-700">
+      <div className="border-b border-gray-200 pb-4 dark:border-gray-700 px-6">
         <UserPlanInfo {...{ user }} />
       </div>
       <ul className="mt-2">
@@ -134,5 +149,31 @@ const ProfileMenuContent = ({ user }) => {
         </li>
       </ul>
     </div>
+  )
+}
+
+export const LogoutButton = ({ className = "pl-6" }) => {
+  const { t } = useTranslation()
+  return (
+    <button
+      onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+      className={removeSimilarTWClasses(
+        cn(
+          `
+        w-full pr-4 py-3 
+        group hover:bg-gray-100 dark:hover:bg-gray-700
+      `,
+          className,
+        ),
+      )}
+    >
+      <Text
+        className="flex justify-between group-hover:text-gray-800 dark:group-hover:text-gray-300"
+        gray
+      >
+        {t("Log Out")}
+        <ArrowRightOnRectangleIcon className="w-5 h-5 stroke-2" />
+      </Text>
+    </button>
   )
 }

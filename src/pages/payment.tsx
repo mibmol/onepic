@@ -15,7 +15,7 @@ import {
   PayPalScriptProvider,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js"
-import { redirectToLogin } from "@/lib/utils/clientRouting"
+import { getQueryParams, redirectToLogin } from "@/lib/utils/clientRouting"
 import { Spinner } from "@/components/common/icons"
 import * as paymentClient from "@/lib/client/payment"
 import { PlanType } from "@/lib/data/entities"
@@ -43,7 +43,7 @@ const CreditCheckoutPage: NextPage = () => {
     } else if (!plan || !planType) {
       router.back()
     }
-  }, [session, router, plan, planType])
+  }, [session, router, router.query, plan, planType])
 
   return (
     <>
@@ -131,7 +131,7 @@ const CreditsPlanPayment = () => {
       notification.success(t("Plan saved. You can start using your credits now!"), {
         duration: 3000,
       })
-      router.push("/")
+      router.push(getQueryParams().get("callbackUrl") ?? "/")
     } catch (error) {
       console.error(error)
       notification.error(
@@ -188,7 +188,7 @@ const SubscriptionPlanPayment = () => {
       notification.success(t("Subscribed successfully. You can start using the app!"), {
         duration: 3000,
       })
-      router.push("/")
+      router.push(getQueryParams().get("callbackUrl") ?? "/")
     } catch (error) {
       console.error(error)
       notification.error(

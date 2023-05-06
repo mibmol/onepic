@@ -9,8 +9,8 @@
   },
   "feature": {
     "restorePhotos": {
-      "title": "Photo restoration",
-      "description": "Improve or restore photos by deblurring and removing noise from old photos or damaged images",
+      "title": "Image restoration",
+      "description": "Improve or restore images by deblurring and removing noise from old photos or damaged images",
       "options": {
         "faster": "Option 1 - Faster",
         "slower": "Option 2 - Allow removing scratches"

@@ -70,7 +70,7 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
           />
           <Text
             as="p"
-            labelToken="Signin and get 10 credits every week for free"
+            labelToken="Sign-up to witcher.ai and get 10 credits for free"
             className="mb-8"
             medium
             gray
@@ -87,6 +87,7 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
                 onClick={() =>
                   signIn(id, { callbackUrl: (router.query.callbackUrl as string) ?? "/" })
                 }
+                
               >
                 {<Icon className="w-6 h-6 mr-3" />}
                 {t(labelToken)}

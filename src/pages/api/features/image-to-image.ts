@@ -9,7 +9,7 @@ import pino from "pino"
 import { createApiHandler, NextApiRequestWithSession } from "@/lib/server/apiHandler"
 import { AppErrorCode } from "@/lib/data/entities"
 
-const logger = pino({ name: "process-image.handler" })
+const logger = pino({ name: "image-to-image.handler" })
 
 const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => {
   const { body, session } = req

@@ -1,5 +1,6 @@
 import Router from "next/router"
 import { isServer } from "./enviroment"
+import { forEachObjIndexed } from "ramda"
 
 export async function redirectToLogin() {
   const { pathname, search } = window.location
@@ -9,18 +10,26 @@ export async function redirectToLogin() {
   return Router.push(`/auth/signin?${params.toString()}`)
 }
 
-export const getURLLastPathname = (href: string): string =>
-  new URL(href).pathname.split("/").pop()
+export function getURLLastPathname(href: string): string {
+  return new URL(href).pathname.split("/").pop()
+}
 
-export const getQueryParams = () => {
+export function getQueryParams(): URLSearchParams {
   const params = isServer()
     ? new URLSearchParams({})
     : new URL(window.location.href).searchParams
 
-  return {
-    ...params,
-    get: (key: string, defaultValue?: string) => {
-      return params.get(key) ?? defaultValue
-    },
-  }
+  return params
+}
+
+export function getPathWithQueryParams(): string {
+  if (isServer()) return ""
+  const { pathname, search } = window.location
+  return `${pathname}${search}`
+}
+
+export function getQueryParamsWith(values: Record<string, string>) {
+  const params = getQueryParams()
+  forEachObjIndexed((value, key) => params.set(key, value), values)
+  return params
 }
