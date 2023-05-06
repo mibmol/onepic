@@ -27,11 +27,7 @@ export const ImageDisplaySection: FC = () => {
     if (uploadedImageUrl && isNil(inputImageUrl)) {
       dispatch(setInputImage(uploadedImageUrl))
     }
-  }, [inputImageUrl, router, dispatch])
+  }, [inputImageUrl, router.query, dispatch])
 
-  return (
-    <section className="md:w-3/5">
-      {hasSelectedImage ? <ImageDisplay /> : <ImageSelector />}
-    </section>
-  )
+  return hasSelectedImage ? <ImageDisplay /> : <ImageSelector />
 }

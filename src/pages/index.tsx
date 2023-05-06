@@ -26,7 +26,7 @@ const Home: NextPage = ({}) => {
       <SharedHead />
       <Header className="sticky top-0" />
       <main className="w-full">
-        <section className="mt-40 text-center">
+        <section className="px-6 mt-20 lg:mt-40 text-center">
           <GradientText
             charRange={[27]}
             as="h1"

@@ -38,8 +38,8 @@ export async function createSubscription({ plan }): Promise<string> {
   return subscription.id
 }
 
-export function getUserPlanInfo() {
-  return fetchJson("/api/plan/info")
+export function getUserPlanInfo(redirectToLogin = true) {
+  return fetchJson("/api/plan/info", { redirectToLogin })
 }
 
 export function getSubscriptionNextChargeTime() {

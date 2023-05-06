@@ -1,4 +1,5 @@
 import { compose, flatten, pluck, prop, propEq } from "ramda"
+import { isNotNil } from "@/lib/utils"
 
 type ModelField = {
   name: string
@@ -205,9 +206,24 @@ export const aiFeatures: AIFeature[] = [
 export const getModelsByFeatureId = (featureId: string) =>
   prop("models", aiFeatures.find(propEq("featureId", featureId)))
 
-const allModels = compose(flatten, pluck("models") as any)(aiFeatures)
+export const allModels: Model[] = compose(flatten, pluck("models") as any)(aiFeatures)
+export const freeModels: Model[] = allModels.filter(propEq("credits", 0) as any)
 
 export const getModelByName = (modelName: string, models?: Model[]): Model =>
   models
     ? models.find(propEq("name", modelName))
     : allModels.find(propEq("name", modelName))
+
+export function getFeatureByModelName(modelName: string): AIFeature {
+  for (const feature of aiFeatures) {
+    const model = getModelByName(modelName, feature.models)
+    if (model) {
+      return feature
+    }
+  }
+  return null
+}
+
+export function isFreeModel(modelName: string) {
+  return isNotNil(freeModels.find(propEq("name", modelName)))
+}

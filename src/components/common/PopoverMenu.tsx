@@ -12,6 +12,7 @@ type PopoverMenuProps = {
   }) => ReactElement
   contentClassName?: string
   openOnHover?: boolean
+  fixedContent?: boolean
 }
 
 const timeoutDuration = 120
@@ -21,6 +22,7 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
   content,
   contentClassName,
   openOnHover = false,
+  fixedContent = false,
 }) => {
   const triggerRef = useRef<HTMLButtonElement>()
   const timeOutRef = useRef(null)
@@ -59,7 +61,13 @@ export const PopoverMenu: FC<PopoverMenuProps> = ({
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className={cn("absolute z-max mt-3", contentClassName)}>
+              <Popover.Panel
+                className={cn(
+                  "z-max mt-3",
+                  fixedContent ? "fixed" : "absolute",
+                  contentClassName,
+                )}
+              >
                 {content({ onMouseEnter, onMouseLeave, closeContent })}
               </Popover.Panel>
             </Transition>

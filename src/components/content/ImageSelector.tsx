@@ -35,23 +35,23 @@ export const ImageSelector: FC = () => {
   })
 
   return (
-    <div className="bg-gray-100 h-168 rounded-md pt-16 dark:bg-black dark:border dark:border-gray-800">
+    <div className="bg-gray-100 h-72 md:h-128 lg:h-168 rounded-md pt-16 dark:bg-black dark:border dark:border-gray-800">
       <div className="relative">
         <div className="hidden md:block">
           <div className="w-full h-full transparent absolute z-10" {...dropHandlers} />
           <DashSquare {...{ over }} className={cn("mx-auto")} />
           <AddImageIcon className="absolute top-8 left-1/2 -translate-x-1/2" />
+          <Text
+            as="p"
+            size="lg"
+            labelToken="Drop an image"
+            className="absolute bottom-16 left-1/2 -translate-x-1/2"
+            bold
+          />
         </div>
-        <Text
-          as="p"
-          size="lg"
-          labelToken="Drop an image"
-          className="absolute bottom-16 left-1/2 -translate-x-1/2"
-          bold
-        />
       </div>
       <div className="flex flex-col items-center justify-center">
-        <Text labelToken="OR" className="mt-12" bold />
+        <Text labelToken="OR" className="hidden lg:block mt-12"  bold />
         <div>
           <FileInput
             {...{ onFileChange }}

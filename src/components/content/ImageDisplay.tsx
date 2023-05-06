@@ -3,7 +3,7 @@ import { LoadingSpinner } from "./LoadingSpinner"
 import { AppState } from "@/lib/state/store"
 import { createSelector } from "@reduxjs/toolkit"
 import { useDropArea } from "react-use"
-import { Button, FileInput, Img } from "@/components/common"
+import { Button, FileInput, Img, Messsage } from "@/components/common"
 import {
   ArrowDownTrayIcon,
   ArrowUpOnSquareIcon,
@@ -22,22 +22,27 @@ import { useTranslation } from "react-i18next"
 import { dowloadImage, imgToObjectUrl, isNotNil } from "@/lib/utils"
 import { uploadUserResultImage } from "@/lib/client/upload"
 import { useRouter } from "next/router"
+import { ReplicateStatus } from "@/lib/data/entities"
 
 const indicatorSelector = createSelector(
   (state: AppState) => state.imageProcessing.uploading,
   (state: AppState) => state.imageProcessing.processing,
   (state: AppState) => state.imageProcessing.resultImageUrl,
-  (uploading, processing, resultImageUrl) => ({
+  (state: AppState) => state.imageProcessing.replicateStatus,
+  (uploading, processing, resultImageUrl, replicateStatus) => ({
     uploading,
     processing,
     resultImageUrl,
+    replicateStatus,
   }),
 )
 
 export const ImageDisplay = () => {
   const router = useRouter()
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { uploading, processing, resultImageUrl } = useAppSelector(indicatorSelector)
+  const { uploading, processing, resultImageUrl, replicateStatus } =
+    useAppSelector(indicatorSelector)
 
   const onFileChange = useCallback(
     (file: File) =>
@@ -66,24 +71,34 @@ export const ImageDisplay = () => {
         </div>
       )}
       {processing && (
-        <div className="absolute z-40 inset-0 flex items-center justify-center bg-black/50 dark:bg-black/75">
+        <div className="absolute z-40 inset-0 flex flex-col items-center justify-center bg-black/50 dark:bg-black/75">
           <LoadingSpinner labelToken="general.processing" />
+          {replicateStatus === ReplicateStatus.starting && (
+            <Messsage
+              title={t("Model is starting")}
+              description={t(
+                "Sometimes we turn off models to save resources. This is running in the background, so you can close this page and look for the result in the dashboard",
+              )}
+              className="mt-8"
+            />
+          )}
         </div>
       )}
       {!(uploading || processing) && (
-        <div className="flex items-center justify-between absolute inset-x-0 pt-6 px-6 z-150">
+        <div className="flex items-center justify-between absolute inset-x-0 pt-2 lg:pt-6 px-2 lg:px-6 z-150">
           <FileInput
             {...{ onFileChange }}
             id="image-input-2"
             name="image-input-2"
             labelToken="general.newPhoto"
-            className=""
+            className="text-sm lg:text-base"
             accept="image/png, image/jpeg, image/webp"
             Icon={ArrowUpOnSquareIcon}
           />
           {resultImageUrl && (
             <Button
               labelToken="Download"
+              className="text-sm lg:text-base"
               Icon={ArrowDownTrayIcon}
               onClick={() => dowloadImage(resultImageUrl).catch(console.error)}
             />
@@ -153,7 +168,6 @@ const ImageView = () => {
     },
     [],
   )
-
   const onMouseDown: MouseEventHandler<HTMLDivElement> = useCallback(() => {
     mousePosRef.current.start = true
   }, [])

@@ -32,9 +32,9 @@ export const FileInput: FC<FileInputProps> = ({
   }, [])
 
   return (
-    <div {...{ className }}>
+    <>
       <input {...{ ref, id, name, onChange, accept }} type="file" className="hidden" />
-      <Button {...{ Icon, labelToken, onClick }} />
-    </div>
+      <Button {...{ Icon, labelToken, onClick, className }} />
+    </>
   )
 }

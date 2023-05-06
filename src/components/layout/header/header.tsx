@@ -1,12 +1,13 @@
 import { FC, useEffect, useRef } from "react"
 import Link from "next/link"
 import { ProfileMenu } from "@/components/content/ProfileMenu"
-import { Text, Button } from "@/components/common"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/common/icons"
 import { useRouter } from "next/router"
-import { FeaturesPopoverMenu } from "@/components/content/header/FeaturesPopoverMenu"
-import { FeedbackPopover } from "@/components/content/header/FeedbackPopover"
+import { BurguerMenu } from "./BurgerMenu"
+import { HeaderLink } from "./HeaderLink"
+import { FeaturesPopoverMenu } from "./FeaturesPopoverMenu"
+import { FeedbackPopover } from "./FeedbackPopover"
 
 type HeaderProps = {
   className?: string
@@ -37,7 +38,7 @@ export const Header: FC<HeaderProps> = ({
       ref={headerRef}
       className={cn(
         `
-          top-0 flex justify-between items-center px-12 py-5 border-gray-200 bg-white z-200
+          top-0 flex justify-between items-center pl-4 pr-1 lg:pl-12 lg:pr-12 py-5 border-gray-200 bg-white z-200
           dark:bg-black dark:border-gray-800
         `,
         { sticky: !noSticky },
@@ -47,7 +48,7 @@ export const Header: FC<HeaderProps> = ({
       <Link href="/">
         <Logo className="h-6" />
       </Link>
-      <nav>
+      <nav className="hidden lg:flex">
         <ul className="flex items-center">
           <li className="ml-2">
             <FeaturesPopoverMenu />
@@ -66,21 +67,12 @@ export const Header: FC<HeaderProps> = ({
           </li>
         </ul>
       </nav>
-      <div className="flex justify-end w-48">
+      <div className="hidden lg:flex justify-end w-48">
         <ProfileMenu />
       </div>
+      <div className="flex lg:hidden justify-end w-48">
+        <BurguerMenu />
+      </div>
     </header>
-  )
-}
-
-const HeaderLink = ({ href, labelToken }) => {
-  return (
-    <Link
-      {...{ href }}
-      className="flex items-center rounded h-10 px-5 hover:bg-gray-100 dark:hover:bg-gray-700"
-      scroll={false}
-    >
-      <Text {...{ labelToken }} medium />
-    </Link>
   )
 }

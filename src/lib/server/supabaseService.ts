@@ -68,7 +68,7 @@ export async function getPrediction(predictionId: string) {
 export async function insertPrediction(
   { input, modelName },
   { status, id }: ReplicatePrediction,
-  user: User,
+  user?: User,
 ) {
   return supabase.from("prediction_result").insert({
     input,

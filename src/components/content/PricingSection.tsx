@@ -1,9 +1,11 @@
 import { Button, Select, SelectOption, Tag, Text } from "@/components/common"
 import { PlanType } from "@/lib/data/entities"
+import { useAfterRenderState } from "@/lib/hooks/useAfterRenderState"
 import {
   cn,
   creditsOptions,
   getCreditPrice,
+  getQueryParamsWith,
   getSubscriptionPrice,
   subscriptionOptions,
 } from "@/lib/utils"
@@ -111,7 +113,10 @@ const PricingBox: FC<PricingBoxProps> = ({
 
 const CreditsSelector = () => {
   const [value, setValue] = useState("100")
-  const params = new URLSearchParams({ plan: value, planType: PlanType.credits })
+  const params = useAfterRenderState(
+    getQueryParamsWith({ plan: value, planType: PlanType.credits }),
+    [value],
+  )
   return (
     <PricingBox
       titleToken="Credits"
@@ -121,7 +126,7 @@ const CreditsSelector = () => {
       ]}
       price={getCreditPrice(value)}
       onChange={(e) => setValue(e.target.value)}
-      link={`/payment/?${params.toString()}`}
+      {...(params && { link: `/payment/?${params.toString()}` })}
       linkToken="Buy credits"
       options={creditsOptions}
       defaultValue={creditsOptions[1]}
@@ -131,7 +136,10 @@ const CreditsSelector = () => {
 
 const SubscriptionSelector = () => {
   const [value, setValue] = useState("100")
-  const params = new URLSearchParams({ plan: value, planType: PlanType.subscription })
+  const params = useAfterRenderState(
+    getQueryParamsWith({ plan: value, planType: PlanType.subscription }),
+    [value],
+  )
   return (
     <PricingBox
       titleToken="Monthly Subscription"
@@ -140,10 +148,10 @@ const SubscriptionSelector = () => {
         { labelToken: "Cancel any time" },
       ]}
       price={getSubscriptionPrice(value)}
-      onChange={(e) => setValue(e.target.value)}
-      link={`/payment/?${params.toString()}`}
       linkToken="Subscribe"
       options={subscriptionOptions}
+      onChange={(e) => setValue(e.target.value)}
+      {...(params && { link: `/payment/?${params.toString()}` })}
     />
   )
 }

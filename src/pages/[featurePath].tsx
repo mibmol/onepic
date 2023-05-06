@@ -4,10 +4,11 @@ import { propEq } from "ramda"
 import { Header } from "@/components/layout"
 import { aiFeatures } from "@/lib/data/models"
 import { ImageDisplaySection } from "@/components/content/ImageDisplaySection"
-import { ImageActionsSection } from "@/components/content/ImageActionsSection"
 import { PagePropsProvider } from "@/lib/hooks/usePageProps"
 import { Footer } from "@/components/layout/Footer"
 import { SharedHead } from "@/components/layout/header/headUtils"
+import { Text } from "@/components/common"
+import { ModelForm } from "@/components/content/ModelForm"
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
@@ -50,9 +51,23 @@ const ToolPage: NextPage<ToolPageProps> = ({
     <PagePropsProvider value={{ titleToken, descriptionToken, featureId }}>
       <SharedHead />
       <Header />
-      <main className="w-10/12 md:flex mx-auto mt-14">
-        <ImageDisplaySection />
-        <ImageActionsSection />
+      <main className="grid grid-cols-1 lg:grid-cols-2 px-6 md:px-16 lg:px-0 lg:w-10/12 mx-auto mt-14 ">
+        <section className="lg:hidden">
+          <div className="text-center max-w-lg mx-auto mb-6">
+            <Text as="h1" className="mb-6" labelToken={titleToken} size="4xl" bold />
+            <Text as="p" labelToken={descriptionToken} gray />
+          </div>
+        </section>
+        <section>
+          <ImageDisplaySection />
+        </section>
+        <section className="lg:ml-8">
+          <div className="hidden lg:block mb-6">
+            <Text as="h1" className="mb-6" labelToken={titleToken} size="4xl" bold />
+            <Text as="p" labelToken={descriptionToken} gray />
+          </div>
+          <ModelForm />
+        </section>
       </main>
       <Footer />
     </PagePropsProvider>

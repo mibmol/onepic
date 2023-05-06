@@ -1,16 +1,33 @@
 import { getProcessImageState } from "@/lib/client/processing"
-import { getModelByName, getModelsByFeatureId } from "@/lib/data/models"
+import { Model, getModelByName, getModelsByFeatureId } from "@/lib/data/models"
 import { usePageProps } from "@/lib/hooks/usePageProps"
 import { useAppDispatch, useAppSelector } from "@/lib/state/hooks"
 import { imageGenerationSlice, processImage } from "@/lib/state/imageProcessingSlice"
 import { AppDispatch, AppState } from "@/lib/state/store"
-import { cn, FetchJsonError, notification, redirectToLogin } from "@/lib/utils"
+import {
+  cn,
+  FetchJsonError,
+  getPathWithQueryParams,
+  notification,
+  redirectToLogin,
+} from "@/lib/utils"
 import { TFunction, useTranslation } from "next-i18next"
-import { FC, useEffect, useMemo } from "react"
+import { FC, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
-import { SubmitButton, Text, Select, NumberInput, Checkbox } from "@/components/common"
+import {
+  SubmitButton,
+  Text,
+  Select,
+  NumberInput,
+  Checkbox,
+  Messsage,
+  Button,
+} from "@/components/common"
 import { useSession } from "next-auth/react"
 import { AppErrorCode, ReplicateStatus } from "@/lib/data/entities"
+import { getUserPlanInfo } from "@/lib/client/payment"
+import useSWR from "swr"
+import { useAfterRenderState } from "@/lib/hooks/useAfterRenderState"
 
 const {
   setResultImage,
@@ -42,7 +59,7 @@ const checkProcessingState = async (
     } catch (error) {
       clearInterval(intervalId)
       dispatch(stopProcessing())
-      notification.error(t("And error occurred while processing"), {
+      notification.error(t("An error occurred while processing"), {
         position: "top-right",
       })
     }
@@ -127,7 +144,17 @@ export const ModelForm = () => {
           }))}
         />
       </div>
-      {selectedModel?.credits > 1 && <span>credits {selectedModel.credits}</span>}
+      {selectedModel?.credits > 1 && (
+        <>
+          <Messsage
+            title={t("This option will take {{credits}} of your credits", {
+              credits: selectedModel.credits,
+            })}
+            variant="info"
+            className="mt-3"
+          />
+        </>
+      )}
       {selectedModel?.fields.map((field) => (
         <div
           key={field.name}
@@ -167,8 +194,8 @@ export const ModelForm = () => {
           )}
         </div>
       ))}
-      <div className="flex justify-left mt-12">
-        <Submit />
+      <div className="flex justify-left">
+        <Submit {...{ selectedModel }} />
       </div>
     </form>
   )
@@ -177,7 +204,36 @@ export const ModelForm = () => {
 const submitDisabledSelector = ({ imageProcessing }: AppState) =>
   imageProcessing.uploading || imageProcessing.processing
 
-const Submit: FC = () => {
+const Submit: FC<{ selectedModel: Model }> = ({ selectedModel }) => {
+  const { t } = useTranslation()
   const disabled = useAppSelector(submitDisabledSelector)
-  return <SubmitButton {...{ disabled }} labelToken="general.submit" />
+  const { data } = useSWR("planInfo", () => getUserPlanInfo(false))
+  const buyCreditsCallbackUrl = useAfterRenderState(getPathWithQueryParams)
+
+  const hasCredits = selectedModel.credits === 0 || data?.credits > 0
+  return (
+    <div className={cn(hasCredits && "mt-6")}>
+      {!hasCredits && (
+        <Messsage
+          title={
+            <div className="flex items-center">
+              {t("You ran out of credits")}{" "}
+              <Button
+                variant="tertiary"
+                labelToken="Buy credits"
+                href={
+                  "/pricing?" +
+                  new URLSearchParams({ callbackUrl: buyCreditsCallbackUrl })
+                }
+                className="py-1"
+              />
+            </div>
+          }
+          className="w-96 mb-6 mt-5"
+          iconClassName="mt-1"
+        />
+      )}
+      <SubmitButton {...{ disabled }} labelToken="general.submit" />
+    </div>
+  )
 }

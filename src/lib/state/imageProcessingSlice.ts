@@ -22,6 +22,7 @@ const initialState: ImageProcessingState = {
   processing: false,
   predictionId: null,
   currentModelName: null,
+  replicateStatus: null,
 }
 
 type ThunkArgs<T, E = any> = {

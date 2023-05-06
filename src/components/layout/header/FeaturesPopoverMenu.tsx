@@ -36,7 +36,7 @@ const FeaturesMenuTrigger = ({ open }) => {
   )
 }
 
-const toolsOptions = [
+export const toolsOptions = [
   {
     path: "/restore-photo-image",
     titleToken: "feature.restorePhotos.title",

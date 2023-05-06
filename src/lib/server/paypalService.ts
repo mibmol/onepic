@@ -129,7 +129,6 @@ const getChargeTime = path(["billing_info", "next_billing_time"])
 
 export async function getSubscriptionNextChargeTime(subscriptionId: string) {
   const subscription = await getSubscription(subscriptionId)
-  console.log("<---- subsus", subscription)
   return getChargeTime(subscription)
 }
 

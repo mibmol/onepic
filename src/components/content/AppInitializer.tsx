@@ -22,7 +22,6 @@ export const AppInitializer: FC = () => {
         )
     }
     return () => {
-      console.log("callbacks", cleanUpFunctions)
       callFunctionsInArray(cleanUpFunctions)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
