@@ -85,19 +85,20 @@ export const ImageDisplay = () => {
         </div>
       )}
       {!(uploading || processing) && (
-        <div className="flex items-center justify-between absolute inset-x-0 pt-6 px-6 z-150">
+        <div className="flex items-center justify-between absolute inset-x-0 pt-2 lg:pt-6 px-2 lg:px-6 z-150">
           <FileInput
             {...{ onFileChange }}
             id="image-input-2"
             name="image-input-2"
             labelToken="general.newPhoto"
-            className=""
+            className="text-sm lg:text-base"
             accept="image/png, image/jpeg, image/webp"
             Icon={ArrowUpOnSquareIcon}
           />
           {resultImageUrl && (
             <Button
               labelToken="Download"
+              className="text-sm lg:text-base"
               Icon={ArrowDownTrayIcon}
               onClick={() => dowloadImage(resultImageUrl).catch(console.error)}
             />
@@ -167,7 +168,6 @@ const ImageView = () => {
     },
     [],
   )
-
   const onMouseDown: MouseEventHandler<HTMLDivElement> = useCallback(() => {
     mousePosRef.current.start = true
   }, [])

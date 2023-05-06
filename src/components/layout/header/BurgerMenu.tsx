@@ -13,7 +13,7 @@ const ProfileInfo = () => {
   const { data: session } = useSession()
   const { t } = useTranslation()
   if (!session) {
-    return <></>
+    return <Button href="/auth/signin" labelToken="Sign-in / Sign-up" className="py-2 justify-center mt-4" />
   }
   return (
     <div className="flex justify-between mt-4 px-5">
