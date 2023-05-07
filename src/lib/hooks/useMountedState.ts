@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useCallback, useState } from "react"
 import { useMountedState as _useMountedState } from "react-use"
 
-export const useMounted = _useMountedState
+export const useIsMounted = _useMountedState
 
 export function useMountedState<T>(
   initialState: T | (() => T),

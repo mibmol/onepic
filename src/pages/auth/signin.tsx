@@ -2,14 +2,18 @@ import { GithubIcon, GoogleIcon } from "@/components/common/icons"
 import { Header } from "@/components/layout"
 import { Footer } from "@/components/layout/Footer"
 import { SharedHead } from "@/components/layout/header/headUtils"
-import { cn } from "@/lib/utils"
+import { cn, notification } from "@/lib/utils"
 import { GetStaticProps, NextPage } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { useTranslation } from "next-i18next"
-import { Text } from "@/components/common"
+import { Button, Modal, Text, TextInput } from "@/components/common"
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { FormEvent, FormEventHandler, useEffect, useState } from "react"
+import { CheckCircleIcon, EnvelopeIcon } from "@heroicons/react/24/outline"
+import { useToggle } from "react-use"
+import { useForm } from "react-hook-form"
+import { useMountedState } from "@/lib/hooks"
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
@@ -19,7 +23,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   }
 }
 
-const providers = [
+const oauthProviders = [
   {
     id: "google",
     labelToken: "Continue with Google",
@@ -78,18 +82,21 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
           {router.query.error === "OAuthAccountNotLinked" && (
             <Text labelToken="To confirm your identity, sign in with the same account you used initially" />
           )}
-          {providers.map(({ id, className, labelToken, Icon }) => {
+          <EmailSignin />
+          {oauthProviders.map(({ id, className, labelToken, Icon }) => {
             return (
               <button
                 key={id}
                 type="submit"
-                className={cn("mt-4 px-12 py-3 flex font-medium rounded-md", className)}
+                className={cn(
+                  "w-88 mt-4 px-12 py-3 flex font-medium rounded-md",
+                  className,
+                )}
                 onClick={() =>
                   signIn(id, { callbackUrl: (router.query.callbackUrl as string) ?? "/" })
                 }
-                
               >
-                {<Icon className="w-6 h-6 mr-3" />}
+                {<Icon className="w-6 h-6 ml-6 mr-3" />}
                 {t(labelToken)}
               </button>
             )
@@ -97,6 +104,88 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
         </div>
       </main>
       <Footer />
+    </>
+  )
+}
+
+const EmailSignin = () => {
+  const { t } = useTranslation()
+  const [showFormModal, toggleFormModal] = useToggle(false)
+  const { register, handleSubmit, getValues } = useForm()
+  const [sending, setSending] = useMountedState(false)
+  const [done, setDone] = useState(false)
+
+  const onSend = handleSubmit(async (values) => {
+    setSending(true)
+    try {
+      // const form = new FormData(ev.currentTarget)
+      const { ok } = await signIn("email", { email: values.email, redirect: false })
+      ok && setDone(true)
+    } catch (error) {
+      console.error(error)
+      notification.error(t("An error ocurred"))
+    } finally {
+      setSending(false)
+    }
+  })
+
+  const closeModal = () => {
+    toggleFormModal()
+    setTimeout(() => setDone(false), 200)
+  }
+
+  return (
+    <>
+      <button
+        className={`
+          w-88 mt-4 px-12 py-3 flex font-medium rounded-md text-gray-800 border border-gray-300 
+            dark:text-white dark:border-gray-800
+          hover:bg-gray-200 dark:hover:bg-gray-900
+        `}
+        onClick={toggleFormModal}
+      >
+        {<EnvelopeIcon className="w-6 h-6 ml-6 mr-3" />}
+        {t("Continue with Email")}
+      </button>
+      <Modal
+        role="form"
+        show={showFormModal}
+        onClose={toggleFormModal}
+        titleToken={done ? "Check your email" : "Type your email to sign-in or sign-up"}
+      >
+        {done ? (
+          <div>
+            <div className="flex items-center">
+              <CheckCircleIcon className="w-6 h-6 stroke-2 stroke-purple-400 mr-2 -ml-1" />
+              <Text labelToken="An sign-in email was sent to" className="mr-1" />
+              <Text semibold>{getValues("email")}</Text>
+            </div>
+            <div className="flex justify-end mt-5">
+              <Button labelToken="Close" onClick={closeModal} />
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={onSend}>
+            <TextInput
+              type="email"
+              {...register("email")}
+              placeholder={t("email")}
+              className="w-full mt-2"
+              required
+            />
+            <div className="mt-6 flex justify-end">
+              <Button
+                labelToken="Cancel"
+                type="button"
+                onClick={toggleFormModal}
+                variant="secondary"
+                className="mr-3"
+              />
+              <Button type="submit" labelToken="Submit" loading={sending} />
+            </div>
+          </form>
+        )}
+      </Modal>
     </>
   )
 }
