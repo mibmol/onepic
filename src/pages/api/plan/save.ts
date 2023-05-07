@@ -4,6 +4,9 @@ import { compose, either, equals, find, path, propEq } from "ramda"
 import { getCreditPrice, getSubscriptionPrice } from "@/lib/utils"
 import { PaypalSubscriptionStatus, PlanType } from "@/lib/data/entities"
 import { createApiHandler } from "@/lib/server/apiHandler"
+import { pino } from "pino"
+
+const logger = pino({ name: "api/save-order.handler" })
 
 const getLastCapture = compose<any, any, any>(
   find(propEq("final_capture", true)),
@@ -13,6 +16,8 @@ const getLastCapture = compose<any, any, any>(
 const isOrderCompleted = (order: any, selectedPlan: string): boolean => {
   const { value: actualPrice } = getCreditPrice(selectedPlan)
   const { amount, status } = getLastCapture(order)
+
+  logger.info({ actualPrice, amount, status }, "isOrderCompleted")
 
   return (
     status === "COMPLETED" &&
@@ -31,6 +36,7 @@ export default createApiHandler({
   async handler(req, res) {
     const { orderId, selectedPlan, planType, subscriptionId } = req.body
     if (!selectedPlan || !planType || (!orderId && !subscriptionId)) {
+      logger.error({ selectedPlan, planType, orderId, subscriptionId }, "validation")
       return res.status(422).json({ msg: "inconsistent data" })
     }
 
@@ -48,7 +54,7 @@ export default createApiHandler({
         })
         return res.status(200).json({})
       }
-      return res.status(422).json({ msg: "inconsistent data" })
+      return res.status(422).json({ msg: "process credits: inconsistent data", order })
     }
 
     if (planType === PlanType.subscription) {
@@ -65,7 +71,7 @@ export default createApiHandler({
         })
         return res.status(200).json({})
       }
-      return res.status(422).json({ msg: "Not approved" })
+      return res.status(422).json({ msg: "process subscription: Not approved" })
     }
 
     return res.status(422).json({ msg: "inconsistent data" })

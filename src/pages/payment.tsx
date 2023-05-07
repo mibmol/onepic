@@ -158,7 +158,7 @@ const CreditsPlanPayment = () => {
       <PayPalButtonsLoader
         {...{ createOrder, onApprove, onError }}
         style={{ layout: "vertical", label: "pay", color: "blue" }}
-        className="mx-auto w-2/5 p-8 border border-gray-200 rounded-lg ring-0 dark:border-gray-700 dark:bg-gray-200"
+        className="mx-auto w-full lg:w-2/5 p-8 border border-gray-200 rounded-lg ring-0 dark:border-gray-700 dark:bg-gray-200"
       />
     </PayPalScriptProvider>
   )
@@ -217,7 +217,7 @@ const SubscriptionPlanPayment = () => {
       <PayPalButtonsLoader
         {...{ createSubscription, onApprove, onError }}
         style={{ layout: "vertical", label: "subscribe", color: "blue" }}
-        className="mx-auto w-2/5 p-8 border border-gray-200 rounded-lg ring-0 dark:border-gray-700 dark:bg-gray-200"
+        className="mx-auto w-full lg:w-2/5 p-8 border border-gray-200 rounded-lg ring-0 dark:border-gray-700 dark:bg-gray-200"
       />
     </PayPalScriptProvider>
   )
