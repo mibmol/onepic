@@ -8,9 +8,9 @@ import { pino } from "pino"
 
 const logger = pino({ name: "api/save-order.handler" })
 
-const getLastCapture = compose<any, any, any>(
-  find(propEq("final_capture", true)),
-  path(["purchase_units", 0, "payments", "captures"]),
+const getLastCapture = compose(
+  find<any>(propEq("final_capture", true)),
+  path<any>(["purchase_units", 0, "payments", "captures"]),
 )
 
 const isOrderCompleted = (order: any, selectedPlan: string): boolean => {

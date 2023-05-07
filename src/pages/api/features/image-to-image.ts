@@ -1,5 +1,5 @@
 import { Prediction } from "@/lib/data/entities/prediction"
-import { getModelByName } from "@/lib/data/models"
+import { isFreeModel } from "@/lib/data/models"
 import * as replicateService from "@/lib/server/replicateService"
 import * as supabaseService from "@/lib/server/supabaseService"
 import { isNotNil } from "@/lib/utils"
@@ -49,9 +49,6 @@ const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => 
 export default createApiHandler({
   methods: ["POST"],
   authenticated: true,
-  customAuthCheck: (session, req) => {
-    const { credits } = getModelByName(req.body.modelName) ?? {}
-    return credits === 0 || isNotNil(session)
-  },
+  customAuthCheck: (session, req) => isFreeModel(req.body.modelName) || isNotNil(session),
   handler,
 })
