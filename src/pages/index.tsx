@@ -38,9 +38,17 @@ const Home: NextPage = ({}) => {
           <Text
             as="h3"
             className="max-w-2xl mx-auto mt-12"
-            labelToken="Discover the power of AI and take your images to the next level with just one click."
+            labelToken="Discover the power of AI and take your images to the next level with just one click"
             size="xl"
             semibold
+            gray
+          />
+          <Text
+            as="h3"
+            className="max-w-2xl mx-auto mt-12"
+            labelToken="Simpler & cheaper than other alternatives"
+            size="xl"
+            medium
             gray
           />
         </section>
@@ -57,14 +65,12 @@ const Home: NextPage = ({}) => {
             }
           />
         </section>
-        <FeaturesSection/>
+        <FeaturesSection />
         <PricingSection />
       </main>
       <Footer />
     </PagePropsProvider>
   )
 }
-
-
 
 export default Home

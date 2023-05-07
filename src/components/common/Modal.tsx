@@ -2,6 +2,7 @@ import { Dialog, Transition } from "@headlessui/react"
 import { AriaRole, FC, Fragment, PropsWithChildren, ReactElement } from "react"
 import { Text } from "./Text"
 import { Button, ButtonVariant } from "./Button"
+import { cn } from "@/lib/utils"
 
 type ModalProps = {
   show: boolean
@@ -53,10 +54,12 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
           <div className="fixed inset-0 flex justify-center items-center overflow-y-auto">
             <Dialog.Panel className="px-9 py-8 transition-all transform bg-white shadow-lg rounded-2xl dark:bg-gray-800">
               <Dialog.Title className="flex justify-between">
-                <Text as="h1" labelToken={titleToken} size="xl" medium />
+                <Text as="p" labelToken={titleToken} size="xl" medium />
               </Dialog.Title>
               <Dialog.Description as="div">
-                <div className="mt-4 mb-6">{children}</div>
+                <div className={cn("mt-4", { "mb-6": actions?.length > 0 })}>
+                  {children}
+                </div>
                 <div className="flex justify-end">
                   {actions.map(
                     ({ key, variant, onClick, labelToken, disabled, loading }) => (
