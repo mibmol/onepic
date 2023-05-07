@@ -6,5 +6,5 @@ type DividerProps = {
 }
 
 export const Divider: FC<DividerProps> = ({ className }) => {
-  return <div className={cn("w-full h-px bg-gray-400 dark:bg-gray-800", className)} />
+  return <div className={cn("w-full h-px bg-gray-200 dark:bg-gray-800", className)} />
 }

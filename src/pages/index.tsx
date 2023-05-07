@@ -46,7 +46,7 @@ const Home: NextPage = ({}) => {
           <Text
             as="h3"
             className="max-w-2xl mx-auto mt-12"
-            labelToken="Simpler & cheaper than other alternatives"
+            labelToken="Easy to use & cheaper than other alternatives"
             size="xl"
             medium
             gray

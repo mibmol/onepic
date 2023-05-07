@@ -9,7 +9,7 @@ export const creditsOptions = [
 ]
 
 export const getCreditPrice = cond([
-  [equals("50"), always({ value: 4, totalCredits: 50 })],
+  [equals("50"), always({ value: 1, totalCredits: 50 })],
   [equals("100"), always({ value: 7.5, totalCredits: 100, messageToken: "save 5%" })],
   [equals("200"), always({ value: 14, totalCredits: 200, messageToken: "save 12.5%" })],
   [
