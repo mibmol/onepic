@@ -45,9 +45,10 @@ export const BurguerMenu = () => {
             <Button
               variant="secondary"
               labelToken="Support"
-              href="/support"
+              href="https://witcherai.freshdesk.com/support/tickets/new"
               onClickCapture={closeContent}
               className="py-1.5 justify-center"
+              target="_blank"
             />
             <ProfileInfo />
             <Divider className="mt-3" />

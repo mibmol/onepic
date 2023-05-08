@@ -6,7 +6,7 @@ import { cn, getQueryParams, notification } from "@/lib/utils"
 import { GetStaticProps, NextPage } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { useTranslation } from "next-i18next"
-import { Button, Modal, Text, TextInput } from "@/components/common"
+import { Button, Messsage, Modal, Text, TextInput } from "@/components/common"
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { FormEvent, FormEventHandler, useEffect, useState } from "react"
@@ -80,7 +80,12 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
             gray
           />
           {router.query.error === "OAuthAccountNotLinked" && (
-            <Text labelToken="To confirm your identity, sign in with the same account you used initially" />
+            <Messsage
+              className="mb-2"
+              title={t(
+                "To confirm your identity, sign in with the same account you used initially",
+              )}
+            />
           )}
           <EmailSignin />
           {oauthProviders.map(({ id, className, labelToken, Icon }) => {

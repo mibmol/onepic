@@ -60,7 +60,11 @@ export const Header: FC<HeaderProps> = ({
             />
           </li>
           <li className="ml-2">
-            <HeaderLink href="/support" labelToken="Support" />
+            <HeaderLink
+              href="https://witcherai.freshdesk.com/support/tickets/new"
+              target="_black"
+              labelToken="Support"
+            />
           </li>
           <li>
             <FeedbackPopover />

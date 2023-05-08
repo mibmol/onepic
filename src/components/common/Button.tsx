@@ -3,6 +3,7 @@ import {
   ComponentType,
   DetailedHTMLProps,
   FC,
+  HTMLAttributeAnchorTarget,
   InputHTMLAttributes,
   PropsWithChildren,
   SVGProps,
@@ -12,7 +13,6 @@ import { useTranslation } from "next-i18next"
 import { cn, removeSimilarTWClasses } from "@/lib/utils"
 import Link, { LinkProps } from "next/link"
 import { always, cond, equals } from "ramda"
-import { Spinner } from "./icons"
 import { LoadingDots } from "./LoadingDots"
 
 type HTMLButtonProps = DetailedHTMLProps<
@@ -26,6 +26,7 @@ type ButtonProps<NativeProps> = PropsWithChildren & {
   className?: string
   tokenArgs?: { [key: string]: any }
   href?: string
+  target?: HTMLAttributeAnchorTarget
   Icon?: ComponentType<SVGProps<SVGSVGElement>>
   iconPlacement?: "left" | "right"
   iconSize?: "sm" | "md"
@@ -107,6 +108,7 @@ export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({
   variant = "primary",
   download,
   loading,
+  target,
   ...props
 }) => {
   const { t } = useTranslation()
@@ -152,7 +154,7 @@ export const Button: FC<ButtonProps<HTMLButtonProps | LinkProps>> = ({
 
   if (href) {
     return (
-      <Link {...{ href }} {...(props as LinkProps)} className={classes}>
+      <Link {...{ href, target }} {...(props as LinkProps)} className={classes}>
         {content}
       </Link>
     )
