@@ -1,24 +1,18 @@
 import { Header } from "@/components/layout"
 import { Footer } from "@/components/layout/Footer"
 import { SharedHead } from "@/components/layout/header/headUtils"
-import { getCreditPrice, getSubscriptionPrice, isClient, notification } from "@/lib/utils"
+import { getCreditPrice, getSubscriptionPrice, isClient } from "@/lib/utils"
 import { GetStaticProps, NextPage } from "next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import { useTranslation } from "next-i18next"
 import { Text } from "@/components/common"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
-import { FC, useEffect } from "react"
-import {
-  PayPalButtons,
-  PayPalButtonsComponentProps,
-  PayPalScriptProvider,
-  usePayPalScriptReducer,
-} from "@paypal/react-paypal-js"
-import { getQueryParams, redirectToLogin } from "@/lib/utils/clientRouting"
-import { Spinner } from "@/components/common/icons"
-import * as paymentClient from "@/lib/client/payment"
+import { useEffect } from "react"
+import { redirectToLogin } from "@/lib/utils/clientRouting"
 import { PlanType } from "@/lib/data/entities"
+import { CreditsPlanPayment } from "@/components/content/payment/CreditsPlanPayment"
+import { SubscriptionPlanPayment } from "@/components/content/payment/SubscriptionPayment"
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
@@ -27,9 +21,6 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
     props: { ...localeProps },
   }
 }
-type CreateOrderHandler = PayPalButtonsComponentProps["createOrder"]
-type OnApproveHandler = PayPalButtonsComponentProps["onApprove"]
-type CreateSubscriptionHandler = PayPalButtonsComponentProps["createSubscription"]
 
 const CreditCheckoutPage: NextPage = () => {
   const { data: session } = useSession()
@@ -39,7 +30,7 @@ const CreditCheckoutPage: NextPage = () => {
 
   useEffect(() => {
     if (!session && isClient()) {
-      redirectToLogin()
+      redirectToLogin(router)
     } else if (!plan || !planType) {
       router.back()
     }
@@ -48,7 +39,7 @@ const CreditCheckoutPage: NextPage = () => {
   return (
     <>
       <SharedHead />
-      <Header />
+      <Header className="border-b" showBottomLineOnScroll={false} />
       <main>
         <div className="mt-32 mb-10 flex flex-col items-center">
           <Text
@@ -79,147 +70,13 @@ const CreditCheckoutPage: NextPage = () => {
             </Text>
           )}
         </div>
-        <div className="">
+        <div className="mx-auto px-4 lg:w-3/5">
           {planType === PlanType.credits && <CreditsPlanPayment />}
           {planType === PlanType.subscription && <SubscriptionPlanPayment />}
         </div>
       </main>
       <Footer />
     </>
-  )
-}
-
-const PayPalButtonsLoader: FC<PayPalButtonsComponentProps> = (props) => {
-  const [{ isPending }] = usePayPalScriptReducer()
-  return (
-    <>
-      <PayPalButtons {...props}>
-        {isPending && (
-          <Spinner
-            className="animate-spin stroke-1 w-12 mx-auto "
-            circleStroke="#33333366"
-            semiCircleStroke="#333333"
-          />
-        )}
-      </PayPalButtons>
-    </>
-  )
-}
-
-const CreditsPlanPayment = () => {
-  const router = useRouter()
-  const { t } = useTranslation()
-
-  const { plan, planType } = router.query
-
-  const createOrder: CreateOrderHandler = async () => {
-    try {
-      return await paymentClient.createCreditOrder({ plan, planType })
-    } catch (error) {
-      notification.error(t("Couldn't initialize payment. Try refreshing the page"))
-    }
-  }
-
-  const onApprove: OnApproveHandler = async (data) => {
-    try {
-      const { id: orderId } = await paymentClient.captureCreditOrder(data)
-      await paymentClient.saveUserPlan({
-        orderId,
-        planType: PlanType.credits,
-        selectedPlan: plan,
-      })
-      notification.success(t("Plan saved. You can start using your credits now!"), {
-        duration: 3000,
-      })
-      router.push(getQueryParams().get("callbackUrl") ?? "/")
-    } catch (error) {
-      console.error(error)
-      notification.error(
-        t("Couldn't process the payment. Try again or use another method"),
-        { duration: 3000 },
-      )
-    }
-  }
-
-  const onError = (error) => {
-    console.error(error)
-    notification.error(
-      t("Couldn't process the subscription. Try again or use another method"),
-      { duration: 3000 },
-    )
-  }
-
-  return (
-    <PayPalScriptProvider
-      options={{
-        "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-      }}
-    >
-      <PayPalButtonsLoader
-        {...{ createOrder, onApprove, onError }}
-        style={{ layout: "vertical", label: "pay", color: "blue" }}
-        className="mx-auto w-full lg:w-2/5 p-8 border border-gray-200 rounded-lg ring-0 dark:border-gray-700 dark:bg-gray-200"
-      />
-    </PayPalScriptProvider>
-  )
-}
-
-const SubscriptionPlanPayment = () => {
-  const router = useRouter()
-  const { t } = useTranslation()
-
-  const { plan } = router.query
-
-  const createSubscription: CreateSubscriptionHandler = async () => {
-    try {
-      return await paymentClient.createSubscription({ plan })
-    } catch (error) {
-      notification.error(t("Couldn't initialize payment. Try refreshing the page"))
-    }
-  }
-
-  const onApprove: OnApproveHandler = async ({ subscriptionID, ...rest }) => {
-    try {
-      await paymentClient.saveUserPlan({
-        planType: PlanType.subscription,
-        subscriptionId: subscriptionID,
-        selectedPlan: plan,
-      })
-      notification.success(t("Subscribed successfully. You can start using the app!"), {
-        duration: 3000,
-      })
-      router.push(getQueryParams().get("callbackUrl") ?? "/")
-    } catch (error) {
-      console.error(error)
-      notification.error(
-        t("Couldn't process the subscription. Try again or use another method"),
-        { duration: 3000 },
-      )
-    }
-  }
-
-  const onError = (error) => {
-    console.error(error)
-    notification.error(
-      t("Couldn't process the subscription. Try again or use another method"),
-      { duration: 3000 },
-    )
-  }
-
-  return (
-    <PayPalScriptProvider
-      options={{
-        "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-        intent: "subscription",
-        vault: true,
-      }}
-    >
-      <PayPalButtonsLoader
-        {...{ createSubscription, onApprove, onError }}
-        style={{ layout: "vertical", label: "subscribe", color: "blue" }}
-        className="mx-auto w-full lg:w-2/5 p-8 border border-gray-200 rounded-lg ring-0 dark:border-gray-700 dark:bg-gray-200"
-      />
-    </PayPalScriptProvider>
   )
 }
 

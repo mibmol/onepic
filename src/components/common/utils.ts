@@ -1,12 +1,23 @@
-export type TextSize = "xm" | "sm" | "md" | "lg" | "xl" | "2xl" | "4xl" | "6xl" | "7xl"
+export type TextSize =
+  | "xm"
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "2xl"
+  | "4xl"
+  | "6xl"
+  | "7xl"
+  | "base"
 
-export const getTextSizeClass = (size: TextSize) => {
+export const getTextSizeClass = (size?: TextSize) => {
   switch (size) {
     case "xm":
       return "text-xs"
     case "sm":
       return "text-sm"
     case "md":
+    case "base":
       return "text-base"
     case "lg":
       return "text-lg"
@@ -21,6 +32,6 @@ export const getTextSizeClass = (size: TextSize) => {
     case "7xl":
       return "text-7xl"
     default:
-      return "text-base"
+      return ""
   }
 }

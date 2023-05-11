@@ -19,6 +19,14 @@ export const getCreditPrice = cond([
   [equals("1000"), always({ value: 60, totalCredits: 1000, messageToken: "save 25%" })],
 ])
 
+export const getCreditStripeLink = cond([
+  [equals("50"), always(process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_50_CREDITS)],
+  [equals("100"), always(process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_100_CREDITS)],
+  [equals("200"), always(process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_200_CREDITS)],
+  [equals("500"), always(process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_500_CREDITS)],
+  [equals("1000"), always(process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_1000_CREDITS)],
+])
+
 export const subscriptionOptions = [
   { value: "100", labelToken: "100 credits" },
   { value: "200", labelToken: "200 credits" },

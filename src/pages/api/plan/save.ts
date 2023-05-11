@@ -2,7 +2,7 @@ import * as paypal from "@/lib/server/paypalService"
 import * as supabaseService from "@/lib/server/supabaseService"
 import { compose, either, equals, find, path, propEq } from "ramda"
 import { getCreditPrice, getSubscriptionPrice } from "@/lib/utils"
-import { PaypalSubscriptionStatus, PlanType } from "@/lib/data/entities"
+import { PaymentProvider, PaypalSubscriptionStatus, PlanType } from "@/lib/data/entities"
 import { createApiHandler } from "@/lib/server/apiHandler"
 import { pino } from "pino"
 
@@ -51,6 +51,7 @@ export default createApiHandler({
           userId: req.session.user.id,
           credits: totalCredits,
           paidAmount: value,
+          provider: PaymentProvider.paypal,
         })
         return res.status(200).json({})
       }
@@ -68,6 +69,7 @@ export default createApiHandler({
           userId: req.session.user.id,
           credits: totalCredits,
           paidAmount: value,
+          provider: PaymentProvider.paypal,
         })
         return res.status(200).json({})
       }

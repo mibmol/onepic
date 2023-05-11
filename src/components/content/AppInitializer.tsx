@@ -1,3 +1,4 @@
+import startWebhookListener from "@/lib/client/webhookListener"
 import { useAppDispatch } from "@/lib/state/hooks"
 import { getUserMode, themeSlice } from "@/lib/state/themeSlice"
 import { isClient, isDev } from "@/lib/utils"
@@ -14,13 +15,9 @@ export const AppInitializer: FC = () => {
 
     if (isClient()) {
       dispatch(setMode(getUserMode()))
-      isDev() &&
-        import("@/lib/client/webhookListener").then(
-          ({ default: startWebhookListener }) => {
-            cleanUpFunctions.push(startWebhookListener())
-          },
-        )
+      isDev() && cleanUpFunctions.push(startWebhookListener())
     }
+
     return () => {
       callFunctionsInArray(cleanUpFunctions)
     }

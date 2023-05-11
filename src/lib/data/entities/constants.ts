@@ -29,7 +29,11 @@ export const PaypalWebhook = {
   SUBSCRIPTION_SUSPENDED: "BILLING.SUBSCRIPTION.SUSPENDED",
 }
 
-
 export const AppErrorCode = {
-  USER_OUT_OF_CREDITS: "USER_OUT_OF_CREDITS"
+  USER_OUT_OF_CREDITS: "USER_OUT_OF_CREDITS",
+}
+
+export const PaymentProvider = {
+  paypal: "paypal",
+  stripe: "stripe",
 }

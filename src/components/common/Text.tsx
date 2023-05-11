@@ -32,7 +32,7 @@ export const Text: FC<TextProps> = ({
   semibold,
   bold,
   italic,
-  size = "md",
+  size,
   gray,
   ...props
 }) => {
