@@ -39,7 +39,7 @@ export const StripeCardButton: FC<StripeCardButtonProps> = ({ plan, planType }) 
       href={link}
       target="_self"
       className={`
-        mx-auto w-104 md:w-128 py-2 mt-4 md:py-3.5 md:mt-6 flex justify-center items-center font-medium rounded-md text-gray-800 border border-gray-300 
+        mx-auto w-96 md:w-128 py-2 mt-4 md:py-3.5 md:mt-6 flex justify-center items-center font-medium rounded-md text-gray-800 border border-gray-300 
         dark:text-white dark:border-gray-700
         hover:bg-gray-200 dark:hover:bg-gray-900
       `}

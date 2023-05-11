@@ -29,9 +29,12 @@ export const SubscriptionPlanPayment = () => {
         subscriptionId: subscriptionID,
         selectedPlan: plan,
       })
-      notification.success(t("Subscribed successfully. You can start using all the features!"), {
-        duration: 3000,
-      })
+      notification.success(
+        t("Subscribed successfully. You can start using all the features!"),
+        {
+          duration: 3000,
+        },
+      )
       router.push(getQueryParams().get("callbackUrl") ?? "/")
     } catch (error) {
       console.error(error)
@@ -56,6 +59,7 @@ export const SubscriptionPlanPayment = () => {
         "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
         intent: "subscription",
         vault: true,
+        "disable-funding": "card",
       }}
     >
       <PayPalButtonsLoader

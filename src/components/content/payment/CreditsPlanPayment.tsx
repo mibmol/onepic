@@ -57,12 +57,13 @@ export const CreditsPlanPayment = () => {
       <PayPalScriptProvider
         options={{
           "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+          "disable-funding": "card",
         }}
       >
         <PayPalButtonsLoader
           {...{ createOrder, onApprove, onError }}
-          style={{ layout: "horizontal", label: "pay", color: "blue", tagline: false }}
-          className="mx-auto w-104 md:w-128"
+          style={{ layout: "vertical", label: "pay", color: "blue", tagline: false }}
+          className="mx-auto w-96 md:w-128"
         />
       </PayPalScriptProvider>
       <StripeCardButton plan={plan as string} planType={PlanType.credits} />
