@@ -7,6 +7,7 @@ import * as paymentClient from "@/lib/client/payment"
 import { PlanType } from "@/lib/data/entities"
 import { CreateSubscriptionHandler, OnApproveHandler } from "./utils"
 import { PayPalButtonsLoader } from "./PayPalButtonsLoader"
+import { StripeCardButton } from "./StripeCardButton"
 
 export const SubscriptionPlanPayment = () => {
   const router = useRouter()
@@ -54,24 +55,27 @@ export const SubscriptionPlanPayment = () => {
   }
 
   return (
-    <PayPalScriptProvider
-      options={{
-        "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-        intent: "subscription",
-        vault: true,
-        "disable-funding": "card",
-      }}
-    >
-      <PayPalButtonsLoader
-        {...{ createSubscription, onApprove, onError }}
-        style={{
-          layout: "horizontal",
-          label: "subscribe",
-          color: "blue",
-          tagline: false,
+    <>
+      <PayPalScriptProvider
+        options={{
+          "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+          intent: "subscription",
+          vault: true,
+          "disable-funding": "card",
         }}
-        className="flex justify-center items-center md:mt-8"
-      />
-    </PayPalScriptProvider>
+      >
+        <PayPalButtonsLoader
+          {...{ createSubscription, onApprove, onError }}
+          style={{
+            layout: "horizontal",
+            label: "subscribe",
+            color: "blue",
+            tagline: false,
+          }}
+          className="mx-auto w-full md:w-128"
+        />
+      </PayPalScriptProvider>
+      <StripeCardButton plan={plan as string} planType={PlanType.subscription} />
+    </>
   )
 }

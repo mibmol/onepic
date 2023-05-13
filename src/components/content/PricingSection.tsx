@@ -16,9 +16,9 @@ export const PricingSection = () => {
   return (
     <section id="pricing" className="w-full lg:max-w-7xl mx-auto mt-12 mb-32">
       <div className="text-center">
-        <Text as="h2" labelToken="Choose your plan" size="4xl" bold />
+        <Text as="h2" labelToken="Choose your plan" className="text-2xl md:text-4xl" bold />
       </div>
-      <div className="mt-12 px-8 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-12 px-4 md:px-8 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <PricingBox
           titleToken="Free"
           descriptionItems={[

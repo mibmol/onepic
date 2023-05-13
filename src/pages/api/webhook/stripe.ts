@@ -1,8 +1,8 @@
-import { PaymentProvider } from "@/lib/data/entities"
+import { PaymentProvider, PlanType } from "@/lib/data/entities"
 import { createApiHandler } from "@/lib/server/apiHandler"
 import * as stripeService from "@/lib/server/stripeService"
 import * as supabaseService from "@/lib/server/supabaseService"
-import { getCreditPrice } from "@/lib/utils"
+import { getCreditPrice, getSubscriptionPrice } from "@/lib/utils"
 import { pino } from "pino"
 
 const logger = pino({ name: "stripe-webhook.handler" })
@@ -13,11 +13,29 @@ export const config = {
   },
 }
 
-function checkPaidCreditsValue(checkoutCompletedData: any, plan: string) {
+function getPlanInfo(planType: string, plan: string) {
+  switch (planType) {
+    case PlanType.credits:
+      return getCreditPrice(plan)
+    case PlanType.subscription:
+      return getSubscriptionPrice(plan)
+    default:
+      break
+  }
+}
+
+const SubscriptionBillingReason = {
+  create: "subscription_create",
+  cycle: "subscription_cycle",
+  update: "subscription_update",
+}
+
+function checkPaidValue(checkoutCompletedData: any, planType: string, plan: string) {
   if (checkoutCompletedData["payment_status"] !== "paid") {
     return false
   }
-  const actualPlanValue = getCreditPrice(plan).value * 100
+  const actualPlanValue = getPlanInfo(planType, plan)?.value * 100
+
   const total = Number.parseFloat(checkoutCompletedData["amount_total"])
   return actualPlanValue.toFixed(2) === total.toFixed(2)
 }
@@ -26,48 +44,43 @@ export default createApiHandler({
   methods: ["POST"],
   async handler(req, res) {
     const event = await stripeService.validateWebhookEvent(req)
-
     switch (event.type) {
-      case "checkout.session.async_payment_succeeded":
       case "checkout.session.completed":
-        const checkoutCompletedData = event.data.object
-        const [userId, selectedPlan, planType] =
-          checkoutCompletedData["client_reference_id"].split("_")
+        const checkoutCompleted = event.data.object
+        const { userId, plan, planType } = checkoutCompleted["metadata"]
 
-        if (!checkPaidCreditsValue(checkoutCompletedData, selectedPlan)) {
+        if (!checkPaidValue(checkoutCompleted, planType, plan)) {
           return res.status(422).json({
             msg: "processing credits stripe: inconsistent data or invalid payment",
-            checkoutCompletedData,
+            checkoutCompleted,
           })
         }
-        const { totalCredits, value } = getCreditPrice(selectedPlan)
+        const { totalCredits, value } = getPlanInfo(planType, plan)
         await supabaseService.saveOrder({
           userId,
           planType,
-          selectedPlan,
+          selectedPlan: plan,
           credits: totalCredits,
-          paymentIntentId: checkoutCompletedData["payment_intent"],
+          paymentIntentId: checkoutCompleted["payment_intent"],
           provider: PaymentProvider.stripe,
           paidAmount: value,
+          subscriptionId: checkoutCompleted["subscription"],
         })
-
         break
-
-      case "subscription_schedule.completed":
-        const subscriptionScheduleCompleted = event.data.object
+      case "invoice.paid":
+        const subscriptionInvoice = event.data.object
+        if (subscriptionInvoice["billing_reason"] === SubscriptionBillingReason.cycle) {
+          await supabaseService.saveSubscriptionPayment({
+            subscriptionId: subscriptionInvoice["subscription"],
+            paidAmount: subscriptionInvoice["amount_paid"] / 100,
+          })
+        }
         break
-      case "subscription_schedule.aborted":
-        const subscriptionScheduleAborted = event.data.object
-        break
-      case "subscription_schedule.canceled":
-        const subscriptionScheduleCanceled = event.data.object
-        break
-
-      case "subscription_schedule.created":
-        const subscriptionScheduleCreated = event.data.object
-        break
-      case "subscription_schedule.updated":
-        const subscriptionScheduleUpdated = event.data.object
+      case "customer.subscription.deleted":
+        const subscriptionDeleted = event.data.object
+        await supabaseService.endSubscription({
+          subscriptionId: subscriptionDeleted["id"],
+        })
         break
       default:
         logger.error(event, `Unhandled event type ${event.type}`)

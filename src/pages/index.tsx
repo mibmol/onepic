@@ -12,6 +12,7 @@ import { FeaturesSection } from "@/components/content/FeaturesSection"
 import { useEffect } from "react"
 import { getQueryParams, notification } from "@/lib/utils"
 import { useTranslation } from "next-i18next"
+import { useRouter } from "next/router"
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
@@ -22,13 +23,13 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 }
 
 const Home: NextPage = ({}) => {
+  const router = useRouter()
   const { t } = useTranslation()
   useEffect(() => {
-    if (getQueryParams().get("messageCode") === "PaymentSuccessful") {
+    if (router.query.messageCode === "PaymentSuccessful") {
       notification.success(t("Plan saved. You can start using all the features!"))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [router.query, t])
 
   return (
     <PagePropsProvider

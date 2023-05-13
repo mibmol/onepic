@@ -143,7 +143,10 @@ export async function saveOrder({
     return
   }
 
-  if (planType === PlanType.subscription && subscriptionId) {
+  if (planType === PlanType.subscription) {
+    if (!subscriptionId) {
+      throw { msg: "Should provide orderId for paypal or paymentIntentId for stripe" }
+    }
     const { error } = await supabase.rpc("save_subscription", {
       user_id: userId,
       subscription_id: subscriptionId,
@@ -157,7 +160,7 @@ export async function saveOrder({
     return
   }
 
-  throw Error("Not allowed")
+  throw Error("Plan type Not allowed")
 }
 
 export async function getSubscription(id: string) {
@@ -200,6 +203,7 @@ export async function endSubscription({ subscriptionId }) {
 
 const renameSubscriptionFields = pickAndRename([
   "plan",
+  "provider",
   { field: "start_date", renameTo: "startDate" },
   { field: "subscription_id", renameTo: "subscriptionId" },
 ])
