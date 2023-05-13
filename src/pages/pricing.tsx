@@ -21,8 +21,8 @@ const PricingPage = () => {
     >
       <SharedHead />
       <Header />
-      <main className="px-12">
-        <div className="mt-16">
+      <main className="md:px-12">
+        <div className="mt-8 md:mt-16">
           <PricingSection />
         </div>
       </main>

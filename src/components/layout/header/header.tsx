@@ -24,13 +24,15 @@ export const Header: FC<HeaderProps> = ({
   const router = useRouter()
 
   useEffect(() => {
-    const handler = () => {
-      showBottomLineOnScroll && window.scrollY > 16
-        ? headerRef.current.classList.add("border-b")
-        : headerRef.current.classList.remove("border-b")
+    if (showBottomLineOnScroll) {
+      const handler = () => {
+        window.scrollY > 16
+          ? headerRef.current.classList.add("border-b")
+          : headerRef.current.classList.remove("border-b")
+      }
+      document.addEventListener("scroll", handler)
+      return () => document.removeEventListener("scroll", handler)
     }
-    document.addEventListener("scroll", handler)
-    return () => document.removeEventListener("scroll", handler)
   }, [showBottomLineOnScroll])
 
   return (
@@ -60,7 +62,11 @@ export const Header: FC<HeaderProps> = ({
             />
           </li>
           <li className="ml-2">
-            <HeaderLink href="/support" labelToken="Support" />
+            <HeaderLink
+              href="https://witcherai.freshdesk.com/support/tickets/new"
+              target="_black"
+              labelToken="Support"
+            />
           </li>
           <li>
             <FeedbackPopover />

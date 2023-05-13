@@ -16,6 +16,7 @@ const supabase = createClient(
   },
 )
 
+// Use on SERVER only!
 const supabaseAuthSchema = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY,
@@ -113,28 +114,39 @@ export async function saveOrder({
   selectedPlan,
   planType,
   subscriptionId = null,
+  paymentIntentId = null,
   userId,
   credits,
   paidAmount,
+  provider,
 }) {
-  if (planType === PlanType.credits && orderId) {
-    const [{ error }, { error: error2 }] = await Promise.all([
-      supabase.rpc("increment_user_credits", { user_id: userId, n: credits }),
-      supabase.from("payments").insert({
-        plan_type: planType,
-        plan: selectedPlan,
-        order_id: orderId,
-        subscription_id: subscriptionId,
-        user_id: userId,
-        paid_amount: paidAmount,
-      }),
-    ])
+  if (planType === PlanType.credits) {
+    if (!orderId && !paymentIntentId) {
+      throw { msg: "Should provide orderId for paypal or paymentIntentId for stripe" }
+    }
+    const { error } = await supabase.from("payments").insert({
+      plan_type: planType,
+      plan: selectedPlan,
+      ...(orderId && { order_id: orderId }),
+      ...(paymentIntentId && { payment_intent_id: paymentIntentId }),
+      user_id: userId,
+      paid_amount: paidAmount,
+      provider,
+    })
     if (error) throw error
+
+    const { error: error2 } = await supabase.rpc("increment_user_credits", {
+      user_id: userId,
+      n: credits,
+    })
     if (error2) throw error2
     return
   }
 
-  if (planType === PlanType.subscription && subscriptionId) {
+  if (planType === PlanType.subscription) {
+    if (!subscriptionId) {
+      throw { msg: "Should provide orderId for paypal or paymentIntentId for stripe" }
+    }
     const { error } = await supabase.rpc("save_subscription", {
       user_id: userId,
       subscription_id: subscriptionId,
@@ -142,12 +154,13 @@ export async function saveOrder({
       plan_type: planType,
       paid_amount: paidAmount,
       credits,
+      provider,
     })
     if (error) throw error
     return
   }
 
-  throw Error("Not allowed")
+  throw Error("Plan type Not allowed")
 }
 
 export async function getSubscription(id: string) {
@@ -190,6 +203,7 @@ export async function endSubscription({ subscriptionId }) {
 
 const renameSubscriptionFields = pickAndRename([
   "plan",
+  "provider",
   { field: "start_date", renameTo: "startDate" },
   { field: "subscription_id", renameTo: "subscriptionId" },
 ])

@@ -51,7 +51,7 @@ const ToolPage: NextPage<ToolPageProps> = ({
     <PagePropsProvider value={{ titleToken, descriptionToken, featureId }}>
       <SharedHead />
       <Header />
-      <main className="grid grid-cols-1 lg:grid-cols-2 px-6 md:px-16 lg:px-0 lg:w-10/12 mx-auto mt-14 ">
+      <main className="grid grid-cols-1 lg:grid-cols-2 px-6 md:px-16 lg:px-0 lg:w-10/12 mx-auto mt-8 md:mt-14">
         <section className="lg:hidden">
           <div className="text-center max-w-lg mx-auto mb-6">
             <Text as="h1" className="mb-6" labelToken={titleToken} size="4xl" bold />

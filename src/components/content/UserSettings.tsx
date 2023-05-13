@@ -138,7 +138,7 @@ const NextChargeTime = () => {
     errorRetryCount: 2,
   })
 
-  return isLoading || !data ? (
+  return isLoading || !data?.nextChargeTime ? (
     <></>
   ) : (
     <Text

@@ -49,3 +49,11 @@ export function getSubscriptionNextChargeTime() {
 export function cancelUserSubscription() {
   return fetchJson("/api/plan/cancel-subscription", { method: "PATCH", body: "{}" })
 }
+
+export function createStripeSessionUrl({ plan, planType }) {
+  const params = new URLSearchParams({
+    plan,
+    planType,
+  })
+  return fetchJson("/api/payment/stripe/session?" + params.toString())
+}

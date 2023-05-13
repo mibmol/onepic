@@ -4,10 +4,12 @@ import { fetchJson } from "@/lib/utils"
 const getSender = compose(toLower, nth(0), split("/"), path(["User-Agent", 0]))
 const headerGetter = curry((headers, headerName) => path([headerName, 0], headers))
 
+
 export default function startWebhookListener() {
+  console.log("<---- conect ---")
   const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBHOOK_RELAY_WS)
   ws.addEventListener("open", () => {
-    console.log("<--- ws open")
+    console.log("<--- webhookListener: ws open")
     ws.send(
       JSON.stringify({
         action: "auth",
@@ -18,11 +20,11 @@ export default function startWebhookListener() {
   })
 
   ws.addEventListener("close", (e) => {
-    console.log("<--- ws closed", e.reason)
+    console.log("<--- webhookListener: ws closed", e.reason)
   })
 
   ws.addEventListener("error", (e) => {
-    console.log("<--- ws error", e)
+    console.log("<--- webhookListener: ws error", e)
   })
 
   ws.addEventListener("message", ({ data }) => {
@@ -30,6 +32,7 @@ export default function startWebhookListener() {
 
     // if we got authentication confirmation, send subscribe event to the server
     if (type === "status" && status === "authenticated") {
+      console.log("<---- webhookListener: AUTH")
       ws.send(
         JSON.stringify({
           action: "subscribe",
@@ -40,10 +43,10 @@ export default function startWebhookListener() {
 
     if (type === "webhook" && headers && body) {
       const sender = getSender(headers)
-      console.log({ type, sender, body: JSON.parse(body ?? "{}") })
+      console.log({ type, sender, headers, body: JSON.parse(body ?? "{}") })
+      const getHeader = headerGetter(headers)
       switch (sender) {
         case "paypal":
-          const getHeader = headerGetter(headers)
           fetchJson("/api/webhook/paypal", {
             method: "POST",
             headers: [
@@ -66,6 +69,12 @@ export default function startWebhookListener() {
             body,
           }).catch(console.error)
           break
+        case "stripe":
+          fetchJson("/api/webhook/stripe", {
+            method: "POST",
+            headers: { "Stripe-Signature": getHeader("Stripe-Signature") },
+            body,
+          }).catch(console.error)
         default:
           break
       }

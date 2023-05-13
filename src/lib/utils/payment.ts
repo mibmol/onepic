@@ -1,4 +1,5 @@
 import { always, cond, equals } from "ramda"
+import { PlanType } from "../data/entities"
 
 export const creditsOptions = [
   { value: "50", labelToken: "50 credits" },
@@ -17,6 +18,21 @@ export const getCreditPrice = cond([
     always({ value: 32.5, totalCredits: 500, messageToken: "save 18.75%" }),
   ],
   [equals("1000"), always({ value: 60, totalCredits: 1000, messageToken: "save 25%" })],
+])
+
+export const getCreditStripePrice = cond([
+  [equals("50"), always(process.env.STRIPE_PRICE_50_CREDITS)],
+  [equals("100"), always(process.env.STRIPE_PRICE_100_CREDITS)],
+  [equals("200"), always(process.env.STRIPE_PRICE_200_CREDITS)],
+  [equals("500"), always(process.env.STRIPE_PRICE_500_CREDITS)],
+  [equals("1000"), always(process.env.STRIPE_PRICE_1000_CREDITS)],
+])
+
+export const getSubscriptionStripePrice = cond([
+  [equals("100"), always(process.env.STRIPE_PRICE_100_SUBSCRIPTION)],
+  [equals("200"), always(process.env.STRIPE_PRICE_200_SUBSCRIPTION)],
+  [equals("500"), always(process.env.STRIPE_PRICE_500_SUBSCRIPTION)],
+  [equals("1000"), always(process.env.STRIPE_PRICE_1000_SUBSCRIPTION)],
 ])
 
 export const subscriptionOptions = [

@@ -1,13 +1,13 @@
-import Router from "next/router"
+import Router, { NextRouter } from "next/router"
 import { isServer } from "./enviroment"
 import { forEachObjIndexed } from "ramda"
 
-export async function redirectToLogin() {
+export async function redirectToLogin(router?: NextRouter) {
   const { pathname, search } = window.location
   const params = new URLSearchParams({
     callbackUrl: pathname + (search ?? ""),
   })
-  return Router.push(`/auth/signin?${params.toString()}`)
+  return (router ?? Router).push(`/auth/signin?${params.toString()}`)
 }
 
 export function getURLLastPathname(href: string): string {
