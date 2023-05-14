@@ -74,7 +74,7 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
           />
           <Text
             as="p"
-            labelToken="Sign-up to witcher.ai and get 10 credits for free"
+            labelToken="Sign-up to Onepic.AI and get 10 credits for free"
             className="mb-8"
             medium
             gray
