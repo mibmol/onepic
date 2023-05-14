@@ -236,7 +236,7 @@ const DeleteAccountConfig = () => {
     >
       <Text
         as="p"
-        labelToken="Permanently remove your Account and all of its contents from the Witcher.ai platform. This action is not reversible."
+        labelToken="Permanently remove your Account and all of its contents from the onepic.ai platform. This action is not reversible."
         size="sm"
         medium
       />
