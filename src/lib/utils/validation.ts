@@ -1,5 +1,4 @@
-import { equal } from "assert"
-import { complement, either, equals, includes, isNil, tryCatch } from "ramda"
+import { complement, either, equals, isNil } from "ramda"
 
 export function isNumericString(value: any): boolean {
   const valueType = typeof value

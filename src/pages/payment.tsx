@@ -13,6 +13,7 @@ import { redirectToLogin } from "@/lib/utils/clientRouting"
 import { PlanType } from "@/lib/data/entities"
 import { CreditsPlanPayment } from "@/components/content/payment/CreditsPlanPayment"
 import { SubscriptionPlanPayment } from "@/components/content/payment/SubscriptionPayment"
+import { PagePropsProvider } from "@/lib/hooks"
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
@@ -37,7 +38,12 @@ const CreditCheckoutPage: NextPage = () => {
   }, [session, router, router.query, plan, planType])
 
   return (
-    <>
+    <PagePropsProvider
+      value={{
+        titleToken: "Payment",
+        descriptionToken: "Choose a payment method for the selected plan",
+      }}
+    >
       <SharedHead />
       <Header className="border-b" showBottomLineOnScroll={false} />
       <main>
@@ -76,7 +82,7 @@ const CreditCheckoutPage: NextPage = () => {
         </div>
       </main>
       <Footer />
-    </>
+    </PagePropsProvider>
   )
 }
 

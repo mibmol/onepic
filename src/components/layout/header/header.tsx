@@ -48,7 +48,7 @@ export const Header: FC<HeaderProps> = ({
       )}
     >
       <Link href="/">
-        <Logo className="h-6" />
+        <Logo className="h-8" />
       </Link>
       <nav className="hidden lg:flex">
         <ul className="flex items-center">

@@ -38,5 +38,7 @@ const handler = async (req: NextApiRequestWithSession, res: NextApiResponse) => 
 
 export default createApiHandler({
   methods: ["POST"],
+  authenticated: true,
+  customAuthCheck: () => true,
   handler,
 })

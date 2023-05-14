@@ -48,7 +48,6 @@ export default createApiHandler({
       case "checkout.session.completed":
         const checkoutCompleted = event.data.object
         const { userId, plan, planType } = checkoutCompleted["metadata"]
-
         if (!checkPaidValue(checkoutCompleted, planType, plan)) {
           return res.status(422).json({
             msg: "processing credits stripe: inconsistent data or invalid payment",
@@ -67,6 +66,7 @@ export default createApiHandler({
           subscriptionId: checkoutCompleted["subscription"],
         })
         break
+
       case "invoice.paid":
         const subscriptionInvoice = event.data.object
         if (subscriptionInvoice["billing_reason"] === SubscriptionBillingReason.cycle) {
@@ -76,12 +76,14 @@ export default createApiHandler({
           })
         }
         break
+
       case "customer.subscription.deleted":
         const subscriptionDeleted = event.data.object
         await supabaseService.endSubscription({
           subscriptionId: subscriptionDeleted["id"],
         })
         break
+
       default:
         logger.error(event, `Unhandled event type ${event.type}`)
     }
