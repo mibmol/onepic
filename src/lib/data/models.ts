@@ -30,6 +30,7 @@ type AIFeature = {
   featureId: string
   path: string
   titleToken: string
+  actionToken: string
   descriptionToken: string
   models: Model[]
 }
@@ -40,6 +41,7 @@ export const aiFeatures: AIFeature[] = [
     featureId: "restorePhoto",
     titleToken: "feature.restorePhotos.title",
     descriptionToken: "feature.restorePhotos.description",
+    actionToken: "Restore image",
     models: [
       {
         name: "GFPGAN",
@@ -96,6 +98,7 @@ export const aiFeatures: AIFeature[] = [
     featureId: "qualityEnhancer",
     titleToken: "feature.qualityEnhancer.title",
     descriptionToken: "feature.qualityEnhancer.description",
+    actionToken: "Upscale image",
     models: [
       {
         name: "REAL-ESRGAN",
@@ -158,6 +161,7 @@ export const aiFeatures: AIFeature[] = [
     featureId: "removeBackground",
     titleToken: "feature.removeBackground.title",
     descriptionToken: "feature.removeBackground.description",
+    actionToken: "Remove background",
     models: [
       {
         name: "ModNET",
@@ -190,6 +194,7 @@ export const aiFeatures: AIFeature[] = [
     featureId: "colorizeImage",
     titleToken: "feature.colorizeImage.title",
     descriptionToken: "feature.colorizeImage.description",
+    actionToken: "Colorize image",
     models: [
       {
         name: "Deoldify",

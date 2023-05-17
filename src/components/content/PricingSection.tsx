@@ -16,7 +16,12 @@ export const PricingSection = () => {
   return (
     <section id="pricing" className="w-full lg:max-w-7xl mx-auto mt-12 mb-32">
       <div className="text-center">
-        <Text as="h2" labelToken="Choose your plan" className="text-2xl md:text-4xl" bold />
+        <Text
+          as="h2"
+          labelToken="Choose your plan"
+          className="text-2xl md:text-4xl"
+          bold
+        />
       </div>
       <div className="mt-12 px-4 md:px-8 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <PricingBox
@@ -39,6 +44,7 @@ export const PricingSection = () => {
 
 type PricingBoxProps = {
   titleToken: string
+  subtitleToken?: string
   descriptionItems: { labelToken: string }[]
   price: { value: number; messageToken?: string }
   onChange?: (e) => void
@@ -46,10 +52,12 @@ type PricingBoxProps = {
   link: string
   linkToken: string
   defaultValue?: SelectOption
+  alwaysShowBorder?: boolean
 }
 
 const PricingBox: FC<PricingBoxProps> = ({
   titleToken,
+  subtitleToken,
   descriptionItems = [],
   price,
   onChange,
@@ -57,14 +65,18 @@ const PricingBox: FC<PricingBoxProps> = ({
   link,
   linkToken,
   defaultValue,
+  alwaysShowBorder = false,
 }) => {
   return (
     <div
-      className={`
+      className={cn(
+        `
        p-px bg-gray-200 rounded-lg
           dark:bg-gray-800
-        hover:bg-gradient-to-r duration-200 from-purple-500 via-cyan-400 to-indigo-500
-      `}
+         duration-200 from-purple-500 via-cyan-400 to-indigo-500
+      `,
+        alwaysShowBorder ? "bg-gradient-to-r" : "hover:bg-gradient-to-r",
+      )}
     >
       <div
         className={`
@@ -72,7 +84,17 @@ const PricingBox: FC<PricingBoxProps> = ({
           dark:bg-black
         `}
       >
-        <Text labelToken={titleToken} size="xl" className="text-left" semibold />
+        <div>
+          <Text labelToken={titleToken} size="xl" className="text-left" semibold />
+          {subtitleToken && (
+            <Text
+              labelToken={subtitleToken}
+              className="text-left block mt-1"
+              medium
+              gray
+            />
+          )}
+        </div>
         {onChange && (
           <Select
             {...{ onChange, options }}
@@ -120,6 +142,7 @@ const CreditsSelector = () => {
   return (
     <PricingBox
       titleToken="Credits"
+      subtitleToken="One-Time Payment"
       descriptionItems={[
         { labelToken: "Use all features with your credits" },
         { labelToken: "Credits never expires" },
@@ -130,6 +153,7 @@ const CreditsSelector = () => {
       linkToken="Buy credits"
       options={creditsOptions}
       defaultValue={creditsOptions[1]}
+      alwaysShowBorder
     />
   )
 }

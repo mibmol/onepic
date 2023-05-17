@@ -58,27 +58,27 @@ export const Messsage: FC<MessageProps> = ({
       className={cn(
         "flex px-4 py-3 rounded-md justify-between",
         getMesageContainerColorClasses(variant),
-        !description && "items-center",
         className,
       )}
     >
-      <div className="flex items-start">
-        <Icon
-          className={removeSimilarTWClasses(
-            cn(
-              "w-12 md:w-5 stroke-2 mt-1 md:mt-0.5 mr-2",
-              getIconMesageColorClasses(variant),
-              !description && "md:mt-0",
-              iconClassName,
-            ),
-          )}
-        />
-        <div className="flex flex-col">
+      <div className="flex flex-col">
+        <div className="flex items-center">
+          <Icon
+            className={removeSimilarTWClasses(
+              cn(
+                "w-5 stroke-2 mr-2 my-auto",
+                getIconMesageColorClasses(variant),
+                iconClassName,
+              ),
+            )}
+          />
           {title && (
             <Text size="sm" medium>
               {title}
             </Text>
           )}
+        </div>
+        <div className="ml-7">
           {description && (
             <Text size="sm" className="max-w-xl">
               {description}
@@ -87,7 +87,7 @@ export const Messsage: FC<MessageProps> = ({
           {actions}
         </div>
       </div>
-      <div>
+      <div className="mt-1">
         {dismissable && (
           <button
             type="button"

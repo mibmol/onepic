@@ -7,6 +7,7 @@ import {
   InputHTMLAttributes,
   PropsWithChildren,
   SVGProps,
+  forwardRef,
   useMemo,
 } from "react"
 import { useTranslation } from "next-i18next"
@@ -170,23 +171,25 @@ type InputSubmitProps = DetailedHTMLProps<
   InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 >
-export const SubmitButton: FC<ButtonProps<InputSubmitProps>> = ({
-  labelToken,
-  tokenArgs,
-  className,
-  variant = "primary",
-  loading,
-  ...props
-}) => {
-  const { t } = useTranslation()
-  const classes = useMemo(() => getButtonStyles(variant, className), [variant, className])
-  return (
-    <input
-      type="submit"
-      className={classes}
-      disabled={loading}
-      value={t(labelToken, tokenArgs)}
-      {...props}
-    />
-  )
-}
+export const SubmitButton: FC<ButtonProps<InputSubmitProps>> = forwardRef(
+  function SubmitButton(
+    { labelToken, tokenArgs, className, variant = "primary", loading, ...props },
+    ref,
+  ) {
+    const { t } = useTranslation()
+    const classes = useMemo(
+      () => getButtonStyles(variant, className),
+      [variant, className],
+    )
+    return (
+      <input
+        type="submit"
+        className={classes}
+        disabled={loading}
+        value={t(labelToken, tokenArgs)}
+        {...props}
+        {...{ ref }}
+      />
+    )
+  },
+)

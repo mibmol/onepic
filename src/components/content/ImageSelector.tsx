@@ -6,7 +6,7 @@ import { FileInput, Text } from "@/components/common"
 import { useAppDispatch } from "@/lib/state/hooks"
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
 import { useTranslation } from "next-i18next"
-import { isHttpUrl, notification } from "@/lib/utils"
+import {  notification } from "@/lib/utils"
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
 
