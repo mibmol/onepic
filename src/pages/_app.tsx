@@ -5,21 +5,23 @@ import { AppPropsWithLayout } from "@/lib/utils/next"
 import { ReduxProvider } from "@/lib/state/store"
 import { Toaster } from "react-hot-toast"
 import { AppInitializer } from "@/components/content/AppInitializer"
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react"
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page)
   return (
-    <div className="min-h-screen" >
-      <SessionProvider {...{ session }}>
-        <ReduxProvider>
-          {getLayout(<Component {...pageProps} />)}
-          <Toaster position="bottom-right" />
-          <AppInitializer />
-        </ReduxProvider>
-        <Analytics />
-      </SessionProvider>
-    </div>
+    <>
+      <div className="min-h-screen">
+        <SessionProvider {...{ session }}>
+          <ReduxProvider>
+            {getLayout(<Component {...pageProps} />)}
+            <Toaster position="bottom-right" />
+            <AppInitializer />
+          </ReduxProvider>
+        </SessionProvider>
+      </div>
+      <Analytics />
+    </>
   )
 }
 
