@@ -14,6 +14,7 @@ import { CheckCircleIcon, EnvelopeIcon } from "@heroicons/react/24/outline"
 import { useToggle } from "react-use"
 import { useForm } from "react-hook-form"
 import { useMountedState } from "@/lib/hooks"
+import { LoadingDots } from "@/components/common/LoadingDots"
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
@@ -69,13 +70,13 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
             as="h1"
             labelToken="Sign-In to AImage"
             size="2xl"
-            className="mb-4 mt-16"
+            className="mb-4 mt-16 text-center"
             bold
           />
           <Text
             as="p"
             labelToken="Sign-up to Onepic.AI and get 10 credits for free"
-            className="mb-8"
+            className="mb-8 text-center"
             medium
             gray
           />
@@ -83,33 +84,58 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
             <Messsage
               className="mb-2"
               title={t(
-                "To confirm your identity, sign in with the same account you used initially",
+                "To confirm your identity, sign in with the same account provider you used initially",
               )}
             />
           )}
           <EmailSignin />
-          {oauthProviders.map(({ id, className, labelToken, Icon }) => {
-            return (
-              <button
-                key={id}
-                type="submit"
-                className={cn(
-                  "w-88 mt-4 px-12 py-3 flex font-medium rounded-md",
-                  className,
-                )}
-                onClick={() =>
-                  signIn(id, { callbackUrl: (router.query.callbackUrl as string) ?? "/" })
-                }
-              >
-                {<Icon className="w-6 h-6 ml-6 mr-3" />}
-                {t(labelToken)}
-              </button>
-            )
-          })}
+          {oauthProviders.map((props) => (
+            <OAuthButton key={props.id} {...props} />
+          ))}
         </div>
       </main>
       <Footer />
     </>
+  )
+}
+
+const OAuthButton = ({ id, className, labelToken, Icon }) => {
+  const router = useRouter()
+  const { t } = useTranslation()
+  const [loading, setLoading] = useMountedState(false)
+
+  const startSignIn = async () => {
+    setLoading(true)
+    try {
+      await signIn(id, {
+        callbackUrl: (router.query.callbackUrl as string) ?? "/",
+      })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setTimeout(() => setLoading(false), 200)
+    }
+  }
+
+  return (
+    <button
+      key={id}
+      type="submit"
+      className={cn("relative w-88 h-12 mt-4 px-12 py-3 flex font-medium rounded-md", className)}
+      onClick={startSignIn}
+      disabled={loading}
+    >
+      {loading ? (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <LoadingDots size="sm" />
+        </div>
+      ) : (
+        <>
+          {<Icon className="w-6 h-6 ml-6 mr-3" />}
+          {t(labelToken)}
+        </>
+      )}
+    </button>
   )
 }
 
