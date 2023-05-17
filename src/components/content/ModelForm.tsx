@@ -1,5 +1,10 @@
 import { getProcessImageState } from "@/lib/client/processing"
-import { Model, getModelByName, getModelsByFeatureId } from "@/lib/data/models"
+import {
+  Model,
+  getFeatureByModelName,
+  getModelByName,
+  getModelsByFeatureId,
+} from "@/lib/data/models"
 import { usePageProps } from "@/lib/hooks/usePageProps"
 import { useAppDispatch, useAppSelector } from "@/lib/state/hooks"
 import { imageGenerationSlice, processImage } from "@/lib/state/imageProcessingSlice"
@@ -8,11 +13,12 @@ import {
   cn,
   FetchJsonError,
   getPathWithQueryParams,
+  isHttpUrl,
   notification,
   redirectToLogin,
 } from "@/lib/utils"
 import { TFunction, useTranslation } from "next-i18next"
-import { FC, useEffect, useMemo, useState } from "react"
+import { FC, useEffect, useMemo, useRef } from "react"
 import { useForm } from "react-hook-form"
 import {
   SubmitButton,
@@ -28,6 +34,7 @@ import { AppErrorCode, ReplicateStatus } from "@/lib/data/entities"
 import { getUserPlanInfo } from "@/lib/client/payment"
 import useSWR from "swr"
 import { useAfterRenderState } from "@/lib/hooks/useAfterRenderState"
+import { createSelector } from "@reduxjs/toolkit"
 
 const {
   setResultImage,
@@ -201,18 +208,43 @@ export const ModelForm = () => {
   )
 }
 
-const submitDisabledSelector = ({ imageProcessing }: AppState) =>
-  imageProcessing.uploading || imageProcessing.processing
+const submitDisabledSelector = createSelector(
+  (state: AppState) => state.imageProcessing.uploading,
+  (state: AppState) => state.imageProcessing.processing,
+  (state: AppState) => state.imageProcessing.inputImageUrl,
+  (uploading, processing, inputImageUrl) => ({
+    uploading,
+    processing,
+    inputImageUrl,
+  }),
+)
 
 const Submit: FC<{ selectedModel: Model }> = ({ selectedModel }) => {
   const { t } = useTranslation()
-  const disabled = useAppSelector(submitDisabledSelector)
-  const { data } = useSWR("planInfo", () => getUserPlanInfo(false))
+  const { uploading, processing, inputImageUrl } = useAppSelector(submitDisabledSelector)
+  const { data } = useSWR("planInfo", () => getUserPlanInfo(false), {
+    errorRetryCount: 2,
+    errorRetryInterval: 30000,
+    dedupingInterval: 6000,
+  })
   const buyCreditsCallbackUrl = useAfterRenderState(getPathWithQueryParams)
+  const submitRef = useRef<HTMLInputElement>()
 
+  useEffect(() => {
+    if (selectedModel.autoSubmit && !uploading && isHttpUrl(inputImageUrl)) {
+      submitRef.current?.click()
+    }
+  }, [uploading, inputImageUrl, selectedModel.name, selectedModel.autoSubmit])
+
+  const disabled = uploading || processing
   const hasCredits = selectedModel.credits === 0 || data?.credits > 0
   return (
-    <div className={cn(hasCredits && "mt-6")}>
+    <div
+      className={cn({
+        "mt-6": hasCredits,
+        hidden: selectedModel.autoSubmit,
+      })}
+    >
       {!hasCredits && (
         <Messsage
           title={
@@ -233,7 +265,11 @@ const Submit: FC<{ selectedModel: Model }> = ({ selectedModel }) => {
           iconClassName="mt-1"
         />
       )}
-      <SubmitButton {...{ disabled }} labelToken="general.submit" />
+      <SubmitButton
+        {...{ disabled }}
+        ref={submitRef}
+        labelToken={getFeatureByModelName(selectedModel.name).actionToken}
+      />
     </div>
   )
 }
