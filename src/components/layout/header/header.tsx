@@ -63,7 +63,7 @@ export const Header: FC<HeaderProps> = ({
           </li>
           <li className="ml-2">
             <HeaderLink
-              href="https://witcherai.freshdesk.com/support/tickets/new"
+              href="https://onepic.freshdesk.com/support/tickets/new"
               target="_black"
               labelToken="Support"
             />

@@ -62,13 +62,13 @@ export const Messsage: FC<MessageProps> = ({
         className,
       )}
     >
-      <div className="flex">
+      <div className="flex items-start">
         <Icon
           className={removeSimilarTWClasses(
             cn(
-              "w-5 h-5 stroke-2 mt-1 mr-2",
+              "w-12 md:w-5 stroke-2 mt-1 md:mt-0.5 mr-2",
               getIconMesageColorClasses(variant),
-              !description && "mt-0",
+              !description && "md:mt-0",
               iconClassName,
             ),
           )}

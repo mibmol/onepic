@@ -23,6 +23,7 @@ export type Model = {
   version: string
   modelInputType: ModelInputType
   fields?: ModelField[]
+  autoSubmit?: boolean
 }
 
 type AIFeature = {
@@ -161,6 +162,7 @@ export const aiFeatures: AIFeature[] = [
       {
         name: "ModNET",
         credits: 0,
+        autoSubmit: true,
         replicateURL: "https://replicate.com/pollinations/modnet",
         version: "4f40b36544786857fbc499be0996ba5152627ce61d614eeab7e19a7e1fd61ac6",
         modelInputType: {
@@ -172,6 +174,7 @@ export const aiFeatures: AIFeature[] = [
       {
         name: "RemBG",
         credits: 0,
+        autoSubmit: true,
         replicateURL: "https://replicate.com/cjwbw/rembg",
         version: "fb8af171cfa1616ddcf1242c093f9c46bcada5ad4cf6f2fbe8b81b330ec5c003",
         modelInputType: {
