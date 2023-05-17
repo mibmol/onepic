@@ -101,7 +101,7 @@ const PredictionItem = ({ input, output, modelName, status }) => {
       <Img
         src={output ?? input}
         alt={t("Result image")}
-        className="object-cover w-full h-full bg-gray-100 z-20"
+        className="object-cover w-full h-full bg-gray-100 z-20 transparent-image-background bg-white"
       />
       {status === ReplicateStatus.succeeded && (
         <button

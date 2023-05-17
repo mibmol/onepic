@@ -210,7 +210,7 @@ const ImageView = () => {
         <Img
           ref={leftImgRef}
           src={resultImageUrl ?? inputImageUrl}
-          className="w-full object-cover"
+          className="w-full object-cover transparent-image-background bg-white"
           alt={t("User uploaded image")}
           crossOrigin="anonymous"
         />

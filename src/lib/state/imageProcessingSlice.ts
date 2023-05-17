@@ -45,7 +45,7 @@ export const uploadImage = createAsyncThunk(
       return rejectWithValue("something went bad")
     }
   },
-)
+) 
 
 export const processImage = createAsyncThunk(
   "imageProcessing/process",

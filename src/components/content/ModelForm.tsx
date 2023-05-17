@@ -96,11 +96,6 @@ export const ModelForm = () => {
 
   const defaultModel = models[0]
 
-  useEffect(() => {
-    reset()
-    dispatch(clearImages())
-  }, [featureId, reset, dispatch])
-
   const modelName = watch("modelName", defaultModel?.name)
   const selectedModel = useMemo(
     () => {
@@ -111,6 +106,11 @@ export const ModelForm = () => {
     // eslint-disable-next-line
     [modelName],
   )
+
+  useEffect(() => {
+    reset()
+    dispatch(clearImages())
+  }, [featureId, reset, dispatch])
 
   const onSubmit = handleSubmit((values) => {
     if (!session && selectedModel.credits > 0) {

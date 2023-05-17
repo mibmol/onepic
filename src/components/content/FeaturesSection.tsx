@@ -139,7 +139,7 @@ const ImageSlider = ({ imgUrls: { before, after }, altTextToken }) => {
       <Img
         src={after}
         alt={t(altTextToken)}
-        className="absolute object-cover w-full h-full bg-purple-300"
+        className="absolute object-cover w-full h-full transparent-image-background bg-white"
       />
       <div
         ref={sliderRef}
