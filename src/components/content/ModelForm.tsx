@@ -28,6 +28,7 @@ import {
   Checkbox,
   Messsage,
   Button,
+  IntegerRadioGroup,
 } from "@/components/common"
 import { useSession } from "next-auth/react"
 import { AppErrorCode, ReplicateStatus } from "@/lib/data/entities"
@@ -35,6 +36,7 @@ import { getUserPlanInfo } from "@/lib/client/payment"
 import useSWR from "swr"
 import { useAfterRenderState } from "@/lib/hooks/useAfterRenderState"
 import { createSelector } from "@reduxjs/toolkit"
+import { propEq } from "ramda"
 
 const {
   setResultImage,
@@ -97,7 +99,7 @@ export const ModelForm = () => {
   const { t } = useTranslation()
   const { data: session } = useSession()
   const dispatch = useAppDispatch()
-  const { register, handleSubmit, watch, reset } = useForm()
+  const { register, handleSubmit, watch, reset, setValue, getValues } = useForm()
   const { featureId } = usePageProps<any>()
   const models = useMemo(() => getModelsByFeatureId(featureId), [featureId])
 
@@ -120,6 +122,7 @@ export const ModelForm = () => {
   }, [featureId, reset, dispatch])
 
   const onSubmit = handleSubmit((values) => {
+    console.log(values)
     if (!session && selectedModel.credits > 0) {
       return redirectToLogin()
     }
@@ -199,6 +202,16 @@ export const ModelForm = () => {
               step={1}
             />
           )}
+          {field.type === "integer-select" && (
+            <>
+              <IntegerRadioGroup
+                options={field.values}
+                label={t(field.labelToken)}
+                defaultValue={field.defaultValue}
+                onChange={(value) => setValue(field.name, value)}
+              />
+            </>
+          )}
         </div>
       ))}
       <div className="flex justify-left">
@@ -222,7 +235,7 @@ const submitDisabledSelector = createSelector(
 const Submit: FC<{ selectedModel: Model }> = ({ selectedModel }) => {
   const { t } = useTranslation()
   const { uploading, processing, inputImageUrl } = useAppSelector(submitDisabledSelector)
-  const { data } = useSWR("planInfo", () => getUserPlanInfo(false), {
+  const { data: planInfo } = useSWR("planInfo", () => getUserPlanInfo(false), {
     errorRetryCount: 2,
     errorRetryInterval: 30000,
     dedupingInterval: 6000,
@@ -237,7 +250,7 @@ const Submit: FC<{ selectedModel: Model }> = ({ selectedModel }) => {
   }, [uploading, inputImageUrl, selectedModel.name, selectedModel.autoSubmit])
 
   const disabled = uploading || processing
-  const hasCredits = selectedModel.credits === 0 || data?.credits > 0
+  const hasCredits = selectedModel.credits === 0 || planInfo?.credits > 0
   return (
     <div
       className={cn({
@@ -249,12 +262,14 @@ const Submit: FC<{ selectedModel: Model }> = ({ selectedModel }) => {
         <Messsage
           title={
             <div className="flex items-center">
-              {t("You ran out of credits")}{" "}
+              {planInfo
+                ? t("You ran out of credits")
+                : t("You need to login to use this feature")}
               <Button
                 variant="tertiary"
-                labelToken="Buy credits"
+                labelToken={planInfo ? "Buy credits" : "Sign-in"}
                 href={
-                  "/pricing?" +
+                  (planInfo ? "/pricing?" : "/auth/signin?") +
                   new URLSearchParams({ callbackUrl: buyCreditsCallbackUrl })
                 }
                 className="py-1"

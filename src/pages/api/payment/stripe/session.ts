@@ -1,5 +1,4 @@
 import { createApiHandler } from "@/lib/server/apiHandler"
-import { NextApiRequest, NextApiResponse } from "next"
 import * as stripe from "@/lib/server/stripeService"
 
 export default createApiHandler({

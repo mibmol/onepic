@@ -1,4 +1,5 @@
-import { Button, Select, SelectOption, Tag, Text } from "@/components/common"
+import { Button, Modal, Select, SelectOption, Tag, Text } from "@/components/common"
+import { getUserPlanInfo } from "@/lib/client/payment"
 import { PlanType } from "@/lib/data/entities"
 import { useAfterRenderState } from "@/lib/hooks/useAfterRenderState"
 import {
@@ -9,8 +10,15 @@ import {
   getSubscriptionPrice,
   subscriptionOptions,
 } from "@/lib/utils"
-import { ArrowRightIcon, CheckIcon } from "@heroicons/react/24/outline"
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline"
+import { useRouter } from "next/router"
 import { FC, useState } from "react"
+import { useToggle } from "react-use"
+import useSWR from "swr"
 
 export const PricingSection = () => {
   return (
@@ -33,7 +41,7 @@ export const PricingSection = () => {
           ]}
           price={{ value: 0 }}
           link="/auth/signin"
-          linkToken="Get started"
+          actionToken="Get started"
         />
         <CreditsSelector />
         <SubscriptionSelector />
@@ -49,10 +57,11 @@ type PricingBoxProps = {
   price: { value: number; messageToken?: string }
   onChange?: (e) => void
   options?: SelectOption[]
-  link: string
-  linkToken: string
+  link?: string
+  actionToken: string
   defaultValue?: SelectOption
   alwaysShowBorder?: boolean
+  onActionClick?: () => void
 }
 
 const PricingBox: FC<PricingBoxProps> = ({
@@ -63,9 +72,10 @@ const PricingBox: FC<PricingBoxProps> = ({
   onChange,
   options,
   link,
-  linkToken,
+  actionToken,
   defaultValue,
   alwaysShowBorder = false,
+  onActionClick,
 }) => {
   return (
     <div
@@ -122,11 +132,12 @@ const PricingBox: FC<PricingBoxProps> = ({
           ))}
         </ul>
         <Button
-          labelToken={linkToken}
+          labelToken={actionToken}
           Icon={ArrowRightIcon}
           href={link}
           iconPlacement="right"
           className="justify-between"
+          onClick={onActionClick}
         />
       </div>
     </div>
@@ -150,7 +161,7 @@ const CreditsSelector = () => {
       price={getCreditPrice(value)}
       onChange={(e) => setValue(e.target.value)}
       {...(params && { link: `/payment/?${params.toString()}` })}
-      linkToken="Buy credits"
+      actionToken="Buy credits"
       options={creditsOptions}
       defaultValue={creditsOptions[1]}
       alwaysShowBorder
@@ -159,23 +170,58 @@ const CreditsSelector = () => {
 }
 
 const SubscriptionSelector = () => {
+  const router = useRouter()
+  const [showConfirm, setShowConfirm] = useToggle(false)
   const [value, setValue] = useState("100")
+  const { data: planInfo } = useSWR("planInfo", () => getUserPlanInfo(false), {
+    errorRetryCount: 2,
+    errorRetryInterval: 30000,
+    dedupingInterval: 6000,
+  })
   const params = useAfterRenderState(
     getQueryParamsWith({ plan: value, planType: PlanType.subscription }),
     [value],
   )
+
+  const goPayment = () => router.push(`/payment/?${params.toString()}`)
+  const trySubscribe = () => (planInfo?.subscription ? setShowConfirm(true) : goPayment())
+
   return (
-    <PricingBox
-      titleToken="Monthly Subscription"
-      descriptionItems={[
-        { labelToken: "Unused credits rolls over" },
-        { labelToken: "Cancel any time" },
-      ]}
-      price={getSubscriptionPrice(value)}
-      linkToken="Subscribe"
-      options={subscriptionOptions}
-      onChange={(e) => setValue(e.target.value)}
-      {...(params && { link: `/payment/?${params.toString()}` })}
-    />
+    <>
+      <PricingBox
+        titleToken="Monthly Subscription"
+        descriptionItems={[
+          { labelToken: "Unused credits rolls over" },
+          { labelToken: "Cancel any time" },
+        ]}
+        price={getSubscriptionPrice(value)}
+        actionToken="Subscribe"
+        options={subscriptionOptions}
+        onChange={(e) => setValue(e.target.value)}
+        onActionClick={trySubscribe}
+      />
+      <Modal
+        role="dialog"
+        show={showConfirm}
+        onClose={setShowConfirm}
+        titleToken={"Subscribing to a new plan will cancel your current subscription"}
+        TitleIcon={InformationCircleIcon}
+        actions={[
+          {
+            key: "close",
+            labelToken: "Close",
+            onClick: setShowConfirm,
+            variant: "secondary",
+          },
+          {
+            key: "subscribe",
+            labelToken: "Subscribe",
+            onClick: goPayment,
+            Icon: ArrowRightIcon,
+            iconPlacement: "right",
+          },
+        ]}
+      />
+    </>
   )
 }

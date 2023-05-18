@@ -8,6 +8,7 @@ import { BurguerMenu } from "./BurgerMenu"
 import { HeaderLink } from "./HeaderLink"
 import { FeaturesPopoverMenu } from "./FeaturesPopoverMenu"
 import { FeedbackPopover } from "./FeedbackPopover"
+import { Tag } from "@/components/common"
 
 type HeaderProps = {
   className?: string
@@ -47,8 +48,9 @@ export const Header: FC<HeaderProps> = ({
         className,
       )}
     >
-      <Link href="/">
+      <Link href="/" className="flex items-center">
         <Logo className="h-8" />
+        <Tag labelToken="Beta" className="-ml-4 mt-0.5"/>
       </Link>
       <nav className="hidden lg:flex">
         <ul className="flex items-center">

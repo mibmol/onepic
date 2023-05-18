@@ -1,5 +1,14 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { AriaRole, FC, Fragment, PropsWithChildren, ReactElement } from "react"
+import {
+  AriaRole,
+  ComponentType,
+  FC,
+  Fragment,
+  PropsWithChildren,
+  ReactElement,
+  ReactNode,
+  SVGProps,
+} from "react"
 import { Text } from "./Text"
 import { Button, ButtonVariant } from "./Button"
 import { cn } from "@/lib/utils"
@@ -8,15 +17,18 @@ type ModalProps = {
   show: boolean
   onClose: () => void
   titleToken: string
+  TitleIcon?: ComponentType<SVGProps<SVGSVGElement>>
   role: AriaRole
   closeOnClickOutside?: boolean
   actions?: {
     key: string
-    variant: ButtonVariant
+    variant?: ButtonVariant
     labelToken: string
     onClick: () => void
     disabled?: boolean
     loading?: boolean
+    Icon?: ComponentType<SVGProps<SVGSVGElement>>
+    iconPlacement?: "left" | "right"
   }[]
 }
 
@@ -28,6 +40,7 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   role,
   closeOnClickOutside = false,
   actions = [],
+  TitleIcon,
 }) => {
   return (
     <Transition show={show} as={Fragment}>
@@ -53,7 +66,8 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
         >
           <div className="fixed inset-0 flex justify-center items-center overflow-y-auto">
             <Dialog.Panel className="px-9 py-8 transition-all transform bg-white shadow-lg rounded-2xl dark:bg-gray-800">
-              <Dialog.Title className="flex justify-between">
+              <Dialog.Title className="flex justify-between items-center">
+                {TitleIcon && <TitleIcon className="w-7 mr-2 stroke-2 stroke-gray-700 dark:stroke-white" />}
                 <Text as="p" labelToken={titleToken} size="xl" medium />
               </Dialog.Title>
               <Dialog.Description as="div">
@@ -61,15 +75,15 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
                   {children}
                 </div>
                 <div className="flex justify-end">
-                  {actions.map(
-                    ({ key, variant, onClick, labelToken, disabled, loading }) => (
-                      <Button
-                        key={key}
-                        className="ml-3 py-2"
-                        {...{ variant, onClick, labelToken, disabled, loading }}
-                      />
-                    ),
-                  )}
+                  {actions.map((options) => (
+                    <Button
+                      key={options.key}
+                      className={cn("ml-3 py-2", {
+                        "dark:bg-transparent": options.variant === "secondary",
+                      })}
+                      {...options}
+                    />
+                  ))}
                 </div>
               </Dialog.Description>
             </Dialog.Panel>

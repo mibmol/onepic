@@ -25,6 +25,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 const Home: NextPage = ({}) => {
   const router = useRouter()
   const { t } = useTranslation()
+
   useEffect(() => {
     if (router.query.messageCode === "PaymentSuccessful") {
       notification.success(t("Plan saved. You can start using all the features!"))

@@ -3,8 +3,8 @@ import { isNotNil } from "@/lib/utils"
 
 type ModelField = {
   name: string
-  type?: "file" | "text" | "select" | "integer" | "float" | "boolean"
-  values?: any[]
+  type?: "file" | "text" | "select" | "integer" | "float" | "boolean" | "integer-select"
+  values?: { labelToken: string; value: any; credits?: number }[]
   defaultValue?: any
   labelToken?: string
   min?: number
@@ -60,11 +60,15 @@ export const aiFeatures: AIFeature[] = [
           },
           {
             name: "scale",
-            type: "integer",
+            type: "integer-select",
             labelToken: "fieldLabel.scale",
             defaultValue: 2,
-            min: 1,
-            max: 10,
+            values: [
+              { labelToken: "x2", value: 2 },
+              { labelToken: "x4", value: 4 },
+              { labelToken: "x6", value: 6, credits: 2 },
+              { labelToken: "x8", value: 8, credits: 3 },
+            ],
           },
         ],
       },
@@ -113,11 +117,15 @@ export const aiFeatures: AIFeature[] = [
         fields: [
           {
             name: "scale",
-            type: "integer",
+            type: "integer-select",
             labelToken: "fieldLabel.scale",
-            defaultValue: 3,
-            min: 1,
-            max: 10,
+            defaultValue: 2,
+            values: [
+              { labelToken: "x2", value: 2 },
+              { labelToken: "x4", value: 4 },
+              { labelToken: "x6", value: 6, credits: 2 },
+              { labelToken: "x8", value: 8, credits: 3 },
+            ],
           },
           {
             name: "face_enhance",
@@ -140,11 +148,15 @@ export const aiFeatures: AIFeature[] = [
         fields: [
           {
             name: "scale",
-            type: "integer",
+            type: "integer-select",
             labelToken: "fieldLabel.scale",
-            defaultValue: 3,
-            min: 1,
-            max: 10,
+            defaultValue: 2,
+            values: [
+              { labelToken: "x2", value: 2 },
+              { labelToken: "x4", value: 4 },
+              { labelToken: "x6", value: 6, credits: 2 },
+              { labelToken: "x8", value: 8, credits: 3 },
+            ],
           },
           {
             name: "face_enhance",

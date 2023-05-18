@@ -9,20 +9,20 @@ export async function createCreditOrder({ plan, planType }): Promise<string> {
 }
 
 export async function captureCreditOrder({ orderID }) {
-  const { orderCaptureData } = await fetchJson("/api/payment/order-capture", {
+  const { orderCaptureData } = await fetchJson("/api/payment/paypal/capture-order", {
     method: "POST",
     body: JSON.stringify({ orderID }),
   })
   return orderCaptureData
 }
 
-export async function saveUserPlan({
+export async function saveUserPaypalOrder({
   orderId = null,
   planType,
   selectedPlan = null,
   subscriptionId = null,
 }) {
-  return fetchJsonRetry(`/api/plan/save`, {
+  return fetchJsonRetry("/api/payment/paypal/save-order", {
     retries: 2,
     redirectToLogin: false,
     method: "POST",

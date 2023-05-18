@@ -26,7 +26,7 @@ export const CreditsPlanPayment = () => {
   const onApprove: OnApproveHandler = async (data) => {
     try {
       const { id: orderId } = await paymentClient.captureCreditOrder(data)
-      await paymentClient.saveUserPlan({
+      await paymentClient.saveUserPaypalOrder({
         orderId,
         planType: PlanType.credits,
         selectedPlan: plan,

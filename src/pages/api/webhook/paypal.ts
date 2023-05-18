@@ -2,7 +2,7 @@ import * as supabaseService from "@/lib/server/supabaseService"
 import * as paypalService from "@/lib/server/paypalService"
 import type { NextApiRequest, NextApiResponse } from "next"
 import pino from "pino"
-import { PaypalWebhook } from "@/lib/data/entities"
+import { PaymentProvider, PaypalWebhook } from "@/lib/data/entities"
 import { startsWith } from "ramda"
 import { createApiHandler } from "@/lib/server/apiHandler"
 
@@ -32,9 +32,10 @@ export default createApiHandler({
     switch (event_type) {
       case PaypalWebhook.SALE_COMPLETED:
         if (isSubscriptionId(objectId)) {
-          await supabaseService.saveSubscriptionPayment({
+          await supabaseService.saveSubscriptionCyclePayment({
             subscriptionId: objectId,
             paidAmount: resource.amount.total,
+            provider: PaymentProvider.paypal,
           })
         }
       case PaypalWebhook.SUBSCRIPTION_CANCELLED:

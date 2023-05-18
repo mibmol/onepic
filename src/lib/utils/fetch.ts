@@ -17,7 +17,16 @@ const getBody = cond([
     ({ headers }: Response) => headers.get("content-type")?.includes("text"),
     (response: Response) => response.text(),
   ],
-  [T, (response: Response) => response.json()],
+  [
+    T,
+    async (response: Response) => {
+      try {
+        await response.json()
+      } catch (error) {
+        return {}
+      }
+    },
+  ],
 ])
 
 export type FetchJsonError<T = any> = Response & { body: T }
@@ -30,7 +39,6 @@ export const fetchJson = async (url: RequestInfo | URL, options?: ReqOptions) =>
       "Content-Type": "application/json",
     },
   })
-
   const body = await getBody(response)
 
   if (isHttpErrorCode(response.status)) {

@@ -55,24 +55,39 @@ export default createApiHandler({
           })
         }
         const { totalCredits, value } = getPlanInfo(planType, plan)
-        await supabaseService.saveOrder({
-          userId,
-          planType,
-          selectedPlan: plan,
-          credits: totalCredits,
-          paymentIntentId: checkoutCompleted["payment_intent"],
-          provider: PaymentProvider.stripe,
-          paidAmount: value,
-          subscriptionId: checkoutCompleted["subscription"],
-        })
+        if (planType === PlanType.credits) {
+          await supabaseService.saveCreditsOrder({
+            userId,
+            selectedPlan: plan,
+            credits: totalCredits,
+            paymentIntentId: checkoutCompleted["payment_intent"],
+            provider: PaymentProvider.stripe,
+            paidAmount: value,
+          })
+        }
+        if (planType === PlanType.subscription) {
+          const subscription = await supabaseService.getUserActiveSubscription(userId)
+          if (subscription) {
+            await stripeService.cancelSubscription(subscription.subscriptionId)
+          }
+          await supabaseService.saveSubscriptionOrder({
+            userId,
+            selectedPlan: plan,
+            credits: totalCredits,
+            provider: PaymentProvider.stripe,
+            paidAmount: value,
+            subscriptionId: checkoutCompleted["subscription"],
+          })
+        }
         break
 
       case "invoice.paid":
         const subscriptionInvoice = event.data.object
         if (subscriptionInvoice["billing_reason"] === SubscriptionBillingReason.cycle) {
-          await supabaseService.saveSubscriptionPayment({
+          await supabaseService.saveSubscriptionCyclePayment({
             subscriptionId: subscriptionInvoice["subscription"],
             paidAmount: subscriptionInvoice["amount_paid"] / 100,
+            provider: PaymentProvider.stripe,
           })
         }
         break
