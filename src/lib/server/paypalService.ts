@@ -14,6 +14,7 @@ export async function generateAccessToken(): Promise<string> {
       Authorization: `Basic ${basicTokenBuffer.toString("base64")}`,
     },
   })
+  console.log(access_token)
   return access_token
 }
 
@@ -139,5 +140,8 @@ export async function cancelSubscription(subscriptionId) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    body: JSON.stringify({
+      reason: "None",
+    }),
   })
 }

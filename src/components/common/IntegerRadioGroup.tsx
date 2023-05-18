@@ -21,7 +21,7 @@ export const IntegerRadioGroup: FC<IntegerRadioGroupProps> = ({
     <div>
       <RadioGroup
         {...{ onChange, defaultValue }}
-        className="max-w-max flex rounded-full bg-gray-200 cursor-pointer dark:bg-gray-800"
+        className="max-w-max flex rounded-full bg-gray-100 cursor-pointer dark:bg-gray-800"
       >
         <RadioGroup.Label hidden>{label}</RadioGroup.Label>
         {options.map(({ labelToken, value }) => (

@@ -23,7 +23,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   }
 }
 
-const CreditCheckoutPage: NextPage = () => {
+const PaymentPage: NextPage = () => {
   const { data: session } = useSession()
   const { t } = useTranslation()
   const router = useRouter()
@@ -86,4 +86,4 @@ const CreditCheckoutPage: NextPage = () => {
   )
 }
 
-export default CreditCheckoutPage
+export default PaymentPage

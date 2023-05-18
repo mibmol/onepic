@@ -18,14 +18,16 @@ export default createApiHandler({
       logger.info({ ...req.session }, "Tried cancel subscription")
       return res.status(200).json({ msg: "no subscription" })
     }
-    console.log(subscription)
 
-    if (subscription.provider === PaymentProvider.paypal) {
-      await paypalService.cancelSubscription(subscription.subscriptionId)
+    const { subscriptionId, provider } = subscription
+    if (provider === PaymentProvider.paypal) {
+      await paypalService.cancelSubscription(subscriptionId)
     }
-    if (subscription.provider === PaymentProvider.stripe) {
-      await stripeService.cancelSubscription(subscription.subscriptionId)
+    if (provider === PaymentProvider.stripe) {
+      await stripeService.cancelSubscription(subscriptionId)
     }
+
+    await supabaseService.endSubscription({ subscriptionId })
 
     return res.status(200).json({ msg: "done" })
   },

@@ -23,9 +23,9 @@ export const SubscriptionPlanPayment = () => {
     }
   }
 
-  const onApprove: OnApproveHandler = async ({ subscriptionID, ...rest }) => {
+  const onApprove: OnApproveHandler = async ({ subscriptionID }) => {
     try {
-      await paymentClient.saveUserPlan({
+      await paymentClient.saveUserPaypalOrder({
         planType: PlanType.subscription,
         subscriptionId: subscriptionID,
         selectedPlan: plan,

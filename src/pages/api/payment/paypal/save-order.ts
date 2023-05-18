@@ -34,8 +34,9 @@ export default createApiHandler({
   methods: ["POST"],
   authenticated: true,
   async handler(req, res) {
+    const userId = req.session.user.id
     const { orderId, selectedPlan, planType, subscriptionId } = req.body
-    if (!selectedPlan || !planType || (!orderId && !subscriptionId)) {
+    if (!selectedPlan || !planType || !(orderId || subscriptionId)) {
       logger.error({ selectedPlan, planType, orderId, subscriptionId }, "validation")
       return res.status(422).json({ msg: "inconsistent data" })
     }
@@ -44,29 +45,33 @@ export default createApiHandler({
       const order = await paypal.getOrder(orderId)
       if (isOrderCompleted(order, selectedPlan)) {
         const { totalCredits, value } = getCreditPrice(selectedPlan)
-        await supabaseService.saveOrder({
+        await supabaseService.saveCreditsOrder({
           orderId,
           selectedPlan,
-          planType,
-          userId: req.session.user.id,
+          userId,
           credits: totalCredits,
           paidAmount: value,
           provider: PaymentProvider.paypal,
         })
         return res.status(200).json({})
       }
-      return res.status(422).json({ msg: "process credits: inconsistent data", order })
+      return res.status(422).json({ msg: "Process credits: inconsistent data", order })
     }
 
     if (planType === PlanType.subscription) {
-      const { status } = await paypal.getSubscription(subscriptionId)
+      const [{ status }, activeSubscription] = await Promise.all([
+        paypal.getSubscription(subscriptionId),
+        supabaseService.getUserActiveSubscription(userId),
+      ])
       if (isSubscriptionCompleted(status)) {
+        if (activeSubscription) {
+          await paypal.cancelSubscription(activeSubscription.subscriptionId)
+        }
         const { totalCredits, value } = getSubscriptionPrice(selectedPlan)
-        await supabaseService.saveOrder({
+        await supabaseService.saveSubscriptionOrder({
           subscriptionId,
           selectedPlan,
-          planType,
-          userId: req.session.user.id,
+          userId,
           credits: totalCredits,
           paidAmount: value,
           provider: PaymentProvider.paypal,

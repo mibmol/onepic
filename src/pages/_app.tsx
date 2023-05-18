@@ -6,6 +6,7 @@ import { ReduxProvider } from "@/lib/state/store"
 import { Toaster } from "react-hot-toast"
 import { AppInitializer } from "@/components/content/AppInitializer"
 import { Analytics } from "@vercel/analytics/react"
+import { isProd } from "@/lib/utils"
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page)
@@ -20,7 +21,7 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLa
           </ReduxProvider>
         </SessionProvider>
       </div>
-      <Analytics />
+      {isProd() && <Analytics />}
     </>
   )
 }

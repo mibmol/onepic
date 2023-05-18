@@ -109,58 +109,59 @@ export async function updateUserCredits({ predictionId }) {
   }
 }
 
-export async function saveOrder({
+export async function saveCreditsOrder({
   orderId = null,
   selectedPlan,
-  planType,
-  subscriptionId = null,
   paymentIntentId = null,
   userId,
   credits,
   paidAmount,
   provider,
 }) {
-  if (planType === PlanType.credits) {
-    if (!orderId && !paymentIntentId) {
-      throw { msg: "Should provide orderId for paypal or paymentIntentId for stripe" }
-    }
-    const { error } = await supabase.from("payments").insert({
-      plan_type: planType,
-      plan: selectedPlan,
-      ...(orderId && { order_id: orderId }),
-      ...(paymentIntentId && { payment_intent_id: paymentIntentId }),
-      user_id: userId,
-      paid_amount: paidAmount,
-      provider,
-    })
-    if (error) throw error
-
-    const { error: error2 } = await supabase.rpc("increment_user_credits", {
-      user_id: userId,
-      n: credits,
-    })
-    if (error2) throw error2
-    return
+  if (!orderId && !paymentIntentId) {
+    throw { msg: "Should provide orderId for paypal or paymentIntentId for stripe" }
   }
+  const { error } = await supabase.from("payments").insert({
+    plan_type: PlanType.credits,
+    plan: selectedPlan,
+    ...(orderId && { order_id: orderId }),
+    ...(paymentIntentId && { payment_intent_id: paymentIntentId }),
+    user_id: userId,
+    paid_amount: paidAmount,
+    provider,
+  })
+  if (error) throw error
 
-  if (planType === PlanType.subscription) {
-    if (!subscriptionId) {
-      throw { msg: "Should provide orderId for paypal or paymentIntentId for stripe" }
-    }
-    const { error } = await supabase.rpc("save_subscription", {
-      user_id: userId,
-      subscription_id: subscriptionId,
-      plan: selectedPlan,
-      plan_type: planType,
-      paid_amount: paidAmount,
-      credits,
-      provider,
-    })
-    if (error) throw error
-    return
+  const { error: error2 } = await supabase.rpc("increment_user_credits", {
+    user_id: userId,
+    n: credits,
+  })
+  if (error2) throw error2
+  return
+}
+
+export async function saveSubscriptionOrder({
+  selectedPlan,
+  subscriptionId = null,
+  userId,
+  credits,
+  paidAmount,
+  provider,
+}) {
+  if (!subscriptionId) {
+    throw { msg: "need to provide subscriptionId" }
   }
-
-  throw Error("Plan type Not allowed")
+  const { error } = await supabase.rpc("save_subscription", {
+    user_id: userId,
+    subscription_id: subscriptionId,
+    plan: selectedPlan,
+    plan_type: PlanType.subscription,
+    paid_amount: paidAmount,
+    credits,
+    provider,
+  })
+  if (error) throw error
+  return
 }
 
 export async function getSubscription(id: string) {
@@ -172,7 +173,11 @@ export async function getSubscription(id: string) {
   return { error, subscription }
 }
 
-export async function saveSubscriptionPayment({ subscriptionId, paidAmount }) {
+export async function saveSubscriptionCyclePayment({
+  subscriptionId,
+  paidAmount,
+  provider,
+}) {
   const { error, subscription } = await getSubscription(subscriptionId)
 
   if (error) {
@@ -184,6 +189,7 @@ export async function saveSubscriptionPayment({ subscriptionId, paidAmount }) {
     subscription_id: subscriptionId,
     user_id,
     plan,
+    provider,
     plan_type: PlanType.subscription,
     credits: totalCredits,
     paid_amount: paidAmount,
@@ -213,6 +219,7 @@ export async function getUserActiveSubscription(userId: string): Promise<any> {
     .from("subscriptions")
     .select()
     .eq("user_id", userId)
+    .order("start_date", { ascending: false })
 
   if (error) throw error
   const subscription = subscriptions?.find(({ end_date }) => isNil(end_date))
