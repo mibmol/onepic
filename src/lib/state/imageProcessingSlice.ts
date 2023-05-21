@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { getImageUrl, uploadUserImage } from "@/lib/client/upload"
+import { getImageUrl, uploadImagex, uploadUserImage } from "@/lib/client/upload"
 import { AppState } from "./store"
 import { postProcessImage } from "@/lib/client/processing"
 import { FetchJsonError } from "@/lib/utils"
@@ -35,6 +35,8 @@ export const uploadImage = createAsyncThunk(
   "imageProcessing/upload",
   async ({ value: file, onError, onSuccess }: ThunkArgs<File>, { rejectWithValue }) => {
     try {
+      // const res = await uploadImagex(file)
+      // console.log(res)
       const { imagePath } = await uploadUserImage(file)
       const uploadedImageUrl = await getImageUrl(imagePath)
       onSuccess?.(uploadedImageUrl)
@@ -45,7 +47,7 @@ export const uploadImage = createAsyncThunk(
       return rejectWithValue("something went bad")
     }
   },
-) 
+)
 
 export const processImage = createAsyncThunk(
   "imageProcessing/process",

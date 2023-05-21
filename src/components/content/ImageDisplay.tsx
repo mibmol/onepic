@@ -19,7 +19,7 @@ import {
 } from "react"
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
 import { useTranslation } from "react-i18next"
-import { dowloadImage, imgToObjectUrl, isNotNil } from "@/lib/utils"
+import { cn, dowloadImage, imgToObjectUrl, isNotNil } from "@/lib/utils"
 import { uploadUserResultImage } from "@/lib/client/upload"
 import { useRouter } from "next/router"
 import { ReplicateStatus } from "@/lib/data/entities"
@@ -194,27 +194,27 @@ const ImageView = () => {
   return (
     <div
       {...{ onMouseMove, onMouseDown, onMouseUp, onTouchStart, onTouchEnd, onTouchMove }}
-      className="select-none"
+      className="select-none relative"
     >
-      <div>
-        {showSlider && (
-          <Img
-            ref={rightImgRef}
-            src={inputImageUrl}
-            className="absolute w-full object-cover"
-            style={{ clipPath: "polygon(0px 0px, 50% 0px, 50% 100%, 0px 100%)" }}
-            alt={t("User uploaded image")}
-            crossOrigin="anonymous"
-          />
-        )}
+      {showSlider && (
         <Img
-          ref={leftImgRef}
-          src={resultImageUrl ?? inputImageUrl}
-          className="w-full object-cover transparent-image-background bg-white"
+          ref={rightImgRef}
+          src={inputImageUrl}
+          className="absolute w-full object-cover"
+          style={{ clipPath: "polygon(0px 0px, 50% 0px, 50% 100%, 0px 100%)" }}
           alt={t("User uploaded image")}
           crossOrigin="anonymous"
         />
-      </div>
+      )}
+      <Img
+        ref={leftImgRef}
+        src={resultImageUrl ?? inputImageUrl}
+        className={cn("w-full h-full object-cover bg-white", {
+          "transparent-image-background": true,
+        })}
+        alt={t("User uploaded image")}
+        crossOrigin="anonymous"
+      />
       {showSlider && (
         <div
           ref={sliderRef}

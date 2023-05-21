@@ -10,7 +10,7 @@
   "feature": {
     "restorePhotos": {
       "title": "Image restoration",
-      "description": "Improve or restore images by deblurring and removing noise from old photos or damaged images",
+      "description": "Enhance images by deblurring and removing noise from old photos or damaged images",
       "options": {
         "faster": "Option 1 - Faster",
         "slower": "Option 2 - Allow removing scratches"
@@ -26,7 +26,7 @@
     },
     "removeBackground": {
       "title": "Remove background",
-      "description": "A deep learning approach to remove background from images"
+      "description": "Remove Background from Images for Free Automatically. Stunning Quality"
     },
     "colorizeImage": {
       "title": "Colorize photo",
