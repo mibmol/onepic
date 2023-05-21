@@ -35,13 +35,14 @@ const Home: NextPage = ({}) => {
   return (
     <PagePropsProvider
       value={{
-        titleToken: "Onepic.AI",
+        titleToken: "OnepicAI | AI photo enhancement & more",
         descriptionToken: `
           Transform your photos with our powerful AI-powered image enhancing tool. 
           Our app offers photo restoration, image upscaling, prompt-based image generation, image colorization, and more.
           Enhance your visual content effortlessly and make your images pop with our advanced features. 
           Try our AI-powered image enhancing tool today and take your images to the next level.
         `,
+        openGraph: { description: "Revive & Enhance you images with AI!" },
       }}
     >
       <SharedHead />

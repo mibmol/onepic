@@ -36,7 +36,7 @@ export const fetchJson = async (url: RequestInfo | URL, options?: ReqOptions) =>
     ...options,
     headers: {
       ...options?.headers,
-      "Content-Type": "application/json",
+      "Content-Type": options.headers["Content-Type"] ?? "application/json",
     },
   })
   const body = await getBody(response)

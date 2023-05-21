@@ -22,16 +22,12 @@ export const getStaticProps: GetStaticProps = async ({
   locale,
 }) => {
   const localeProps = await serverSideTranslations(locale, ["common"])
-  const { titleToken, descriptionToken, featureId } = aiFeatures.find(
-    propEq("path", featurePath),
-  )
+  const feature = aiFeatures.find(propEq("path", featurePath))
 
   return {
     props: {
       ...localeProps,
-      titleToken,
-      descriptionToken,
-      featureId,
+      ...feature,
     },
   }
 }
@@ -40,15 +36,21 @@ type ToolPageProps = {
   titleToken: string
   descriptionToken: string
   featureId: string
+  openGraphImage: string
+  path: string
 }
 
 const ToolPage: NextPage<ToolPageProps> = ({
   titleToken,
   descriptionToken,
   featureId,
+  openGraphImage,
+  path,
 }) => {
   return (
-    <PagePropsProvider value={{ titleToken, descriptionToken, featureId }}>
+    <PagePropsProvider
+      value={{ titleToken, descriptionToken, featureId, openGraphImage, path }}
+    >
       <SharedHead />
       <Header />
       <main className="grid grid-cols-1 lg:grid-cols-2 px-6 md:px-16 lg:px-0 lg:w-10/12 mx-auto mt-8 md:mt-14">
