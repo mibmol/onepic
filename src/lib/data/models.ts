@@ -107,7 +107,7 @@ export const aiFeatures: AIFeature[] = [
     titleToken: "feature.qualityEnhancer.title",
     descriptionToken: "feature.qualityEnhancer.description",
     actionToken: "Upscale image",
-    openGraphTitle: "Image upscaler, Quality enhancer",
+    openGraphTitle: "Image upscaler & Quality enhancer",
     openGraphImage: "/images/upscaler_og.jpg",
     models: [
       {
