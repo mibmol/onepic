@@ -7,7 +7,7 @@ export const SharedHead = () => {
   const {
     titleToken,
     descriptionToken,
-    openGraphTitle, 
+    openGraphTitle,
     openGraphDescription,
     openGraphImage,
     path,
@@ -16,7 +16,10 @@ export const SharedHead = () => {
     <Head>
       <title>{t(titleToken)}</title>
       <meta name="description" content={t(descriptionToken)} />
-      <meta property="og:title" content={openGraphTitle ?? t(titleToken)} />
+      <meta
+        property="og:title"
+        content={openGraphTitle ? `OnepicAI | ${openGraphTitle}` : t(titleToken)}
+      />
       <meta
         property="og:description"
         content={openGraphDescription ?? t(descriptionToken)}

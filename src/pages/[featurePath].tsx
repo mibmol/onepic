@@ -37,6 +37,7 @@ type ToolPageProps = {
   descriptionToken: string
   featureId: string
   openGraphImage: string
+  openGraphTitle: string
   path: string
 }
 
@@ -45,11 +46,19 @@ const ToolPage: NextPage<ToolPageProps> = ({
   descriptionToken,
   featureId,
   openGraphImage,
+  openGraphTitle,
   path,
 }) => {
   return (
     <PagePropsProvider
-      value={{ titleToken, descriptionToken, featureId, openGraphImage, path }}
+      value={{
+        titleToken,
+        descriptionToken,
+        featureId,
+        openGraphImage,
+        openGraphTitle,
+        path,
+      }}
     >
       <SharedHead />
       <Header />
