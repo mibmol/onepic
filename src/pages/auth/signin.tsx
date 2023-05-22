@@ -68,7 +68,7 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
         <div className="flex flex-col items-center mx-auto mt-8">
           <Text
             as="h1"
-            labelToken="Sign-In to AImage"
+            labelToken="Sign-In to Onepic.AI"
             size="2xl"
             className="mb-4 mt-16 text-center"
             bold
