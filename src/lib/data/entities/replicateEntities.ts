@@ -8,3 +8,12 @@ export type ReplicatePrediction = {
 
   error?: any
 }
+
+export type AssetInfo = {
+  signature: string
+  width: number
+  height: number
+  assetId: string
+  imageUrl: string
+  originalResultUrl: string
+}

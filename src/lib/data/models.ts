@@ -69,9 +69,7 @@ export const aiFeatures: AIFeature[] = [
             defaultValue: 2,
             values: [
               { labelToken: "x2", value: 2 },
-              { labelToken: "x4", value: 4 },
-              { labelToken: "x6", value: 6, credits: 2 },
-              { labelToken: "x8", value: 8, credits: 3 },
+              { labelToken: "x3", value: 3 },
             ],
           },
         ],

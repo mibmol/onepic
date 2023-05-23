@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js"
-import { PlanType, ReplicatePrediction } from "@/lib/data/entities"
+import { AssetInfo, PlanType, ReplicatePrediction } from "@/lib/data/entities"
 import { pickAndRename, removeNils, getSubscriptionPrice } from "@/lib/utils"
 import { User } from "next-auth"
 import { getModelByName } from "@/lib/data/models"
@@ -62,7 +62,6 @@ export async function getPrediction(predictionId: string) {
     .from("prediction_result")
     .select(`*, user:user_id ( * )`)
     .eq("prediction_id", predictionId)
-
   return { error, prediction }
 }
 
@@ -85,11 +84,13 @@ export async function updatePrediction({
   status,
   metrics,
   output,
-}: ReplicatePrediction) {
+  assets,
+}: ReplicatePrediction & { assets: AssetInfo }) {
   const updateFields = removeNils({
     status,
     run_time: metrics?.predict_time,
     output: Array.isArray(output) ? output[0] : output,
+    assets: assets ?? {},
   })
   return supabase.from("prediction_result").update(updateFields).eq("prediction_id", id)
 }

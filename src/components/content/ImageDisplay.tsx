@@ -20,7 +20,7 @@ import {
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
 import { useTranslation } from "react-i18next"
 import { cn, dowloadImage, imgToObjectUrl, isNotNil } from "@/lib/utils"
-import { uploadUserResultImage } from "@/lib/client/upload"
+// import { uploadUserResultImage } from "@/lib/client/upload"
 import { useRouter } from "next/router"
 import { ReplicateStatus } from "@/lib/data/entities"
 
@@ -113,13 +113,9 @@ export const ImageDisplay = () => {
 const imageDisplaySelector = createSelector(
   (state: AppState) => state.imageProcessing.inputImageUrl,
   (state: AppState) => state.imageProcessing.resultImageUrl,
-  (state: AppState) => state.imageProcessing.predictionId,
-  (state: AppState) => state.imageProcessing.currentModelName,
-  (inputImageUrl, resultImageUrl, predictionId, modelName) => ({
+  (inputImageUrl, resultImageUrl) => ({
     inputImageUrl,
     resultImageUrl,
-    predictionId,
-    modelName,
   }),
 )
 
@@ -129,28 +125,7 @@ const ImageView = () => {
   const leftImgRef = useRef<HTMLImageElement>(null)
   const sliderRef = useRef<HTMLInputElement>(null)
   const mousePosRef = useRef({ startX: 0, start: false })
-  const { predictionId, inputImageUrl, resultImageUrl, modelName } =
-    useAppSelector(imageDisplaySelector)
-
-  useEffect(() => {
-    if (predictionId) {
-      const imageLoadedHandler = async () => {
-        try {
-          await uploadUserResultImage(
-            await imgToObjectUrl(leftImgRef.current),
-            predictionId,
-            modelName,
-          )
-        } catch (error) {
-          console.error(error)
-        }
-      }
-      const imgElement = leftImgRef.current
-      imgElement.addEventListener("load", imageLoadedHandler)
-      return () => imgElement.removeEventListener("load", imageLoadedHandler)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [predictionId])
+  const { inputImageUrl, resultImageUrl } = useAppSelector(imageDisplaySelector)
 
   const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(
     ({ clientX, currentTarget }) => {
