@@ -36,7 +36,7 @@ export const PricingSection = () => {
           titleToken="Free"
           descriptionItems={[
             { labelToken: "Unlimated background removal" },
-            { labelToken: "15 credits for free" },
+            { labelToken: "10 credits for free" },
             { labelToken: "No credit card needed, just sign in" },
           ]}
           price={{ value: 0 }}
