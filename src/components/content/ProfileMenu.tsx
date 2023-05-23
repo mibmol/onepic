@@ -50,7 +50,7 @@ export const UserPlanInfo: FC<{ user: any; textGray?: boolean }> = ({
   user,
   textGray,
 }) => {
-  const { data } = useSWR("planInfo", getUserPlanInfo)
+  const { data } = useSWR("planInfox", getUserPlanInfo)
   return (
     <div>
       <Text as="h2" gray={textGray} semibold>
