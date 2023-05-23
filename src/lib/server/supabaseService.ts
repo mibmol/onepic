@@ -28,23 +28,6 @@ const supabaseAuthSchema = createClient(
   },
 )
 
-const defaultUrlDuration = 60 * 60 * 24 * 30 * 1 // 1 Month
-
-export async function getImageSignedUrl(
-  imagePath: string,
-  options: { width: any; height: any },
-) {
-  const { data, error } = await supabase.storage
-    .from("user-images")
-    .createSignedUrl(imagePath, defaultUrlDuration, {
-      ...(options?.width && options?.height && { transform: options }),
-    })
-  if (error) {
-    throw error
-  }
-  return data
-}
-
 export async function getUser(userId: string) {
   const {
     error,
