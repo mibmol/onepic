@@ -83,9 +83,7 @@ const NameConfig = ({ user }) => {
 }
 
 const PlanConfig = ({ user }) => {
-  const { data: plan, isLoading } = useSWR("planInfo", getUserPlanInfo, {
-    errorRetryCount: 2,
-  })
+  const { data: plan, isLoading } = useSWR("planInfo", getUserPlanInfo)
 
   return (
     <ConfigSection

@@ -75,7 +75,7 @@ const SignInPage: NextPage<SignInPageProps> = ({}) => {
           />
           <Text
             as="p"
-            labelToken="Sign-up to Onepic.AI and get 10 credits for free"
+            labelToken="Sign-up to Onepic and get 10 credits for free"
             className="mb-8 text-center"
             medium
             gray
@@ -121,7 +121,10 @@ const OAuthButton = ({ id, className, labelToken, Icon }) => {
     <button
       key={id}
       type="submit"
-      className={cn("relative w-88 h-12 mt-4 px-12 py-3 flex font-medium rounded-md", className)}
+      className={cn(
+        "relative w-88 h-12 mt-4 px-12 py-3 flex font-medium rounded-md",
+        className,
+      )}
       onClick={startSignIn}
       disabled={loading}
     >

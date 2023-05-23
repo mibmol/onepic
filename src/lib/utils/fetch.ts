@@ -21,7 +21,7 @@ const getBody = cond([
     T,
     async (response: Response) => {
       try {
-        await response.json()
+        return await response.json()
       } catch (error) {
         return {}
       }
@@ -36,7 +36,7 @@ export const fetchJson = async (url: RequestInfo | URL, options?: ReqOptions) =>
     ...options,
     headers: {
       ...options?.headers,
-      "Content-Type": options.headers["Content-Type"] ?? "application/json",
+      "Content-Type": options?.headers?.["Content-Type"] ?? "application/json",
     },
   })
   const body = await getBody(response)
