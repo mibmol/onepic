@@ -36,7 +36,6 @@ import { getUserPlanInfo } from "@/lib/client/payment"
 import useSWR from "swr"
 import { useAfterRenderState } from "@/lib/hooks/useAfterRenderState"
 import { createSelector } from "@reduxjs/toolkit"
-import { propEq } from "ramda"
 
 const {
   setResultImage,
@@ -53,12 +52,14 @@ const checkProcessingState = async (
 ) => {
   let intervalId = setInterval(async () => {
     try {
-      const { output, status } = await getProcessImageState(predictionId)
+      const { output, status, assets } = await getProcessImageState(predictionId)
       dispatch(setReplicateStatus(status))
       switch (status) {
         case ReplicateStatus.succeeded:
           clearInterval(intervalId)
-          dispatch(setResultImage({ output, predictionId }))
+          dispatch(
+            setResultImage({ output: assets.originalResultUrl ?? output, predictionId }),
+          )
           break
         case ReplicateStatus.failed:
           throw new Error(status)

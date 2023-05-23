@@ -31,12 +31,21 @@ const getBody = cond([
 
 export type FetchJsonError<T = any> = Response & { body: T }
 
-export const fetchJson = async (url: RequestInfo | URL, options?: ReqOptions) => {
+export async function fetchRaw(url: RequestInfo | URL, options?: ReqOptions) {
+  const response = await fetch(url, options)
+  const body = await getBody(response)
+  if (isHttpErrorCode(response.status)) {
+    throw { ...response, body } as FetchJsonError
+  }
+  return body
+}
+
+export async function fetchJson(url: RequestInfo | URL, options?: ReqOptions) {
   const response = await fetch(url, {
     ...options,
     headers: {
       ...options?.headers,
-      "Content-Type": options?.headers?.["Content-Type"] ?? "application/json",
+      "Content-Type": "application/json",
     },
   })
   const body = await getBody(response)
