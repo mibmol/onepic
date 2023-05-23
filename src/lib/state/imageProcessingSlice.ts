@@ -35,13 +35,13 @@ export const uploadImage = createAsyncThunk(
   "imageProcessing/upload",
   async ({ value: file, onError, onSuccess }: ThunkArgs<File>, { rejectWithValue }) => {
     try {
-      const res = await uploadImagex(file)
-      console.log(res)
-      return ""
-      // const { imagePath } = await uploadUserImage(file)
-      // const uploadedImageUrl = await getImageUrl(imagePath)
-      // onSuccess?.(uploadedImageUrl)
-      // return uploadedImageUrl
+      // const res = await uploadImagex(file)
+      // console.log(res)
+      // return ""
+      const { imagePath } = await uploadUserImage(file)
+      const uploadedImageUrl = await getImageUrl(imagePath)
+      onSuccess?.(uploadedImageUrl)
+      return uploadedImageUrl
     } catch (error) {
       console.log(error)
       onError?.(error)
