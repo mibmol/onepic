@@ -16,10 +16,11 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from "react"
 import { uploadImage } from "@/lib/state/imageProcessingSlice"
 import { useTranslation } from "react-i18next"
-import { cn, dowloadImage, imgToObjectUrl, isNotNil } from "@/lib/utils"
+import { cn, dowloadImage, imgToObjectUrl, isNotNil, notification } from "@/lib/utils"
 // import { uploadUserResultImage } from "@/lib/client/upload"
 import { useRouter } from "next/router"
 import { ReplicateStatus } from "@/lib/data/entities"
@@ -95,18 +96,39 @@ export const ImageDisplay = () => {
             accept="image/png, image/jpeg, image/webp"
             Icon={ArrowUpOnSquareIcon}
           />
-          {resultImageUrl && (
-            <Button
-              labelToken="Download"
-              className="text-sm lg:text-base"
-              Icon={ArrowDownTrayIcon}
-              onClick={() => dowloadImage(resultImageUrl).catch(console.error)}
-            />
-          )}
+          {resultImageUrl && <DownloadButton {...{ resultImageUrl }} />}
         </div>
       )}
       <ImageView />
     </div>
+  )
+}
+
+const DownloadButton = ({ resultImageUrl }) => {
+  const { t } = useTranslation()
+  const [downloading, setDownloading] = useState(false)
+
+  const download = async () => {
+    setDownloading(true)
+    try {
+      await dowloadImage(resultImageUrl)
+    } catch (error) {
+      console.error(error)
+      notification.error(t("Ups!"))
+    } finally {
+      setDownloading(false)
+    }
+  }
+
+  return (
+    <Button
+      labelToken="Download"
+      className="text-sm lg:text-base"
+      Icon={ArrowDownTrayIcon}
+      onClick={download}
+      disabled={downloading}
+      loading={downloading}
+    />
   )
 }
 

@@ -39,7 +39,6 @@ export const uploadImage = createAsyncThunk(
       onSuccess?.(uploadedImageUrl)
       return uploadedImageUrl
     } catch (error) {
-      console.log(error)
       onError?.(error)
       return rejectWithValue("something went bad")
     }

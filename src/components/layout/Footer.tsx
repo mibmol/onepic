@@ -14,15 +14,19 @@ export const Footer = () => {
   return (
     <footer className="sticky top-[100vh] flex items-center justify-between mt-8 py-6 px-8 border-t border-gray-200 dark:border-gray-800">
       <div>
-        <Text labelToken="Powered by" />
+        <Text labelToken="Powered by" className="text-sm md:text-base" />
         {services.map(({ href, labelToken }, index) => {
           const isLast = index === services.length - 1
           return (
             <Fragment key={labelToken}>
-              {isLast && <Text labelToken="and" className="ml-1" />}
+              {isLast && <Text labelToken="and" className="ml-1 text-sm md:text-base" />}
               <Link {...{ href }}>
-                <Text {...{ labelToken }} className="ml-1" bold />
-                {!isLast && services.length > 2 && <Text bold>{","}</Text>}
+                <Text {...{ labelToken }} className="ml-1 text-sm md:text-base" bold />
+                {!isLast && services.length > 2 && (
+                  <Text className="text-sm md:text-base" bold>
+                    {","}
+                  </Text>
+                )}
               </Link>
             </Fragment>
           )
