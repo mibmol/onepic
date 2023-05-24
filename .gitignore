@@ -40,4 +40,4 @@ next-env.d.ts
 .yarn/install-state.gz
 
 # editors
-.vscode
+.vscode/**
