@@ -1,5 +1,4 @@
 import { always, cond, equals } from "ramda"
-import { PlanType } from "../data/entities"
 
 export const creditsOptions = [
   { value: "50", labelToken: "50 credits" },

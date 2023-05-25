@@ -145,7 +145,7 @@ const PricingBox: FC<PricingBoxProps> = ({
 }
 
 const CreditsSelector = () => {
-  const [value, setValue] = useState("100")
+  const [value, setValue] = useState("50")
   const params = useAfterRenderState(
     getQueryParamsWith({ plan: value, planType: PlanType.credits }),
     [value],
@@ -163,7 +163,7 @@ const CreditsSelector = () => {
       {...(params && { link: `/payment/?${params.toString()}` })}
       actionToken="Buy credits"
       options={creditsOptions}
-      defaultValue={creditsOptions[1]}
+      defaultValue={creditsOptions[0]}
       alwaysShowBorder
     />
   )
