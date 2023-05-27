@@ -152,8 +152,7 @@ const EmailSignin = () => {
   const onSend = handleSubmit(async (values) => {
     setSending(true)
     try {
-      // const form = new FormData(ev.currentTarget)
-      const { ok } = await signIn("email", { email: values.email, redirect: false })
+      const { ok } = await signIn("email", { email: values?.email, redirect: false })
       ok && setDone(true)
     } catch (error) {
       console.error(error)
