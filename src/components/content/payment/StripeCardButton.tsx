@@ -48,12 +48,12 @@ export const StripeCardButton: FC<StripeCardButtonProps> = ({ plan, planType }) 
         <>
           <div className="flex items-center">
             <CreditCardIcon className="w-6 mr-2" />
-            <span className="">{t("Credit or Debit Card")}</span>
+            <span>{t("Credit or Debit")}</span>
           </div>
           <span className="mx-2">/</span>
           <GooglePayIcon className="w-12 mt-0.5" />
           <span className="mx-2">/</span>
-          <ApplePayIcon className="h-6 mb-px" />
+          <span>{t("& other methods")}</span>
         </>
       ) : (
         <Spinner
