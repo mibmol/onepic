@@ -12,7 +12,7 @@ import { useRouter } from "next/router"
 import { FormEvent, FormEventHandler, useEffect, useState } from "react"
 import { CheckCircleIcon, EnvelopeIcon } from "@heroicons/react/24/outline"
 import { useToggle } from "react-use"
-import { useForm } from "react-hook-form"
+import { FieldValues, useForm } from "react-hook-form"
 import { useMountedState } from "@/lib/hooks"
 import { LoadingDots } from "@/components/common/LoadingDots"
 
@@ -149,10 +149,13 @@ const EmailSignin = () => {
   const [sending, setSending] = useMountedState(false)
   const [done, setDone] = useState(false)
 
-  const onSend = handleSubmit(async (values) => {
+  const onSend = handleSubmit(async (values?: FieldValues) => {
     setSending(true)
     try {
-      const { ok } = await signIn("email", { email: values?.email, redirect: false })
+      const { ok } = await signIn("email", {
+        email: values?.email ?? "",
+        redirect: false,
+      })
       ok && setDone(true)
     } catch (error) {
       console.error(error)
