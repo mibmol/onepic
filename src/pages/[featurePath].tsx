@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/Footer"
 import { SharedHead } from "@/components/layout/header/headUtils"
 import { Text } from "@/components/common"
 import { ModelForm } from "@/components/content/ModelForm"
+import { isClient } from "@/lib/utils"
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
@@ -80,8 +81,26 @@ const ToolPage: NextPage<ToolPageProps> = ({
           <ModelForm />
         </section>
       </main>
+      {isClient() && <ExoClickBanner />}
       <Footer />
     </PagePropsProvider>
+  )
+}
+
+const ExoClickBanner = () => {
+  const onLoad = () => {
+    ;((window as any).AdProvider ?? []).push({ serve: {} })
+  }
+  return (
+    <div>
+      <script
+        async
+        type="application/javascript"
+        src="https://a.exdynsrv.com/ad-provider.js"
+        onLoad={onLoad}
+      ></script>
+      <ins className="eas6a97888ec52c042c679a36e919843cca" data-zoneid="5018992"></ins>
+    </div>
   )
 }
 
