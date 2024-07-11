@@ -86,4 +86,9 @@ const PaymentPage: NextPage = () => {
   )
 }
 
-export default PaymentPage
+const _PaymentPage = ()=> {
+  return <Text>Not Available</Text>
+}
+
+
+export default _PaymentPage
